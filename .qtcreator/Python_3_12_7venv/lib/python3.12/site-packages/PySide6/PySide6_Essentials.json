@@ -1,0 +1,62 @@
+{
+    "Core": [],
+    "Gui": [
+        "accessiblebridge",
+        "platforms",
+        "platforms/darwin",
+        "xcbglintegrations",
+        "platformthemes",
+        "platforminputcontexts",
+        "generic",
+        "iconengines",
+        "imageformats",
+        "egldeviceintegrations"
+    ],
+    "Widgets": [
+        "styles"
+    ],
+    "Help": [],
+    "Network": [
+        "networkaccess",
+        "networkinformation",
+        "tls"
+    ],
+    "Concurrent": [],
+    "DBus": [],
+    "Designer": [
+        "designer"
+    ],
+    "OpenGL": [],
+    "OpenGLWidgets": [],
+    "PrintSupport": [
+        "printsupport"
+    ],
+    "Qml": [
+        "qmltooling"
+    ],
+    "Quick": [
+        "scenegraph"
+    ],
+    "QuickControls2": [],
+    "QuickTest": [],
+    "QuickWidgets": [],
+    "Xml": [],
+    "Test": [],
+    "Sql": [
+        "sqldrivers"
+    ],
+    "Svg": [],
+    "SvgWidgets": [],
+    "UiTools": [],
+    "ExampleIcons": [],
+    "Wayland": [
+        "wayland-graphics-integration-client",
+        "wayland-inputdevice-integration",
+        "wayland-decoration-client",
+        "wayland-shell-integration",
+        "wayland-graphics-integration-server",
+        "wayland-hardware-layer-integration"
+    ],
+    "LanguageServer": [],
+    "JsonRpc": []
+}
