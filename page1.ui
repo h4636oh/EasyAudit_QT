@@ -36,9 +36,6 @@
      <property name="text">
       <string>CHOOSE TYPE OF CIS BENCHMARK YOU WANT TO RUN</string>
      </property>
-     <property name="alignment">
-      <set>Qt::AlignmentFlag::AlignCenter</set>
-     </property>
     </widget>
    </item>
    <item>
@@ -73,7 +70,7 @@
             </font>
            </property>
            <property name="text">
-            <string>W&amp;ORKSTATION</string>
+            <string>WOR&amp;KSTATION</string>
            </property>
           </widget>
          </item>
