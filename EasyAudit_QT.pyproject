@@ -2,6 +2,7 @@
     "files": [
         "widget.py",
         "MenuPage.ui",
-        "page1.ui"
+        "page1.ui",
+        "page2.ui"
     ]
 }

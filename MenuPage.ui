@@ -20,190 +20,51 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <spacer name="verticalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Orientation::Vertical</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Policy::Maximum</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
-    <widget class="QLabel" name="instruction_label">
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>30</height>
-      </size>
-     </property>
-     <property name="font">
-      <font>
-       <family>DM Mono</family>
-       <pointsize>14</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>CHOOSE TYPE OF CIS BENCHMARK YOU WANT TO RUN</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignmentFlag::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Orientation::Vertical</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Policy::Maximum</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="options_hlayout">
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QGroupBox" name="machine_type_box">
-       <property name="font">
-        <font>
-         <family>DM Mono</family>
-         <pointsize>14</pointsize>
-        </font>
+      <widget class="QLineEdit" name="lineEdit">
+       <property name="inputMask">
+        <string/>
        </property>
-       <property name="title">
-        <string>MACHINE TYPE</string>
+       <property name="text">
+        <string/>
        </property>
-       <widget class="QWidget" name="">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>30</y>
-          <width>133</width>
-          <height>62</height>
-         </rect>
-        </property>
-        <layout class="QVBoxLayout" name="machine_type_vlayout">
-         <item>
-          <widget class="QRadioButton" name="workstation_btn">
-           <property name="font">
-            <font>
-             <family>DM Mono</family>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>WORKSTATION</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QRadioButton" name="server_btn">
-           <property name="font">
-            <font>
-             <family>DM Mono</family>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>SERVER</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+       <property name="frame">
+        <bool>true</bool>
+       </property>
+       <property name="placeholderText">
+        <string>Type here to search scripts</string>
+       </property>
       </widget>
      </item>
-     <item alignment="">
-      <widget class="QGroupBox" name="benchmark_level_box">
-       <property name="font">
-        <font>
-         <family>DM Mono</family>
-         <pointsize>14</pointsize>
-        </font>
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string/>
        </property>
-       <property name="title">
-        <string>BENCHMARK LEVEL</string>
+       <property name="icon">
+        <iconset theme="QIcon::ThemeIcon::ImageLoading"/>
        </property>
-       <widget class="QWidget" name="">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>40</y>
-          <width>95</width>
-          <height>62</height>
-         </rect>
-        </property>
-        <layout class="QVBoxLayout" name="benchmark_level_vlayout">
-         <item>
-          <widget class="QRadioButton" name="level1_btn">
-           <property name="font">
-            <font>
-             <family>DM Mono</family>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>LEVEL 1</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QRadioButton" name="level2_btn">
-           <property name="font">
-            <font>
-             <family>DM Mono</family>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>LEVEL 2</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
       </widget>
      </item>
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="bottom_btns">
-     <item alignment="">
-      <widget class="QPushButton" name="sysInfo_btn">
-       <property name="font">
-        <font>
-         <family>DM Mono</family>
-         <pointsize>12</pointsize>
-        </font>
-       </property>
+    <widget class="QListWidget" name="listWidget"/>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QPushButton" name="pushButton_2">
        <property name="text">
-        <string>SYSTEM INFORMATION</string>
+        <string>ADD SCRIPT</string>
        </property>
       </widget>
      </item>
-     <item alignment="">
-      <widget class="QPushButton" name="continue_btn">
-       <property name="font">
-        <font>
-         <family>DM Mono</family>
-         <pointsize>12</pointsize>
-        </font>
-       </property>
+     <item>
+      <widget class="QPushButton" name="pushButton_3">
        <property name="text">
-        <string>CONTINUE</string>
+        <string>AUDIT</string>
        </property>
       </widget>
      </item>
