@@ -1,6 +1,8 @@
 # This file is used to ignore files which are generated
 # ----------------------------------------------------------------------------
-
+temp/
+.venv/
+venv/
 *~
 *.autosave
 *.a
@@ -72,3 +74,4 @@ CMakeLists.txt.user*
 *.dll
 *.exe
 
+sample_results.db
