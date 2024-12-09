@@ -20,22 +20,6 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <spacer name="verticalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Orientation::Vertical</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Policy::Maximum</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
     <widget class="QLabel" name="instruction_label">
      <property name="maximumSize">
       <size>
@@ -58,22 +42,6 @@
     </widget>
    </item>
    <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Orientation::Vertical</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Policy::Maximum</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
     <layout class="QHBoxLayout" name="options_hlayout">
      <item>
       <widget class="QGroupBox" name="machine_type_box">
@@ -86,7 +54,7 @@
        <property name="title">
         <string>MACHINE TYPE</string>
        </property>
-       <widget class="QWidget" name="">
+       <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
           <x>10</x>
@@ -105,7 +73,7 @@
             </font>
            </property>
            <property name="text">
-            <string>WORKSTATION</string>
+            <string>W&amp;ORKSTATION</string>
            </property>
           </widget>
          </item>
@@ -118,7 +86,7 @@
             </font>
            </property>
            <property name="text">
-            <string>SERVER</string>
+            <string>SE&amp;RVER</string>
            </property>
           </widget>
          </item>
@@ -126,7 +94,7 @@
        </widget>
       </widget>
      </item>
-     <item alignment="">
+     <item>
       <widget class="QGroupBox" name="benchmark_level_box">
        <property name="font">
         <font>
@@ -137,7 +105,7 @@
        <property name="title">
         <string>BENCHMARK LEVEL</string>
        </property>
-       <widget class="QWidget" name="">
+       <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
           <x>20</x>
@@ -156,7 +124,7 @@
             </font>
            </property>
            <property name="text">
-            <string>LEVEL 1</string>
+            <string>&amp;LEVEL 1</string>
            </property>
           </widget>
          </item>
@@ -169,7 +137,7 @@
             </font>
            </property>
            <property name="text">
-            <string>LEVEL 2</string>
+            <string>LEVEL &amp;2</string>
            </property>
           </widget>
          </item>
@@ -181,7 +149,7 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="bottom_btns">
-     <item alignment="">
+     <item>
       <widget class="QPushButton" name="sysInfo_btn">
        <property name="font">
         <font>
@@ -194,7 +162,7 @@
        </property>
       </widget>
      </item>
-     <item alignment="">
+     <item>
       <widget class="QPushButton" name="continue_btn">
        <property name="font">
         <font>
