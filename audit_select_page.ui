@@ -51,14 +51,14 @@
         <bool>true</bool>
        </property>
        <property name="placeholderText">
-        <string>Type here to search scripts</string>
+        <string>Type here to search audit scripts</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="filter_btn">
        <property name="text">
-        <string/>
+        <string>FILTER</string>
        </property>
        <property name="icon">
         <iconset theme="QIcon::ThemeIcon::ImageLoading"/>

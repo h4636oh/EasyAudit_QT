@@ -30,14 +30,14 @@
           <bool>true</bool>
          </property>
          <property name="placeholderText">
-          <string>Type here to search remediations</string>
+          <string>Type here to search remediation's result</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="filter_btn">
          <property name="text">
-          <string/>
+          <string>FITLER</string>
          </property>
          <property name="icon">
           <iconset theme="QIcon::ThemeIcon::ImageLoading"/>

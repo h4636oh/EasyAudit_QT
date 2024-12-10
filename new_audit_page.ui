@@ -43,7 +43,7 @@
    <property name="leftMargin">
     <number>6</number>
    </property>
-   <item alignment="|Qt::AlignmentFlag::AlignVCenter">
+   <item>
     <widget class="QLabel" name="instruction_label">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -116,8 +116,7 @@
       <widget class="QGroupBox" name="machine_type_box">
        <property name="font">
         <font>
-         <family>DM Mono</family>
-         <pointsize>14</pointsize>
+         <family>DM Mono Medium</family>
         </font>
        </property>
        <property name="title">
@@ -126,7 +125,7 @@
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <layout class="QVBoxLayout" name="machine_type_vlayout">
-          <item alignment="">
+          <item>
            <widget class="QRadioButton" name="workstation_btn">
             <property name="font">
              <font>
@@ -139,7 +138,7 @@
             </property>
            </widget>
           </item>
-          <item alignment="">
+          <item>
            <widget class="QRadioButton" name="server_btn">
             <property name="font">
              <font>
@@ -171,7 +170,7 @@
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
          <layout class="QVBoxLayout" name="benchmark_level_vlayout">
-          <item alignment="">
+          <item>
            <widget class="QRadioButton" name="level1_btn">
             <property name="font">
              <font>
@@ -184,7 +183,7 @@
             </property>
            </widget>
           </item>
-          <item alignment="">
+          <item>
            <widget class="QRadioButton" name="level2_btn">
             <property name="font">
              <font>
@@ -207,7 +206,7 @@
    <item>
     <layout class="QHBoxLayout" name="bar_bottom" stretch="0,0">
      <property name="spacing">
-      <number>400</number>
+      <number>6</number>
      </property>
      <property name="sizeConstraint">
       <enum>QLayout::SizeConstraint::SetFixedSize</enum>
