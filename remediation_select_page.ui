@@ -1,28 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>page1</class>
- <widget class="QWidget" name="page1">
+ <class>remediation_select_page</class>
+ <widget class="QWidget" name="remediation_select_page">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>811</width>
-    <height>551</height>
+    <width>753</width>
+    <height>663</height>
    </rect>
   </property>
-  <property name="font">
-   <font>
-    <family>DM Mono</family>
-   </font>
-  </property>
   <property name="windowTitle">
-   <string>Widget</string>
+   <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="bar_top">
      <item>
-      <widget class="QLineEdit" name="lineEdit">
+      <widget class="QLineEdit" name="search_bar">
        <property name="inputMask">
         <string/>
        </property>
@@ -33,12 +28,12 @@
         <bool>true</bool>
        </property>
        <property name="placeholderText">
-        <string>Type here to search scripts</string>
+        <string>Type here to search remediations</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="filter_btn">
        <property name="text">
         <string/>
        </property>
@@ -50,21 +45,21 @@
     </layout>
    </item>
    <item>
-    <widget class="QListWidget" name="listWidget"/>
+    <widget class="QListWidget" name="remediation_select_display"/>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <layout class="QHBoxLayout" name="bar_bottom">
      <item>
-      <widget class="QPushButton" name="pushButton_2">
+      <widget class="QPushButton" name="view_logs_btn">
        <property name="text">
-        <string>ADD SCRIPT</string>
+        <string>VIEW AUDIT LOGS</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_3">
+      <widget class="QPushButton" name="remediate_btn">
        <property name="text">
-        <string>AUDIT</string>
+        <string>REMEDIATE</string>
        </property>
       </widget>
      </item>
