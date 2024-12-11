@@ -13,7 +13,6 @@ $currentValue = Get-ItemProperty -Path $registryPath -Name $propertyName -ErrorA
 
 if ($null -eq $currentValue) {
     Write-Host "The registry setting is not set. Please ensure it is configured."
-    Read-Host "Press Enter to acknowledge this message after manual verification."
     exit 1
 }
 

@@ -229,21 +229,34 @@ def audit_result_page_display_result():
     newdatabase = sqlite3.connect("audit_results.db")
     cursor = newdatabase.cursor()
     cursor.execute("""
-            SELECT script_name, return_code
+            SELECT script_name, return_code, output, error
             FROM audit_results
             WHERE session_id = ?
         """, (session_id,))
     
     rows = cursor.fetchall()
     audit_result_page.module_to_name = load_module_to_name()
-    for row_idx, (script_name, return_code) in enumerate(rows):
+    audit_result_page.script_result_display.clear()  # Clear previous results
+    for row_idx, (script_name, return_code, output, error) in enumerate(rows):
         module_name = audit_result_page.module_to_name.get(script_name, script_name)
+        
+        # Create parent item for the script
+        parent_item = QtWidgets.QTreeWidgetItem(audit_result_page.script_result_display)
         if return_code == 0:  # Pass
-            output = "PASS: " + f"{module_name}"
+            parent_item.setText(0, f"PASS: {module_name}")
         else:
-            output = "FAIL: " + f"{module_name}"
-        item = QtWidgets.QListWidgetItem(output)
-        audit_result_page.script_result_display.addItem(item)
+            parent_item.setText(0, f"FAIL: {module_name}")
+        
+        # Add placeholder details as child items
+        child_output = QtWidgets.QTreeWidgetItem(parent_item)
+        child_output.setText(0, f"Output: {output[:100]}...")  # Truncate if output is too long
+
+        child_error = QtWidgets.QTreeWidgetItem(parent_item)
+        child_error.setText(0, f"Error: {error[:100]}...")  # Truncate if error is too long
+        
+        # Expand all items by default (optional)
+        parent_item.setExpanded(True)
+
 
 def new_audit_filters():
     isworkstation = new_audit_page.workstation_btn.isChecked()
