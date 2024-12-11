@@ -131,6 +131,7 @@ def audit_selected_scripts():
         result = { 'script_name': script_name, 'output': stdout, 'error': stderr, 'return_code': return_code }
         add_audit_result(result)
     print("Audit completed")
+    main_window.setCurrentIndex(3)
 
 
 if __name__ == "__main__":
@@ -185,7 +186,14 @@ if __name__ == "__main__":
     create_tables()
     populate_script_list()
     audit_select_page.select_all_btn.clicked.connect(select_all_scripts)
+
+    loader_audit_result_page = QUiLoader()
+    audit_result_page = loader_audit_result_page.load("audit_result_page.ui", main_window)
+    main_window.addWidget(audit_result_page)
+
     audit_select_page.audit_btn.clicked.connect(audit_selected_scripts)
+
+    
 
     main_window.show()
     sys.exit(app.exec())
