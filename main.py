@@ -10,6 +10,7 @@ import json
 from PySide6.QtCore import QCoreApplication
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtCore import QUrl
+import database
 
 def bitlocker_status():
     if platform.system() == "Windows":
@@ -138,19 +139,44 @@ def audit_select_page_populate_script_list():
             audit_select_page.script_select_display.addItem(list_item)
             audit_select_page.script_select_display.setItemWidget(list_item, widget)
 '''
-def audit_select_page_populate_script_list():
+def audit_select_page_populate_script_list(sl1, sl2, l1 , l2, bl, searcphrase = None):
+
+    if(isworkstation and islevel1):
+        l1 = True
+    if(isworkstation and islevel2):
+        l2 = True
+    if(isserver and islevel1):
+        sl1 = True
+    if(isserver and islevel2):
+        sl2 = True
+    
+
+    print("HEre", sl1 , sl2 , l1, l2, bl)
     audit_select_page.script_select_display.clear()
     os_name = check_os()
     script_dir = None
     if os_name == "Ubuntu":
         script_dir = 'scripts/audits/ubuntu'
+        filtered_list = database.search(ops = os_name, sl1_value =  sl1, sl2_value = sl2, l1_value = l1, l2_value = l2, bl_value = bl, search_phrase=searcphrase)
+        filtered_list = [i + ".sh" for i in filtered_list]
     if os_name == "rhel_9":
         script_dir = 'scripts/audits/rhel_9'
+        filtered_list = database.search(ops = os_name, sl1_value =  sl1, sl2_value = sl2, l1_value = l1, l2_value = l2, bl_value = bl, search_phrase=searcphrase)
+        filtered_list = [i + ".sh" for i in filtered_list]
     if os_name == "Windows":
         script_dir = 'scripts/audits/windows'
+        filtered_list = database.search(ops = os_name, sl1_value =  sl1, sl2_value = sl2, l1_value = l1, l2_value = l2, bl_value = bl, search_phrase=searcphrase)
+        filtered_list = [i + ".ps1" for i in filtered_list]
+        # print("helo")
+        print(filtered_list)
     if os.path.isdir(script_dir):
-        for script in sorted(os.listdir(script_dir)):
+        
+
+        # for script in sorted(os.listdir(script_dir)):
+
+        for script in filtered_list:
             script_name = os.path.splitext(script)[0]
+
             module_name = audit_select_page.module_to_name.get(script_name, script_name)
 
             # Create a layout for each list item
@@ -456,6 +482,12 @@ def audit_result_page_display_result():
 
 
 def new_audit_filters():
+    global isworkstation
+    global islevel2
+    global isserver
+    global islevel1
+    global isbitlocker
+
     isworkstation = new_audit_page.workstation_btn.isChecked()
     isserver = new_audit_page.server_btn.isChecked()
     islevel1 = new_audit_page.level1_btn.isChecked()
@@ -509,12 +541,36 @@ if __name__ == "__main__":
     isbitlocker = None
 
     new_audit_page.continue_btn.clicked.connect(new_audit_filters)
-
+    print(isworkstation , islevel2)
 
     audit_select_page.module_to_name = load_module_to_name()
     audit_select_page.database = sqlite3.connect('audit_results.db')
     create_tables()
-    audit_select_page_populate_script_list()
+    sl1 = False
+    sl2 = False
+    l1 = False
+    l2 = False
+    bl = isbitlocker
+
+    if(isworkstation and islevel1):
+        l1 = True
+    if(isworkstation and islevel2):
+        l2 = True
+    if(isserver and islevel1):
+        sl1 = True
+    if(isserver and islevel2):
+        sl2 = True
+    audit_select_page_populate_script_list(sl1 =  sl1, sl2= sl2, l1 = l1, l2 = l2, bl = bl)
+    new_audit_page.continue_btn.clicked.connect(lambda: [
+    new_audit_filters(),  # This sets the global filter variables
+    audit_select_page_populate_script_list(
+        sl1=sl1 , 
+        sl2=sl2 , 
+        l1=l1 , 
+        l2=l2 , 
+        bl=isbitlocker
+    )
+    ])
     audit_select_page.select_all_btn.clicked.connect(audit_select_page_select_all_scripts)
     if os.path.exists("audit_results.db"):
         cursor = audit_select_page.database.cursor()

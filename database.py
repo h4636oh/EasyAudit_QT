@@ -86,11 +86,11 @@ def search(ops, search_phrase=None, moduleid=None, l1_value=None, l2_value=None,
     - Array of values from the 'Moduleindex' column of the filtered DataFrame
     """
     # Load the appropriate CSV based on the operating system
-    if ops == "windows":
+    if ops == "Windows":
         df = pd.read_csv("windows.csv")
-    elif ops == "ubuntu":
+    elif ops == "Ubuntu":
         df = pd.read_csv("path")
-    elif ops == "rhel":
+    elif ops == "rhel_9":
         df = pd.read_csv("redhat.csv")
     else:
         raise ValueError("Unsupported OS")
@@ -112,7 +112,7 @@ def search(ops, search_phrase=None, moduleid=None, l1_value=None, l2_value=None,
     return df['Moduleindex'].values
 
 # Example usage
-index = search(ops="windows", search_phrase="password", moduleid="1.1", l1_value=True)
+# index = search(ops="windows", search_phrase="password", moduleid="1.1", l1_value=True)
 def moduledet(Moduleindex,ops):
     # Load the appropriate CSV based on the operating system
     if ops == "windows":
@@ -128,6 +128,6 @@ def moduledet(Moduleindex,ops):
     # return the detalis of that moduleindex in dictionary
     return df.loc[df["Moduleindex"] == Moduleindex].to_dict(orient="records")
 
-X=moduledet("1.1.1","windows")
-print(X)
+# X=moduledet("1.1.1","windows")
+# print(X)
     
