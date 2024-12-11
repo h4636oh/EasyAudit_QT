@@ -97,6 +97,7 @@ if __name__ == "__main__":
     islevel1 = None
     islevel2 = None
     isbitlocker = None
+    
     def new_audit_filters():
         isworkstation = new_audit_page.workstation_btn.isChecked()
         isserver = new_audit_page.server_btn.isChecked()
