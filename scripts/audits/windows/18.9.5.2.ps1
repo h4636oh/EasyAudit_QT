@@ -1,4 +1,3 @@
-#```powershell
 # Ensure PowerShell 7 is being used
 if ($PSVersionTable.PSVersion.Major -lt 7) {
     Write-Error "This script requires PowerShell 7 or newer."
@@ -29,4 +28,3 @@ if ($null -eq $regValue) {
     Write-Host "Audit passed. The registry value $regValueName is set correctly."
     exit 0
 }
-# ```
