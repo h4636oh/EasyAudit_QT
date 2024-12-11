@@ -24,17 +24,8 @@ function Get-DelegationSetting {
         # Since direct programmatic access isn't available in PowerShell for this setting, manual checking is indicated.
         Write-Output "Please manually verify the setting using the following path in Group Policy:"
         Write-Output "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Enable computer and user accounts to be trusted for delegation"
-        
-        # Example exit code for successful manual verification
-        $userResponse = Read-Host "Is the setting 'No One' manually verified to be correct? (y/n): "
-        
-        if ($userResponse -eq 'y') {
-            Write-Output "Audit passed. The setting is correctly set to 'No One'."
-            exit 0
-        } else {
-            Write-Output "Audit failed. Please ensure the setting is correctly set to 'No One'."
-            exit 1
-        }
+        Write-Output "Audit failed. Please ensure the setting is correctly set to 'No One'. MANUALLY "
+        exit 1
     } catch {
         # Catch any unexpected issues during script execution and exit with failure
         Write-Output "An error occurred during the auditing process: $_"

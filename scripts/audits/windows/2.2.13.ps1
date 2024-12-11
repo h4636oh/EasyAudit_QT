@@ -14,14 +14,7 @@ Write-Host $settingPath
 Write-Host "You can navigate through Local Group Policy Editor (gpedit.msc) or use the Group Policy Results Tool (gpresult)."
 
 # Prompt user to verify the setting manually
-$verification = Read-Host "Have you verified that the 'Create permanent shared objects' is set to 'No One'? (yes/no)"
+Write-Host "Audit Failed: Setting needs to be verified and configured. MANUALLY"
+exit 1
 
-# Evaluate the user's input
-if ($verification -eq "yes") {
-    Write-Host "Audit Passed: Setting is correctly configured to 'No One'."
-    exit $exitPass
-} else {
-    Write-Host "Audit Failed: Setting needs to be verified and configured."
-    exit $exitFail
-}
 # ```

@@ -248,11 +248,20 @@ def audit_result_page_display_result():
             parent_item.setText(0, f"FAIL: {module_name}")
         
         # Add placeholder details as child items
-        child_output = QtWidgets.QTreeWidgetItem(parent_item)
-        child_output.setText(0, f"Output: {output[:100]}...")  # Truncate if output is too long
+        
+          # Truncate if output is too long
 
-        child_error = QtWidgets.QTreeWidgetItem(parent_item)
-        child_error.setText(0, f"Error: {error[:100]}...")  # Truncate if error is too long
+        if output != "":
+            child_output = QtWidgets.QTreeWidgetItem(parent_item)
+            child_output.setText(0, f"{output}")
+          # Truncate if error is too long
+        
+
+        
+        if error != "" :
+            child_error = QtWidgets.QTreeWidgetItem(parent_item)
+            child_error.setText(0, f"{error}")
+          # Truncate if error is too long
         
         # Expand all items by default (optional)
         parent_item.setExpanded(True)
