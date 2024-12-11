@@ -132,6 +132,24 @@ def audit_selected_scripts():
         add_audit_result(result)
     print("Audit completed")
     main_window.setCurrentIndex(3)
+    store_result()
+
+
+def store_result():
+    newdatabase = sqlite3.connect("audit_results.db")
+    cursor = newdatabase.cursor()
+
+    cursor.execute("""
+            SELECT script_name, return_code
+            FROM audit_results;
+        """)
+    rows = cursor.fetchall()
+    for row_idx, (script_name, return_code) in enumerate(rows):
+        if return_code == 0:  # Pass
+            output = "✅ " + f"{script_name}"
+        else:
+            output = "❌ " + f"{script_name}"
+        audit_result_page.script_result_display.addItem(output)
 
 
 if __name__ == "__main__":
