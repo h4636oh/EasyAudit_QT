@@ -1,9 +1,14 @@
-#```powershell
 # Description: Audit if 'Always Install with Elevated Privileges' is set to Disabled for the given User SID.
 # The script will check the registry settings under HKU for each user SID.
 # Exit 0 if audit passes, Exit 1 otherwise.
 
 try {
+    # Ensure HKU registry path is available
+    if (-not (Test-Path "HKU:\")) {
+        Write-Host "HKEY_USERS (HKU) registry hive is not accessible. The script might require elevated permissions to run."
+        exit 1
+    }
+
     # Retrieve all available user SIDs from HKU (HKEY_USERS)
     $userSIDs = Get-ChildItem -Path "HKU:\" | Where-Object { $_.Name -match 'S-\d-\d+-(\d+-){1,14}\d+$' }
     
@@ -51,4 +56,3 @@ catch {
     Write-Error "An error occurred: $_"
     exit 1
 }
-# ```
