@@ -39,4 +39,3 @@ else
     echo -e "$file_path exists and has correct permissions set"
     exit 0
 fi
-```
