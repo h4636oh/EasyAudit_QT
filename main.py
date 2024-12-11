@@ -1,5 +1,5 @@
 import sys
-from PySide6.QtWidgets import QApplication, QStackedWidget
+from PySide6.QtWidgets import QApplication, QStackedWidget, QFileDialog
 from PySide6 import QtWidgets, QtCore
 from PySide6.QtUiTools import QUiLoader
 import platform
@@ -7,6 +7,7 @@ import os
 import subprocess
 import sqlite3
 import json
+from PySide6.QtCore import QCoreApplication
 
 ###START PAGE INFORMATION###
 
@@ -98,6 +99,13 @@ def audit_select_page_select_all_scripts():
             item = audit_select_page.script_select_display.item(index)
             item.setCheckState(QtCore.Qt.Unchecked)
 
+
+def audit_select_page_add_new_script():
+    file_path, _ = QFileDialog.getOpenFileName(None, "Select Script", "/home", "Bash Files (*.sh)")
+    if file_path:
+        script_name = os.path.basename(file_path)
+        audit_select_page.script_select_display.addItem(script_name)
+
 ### CREATES THE DATABASE FOR AUDIT RESULTS ### 
 
 def create_tables():
@@ -109,8 +117,8 @@ def create_tables():
             output TEXT,
             error TEXT,
             return_code INTEGER,
-            execution_time TEXT
-            session_id INTEGER,
+            execution_time TEXT,
+            session_id INTEGER
         )
     ''')
     audit_select_page.database.commit()
@@ -138,20 +146,31 @@ def add_audit_result(result):
 
 def audit_selected_scripts():
     selected_items = [audit_select_page.script_select_display.item(i) for i in range(audit_select_page.script_select_display.count()) if audit_select_page.script_select_display.item(i).checkState() == QtCore.Qt.Checked]
+    global session_id
+    session_id += 1
+    item_count = len(selected_items)
 
-    for item in selected_items:
+    main_window.setCurrentIndex(3)
+
+    for idx, item in enumerate(selected_items, start=1):
+        QCoreApplication.processEvents()
         script_name = item.data(QtCore.Qt.UserRole)
+        audit_progress_page.current_script_lbl.setText(str(script_name))
         script_path = os.path.join('tests/scripts/audits', script_name)
         if not os.path.exists(script_path):
             print(f"Script not found: {script_path}")
             continue
         stdout, stderr, return_code = run_script(script_path)
-        result = { 'script_name': script_name, 'output': stdout, 'error': stderr, 'return_code': return_code, 'session_id': uuid_session}
+        result = { 'script_name': script_name, 'output': stdout, 'error': stderr, 'return_code': return_code, 'session_id': session_id}
         add_audit_result(result)
+        QCoreApplication.processEvents()
+        progress = int(idx / item_count * 100)
+        audit_progress_page.script_progess_bar.setValue(progress)
     print("Audit completed")
-    main_window.setCurrentIndex(3)
-    audit_result_page_display_result()
 
+    main_window.setCurrentIndex(4)
+    audit_result_page_display_result()
+    
 ###
 
 def audit_result_page_display_result():
@@ -161,7 +180,7 @@ def audit_result_page_display_result():
             SELECT script_name, return_code
             FROM audit_results
             WHERE session_id = ?
-        """, (uuid_session))
+        """, (session_id,))
     
     rows = cursor.fetchall()
     audit_result_page.module_to_name = load_module_to_name()
@@ -183,9 +202,8 @@ def new_audit_filters():
     print(isworkstation, isserver, islevel1, islevel2, isbitlocker)
     main_window.setCurrentIndex(2)
 
-
-
 if __name__ == "__main__":
+    session_id = 0
     app = QApplication(sys.argv)
     main_window = QStackedWidget()
 
@@ -215,6 +233,10 @@ if __name__ == "__main__":
     audit_select_page = loader_audit_select_page.load("audit_select_page.ui", main_window)
     main_window.addWidget(audit_select_page)
 
+    loader_audit_progess_page = QUiLoader()
+    audit_progress_page = loader_audit_progess_page.load("audit_progress_page.ui", None)
+    main_window.addWidget(audit_progress_page)
+
     isworkstation = None
     isserver = None
     islevel1 = None
@@ -229,12 +251,21 @@ if __name__ == "__main__":
     create_tables()
     audit_select_page_populate_script_list()
     audit_select_page.select_all_btn.clicked.connect(audit_select_page_select_all_scripts)
+    if os.path.exists("audit_results.db"):
+        cursor = audit_select_page.database.cursor()
+        cursor.execute('''select max(session_id) from audit_results''')
+        result = cursor.fetchone()
+        cursor.close()
+        session_id = result[0] if result[0] else 0
+    audit_select_page.back_btn.clicked.connect(lambda: main_window.setCurrentIndex(0))
+    # audit_select_page.add_script_btn.clicked.connect(audit_select_page_add_new_script)
 
     loader_audit_result_page = QUiLoader()
     audit_result_page = loader_audit_result_page.load("audit_result_page.ui", main_window)
     main_window.addWidget(audit_result_page)
 
     audit_select_page.audit_btn.clicked.connect(audit_selected_scripts)
+    audit_result_page.home_btn.clicked.connect(lambda: main_window.setCurrentIndex(0))
 
     main_window.show()
     sys.exit(app.exec())
