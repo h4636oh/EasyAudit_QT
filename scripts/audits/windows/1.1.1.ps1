@@ -1,15 +1,17 @@
-#```powershell
 # This script audits the 'Enforce password history' policy setting.
 # It checks that the setting is configured to remember 24 or more passwords.
 
 # Define the expected number of passwords to remember
 $expectedPasswordHistoryCount = 24
 
-# Function to get the current 'Enforce password history' setting from the domain policy
+# Function to get the current 'Enforce password history' setting from the local security policy
 function Get-PasswordHistorySetting {
     try {
-        # Get the password history setting from the local security policy
-        $passwordHistory = (Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SeCEdit\Reg Values\EnforcePasswordHistory").Value
+        # The path to the registry where password policy is stored
+        $passwordPolicyPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
+
+        # Retrieve the password history setting (which may be located under Local Group Policy settings in some cases)
+        $passwordHistory = (Get-ItemProperty -Path $passwordPolicyPath -Name "EnforcePasswordHistory" -ErrorAction Stop).EnforcePasswordHistory
         
         # Return the setting
         return [int]$passwordHistory
@@ -33,4 +35,3 @@ if ($passwordHistorySetting -eq $null) {
     Write-Output "Please manually set the policy through the Group Policy Management Console as per the remediation instructions."
     Exit 1
 }
-#```
