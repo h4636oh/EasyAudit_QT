@@ -9,6 +9,23 @@ import sqlite3
 import json
 from PySide6.QtCore import QCoreApplication
 
+def check_os():
+    # Check if the system is Linux
+    if platform.system() == "Linux":
+        # Try to determine if it's Ubuntu or RHEL
+            with open("/etc/os-release", "r") as f:
+                os_info = f.read()
+            if "Ubuntu" in os_info:
+                return "Ubuntu"
+            elif "Red Hat" in os_info or "RHEL" in os_info:
+                return "RHEL"
+            else:
+                return "Windows"
+    else:
+        return "Windows"
+
+
+
 ###START PAGE INFORMATION###
 
 def get_clean_linux_version():
@@ -76,7 +93,14 @@ def load_module_to_name():
 
 def audit_select_page_populate_script_list():
     audit_select_page.script_select_display.clear()
-    script_dir = 'tests/scripts/audits'
+    os_name = check_os()
+    script_dir = None
+    if os_name == "Ubuntu":
+        script_dir = 'scripts/audits/ubuntu'
+    if os_name == "RHEL":
+        script_dir = 'scripts/audits/rhel'
+    if os_name == "Windows":
+        script_dir = 'scripts/audits/windows' 
     if os.path.isdir(script_dir):
         for script in sorted(os.listdir(script_dir)):
             script_name = os.path.splitext(script)[0]
@@ -128,8 +152,20 @@ def create_tables():
 
 def run_script(script_path):
     try:
-        os.chmod(script_path, 0o755)
-        result = subprocess.run(["sudo", script_path], capture_output=True, text=True)
+        os_name = check_os()
+        if os_name == "Ubuntu":
+            os.chmod(script_path, 0o755)
+            result = subprocess.run(["bash", script_path], capture_output=True, text=True)
+        if os_name == "RHEL":
+            os.chmod(script_path, 0o755)
+            result = subprocess.run(["bash", script_path], capture_output=True, text=True)
+        if os_name == "Windows":
+            result = subprocess.run(
+                ["powershell.exe", 
+                "-ExecutionPolicy", "Bypass", 
+                "-File", script_path],
+                capture_output=True, text=True
+            )
         return result.stdout, result.stderr, result.returncode
     except subprocess.CalledProcessError as e:
         return e.stdout, e.stderr, e.returncode
@@ -156,7 +192,16 @@ def audit_selected_scripts():
         QCoreApplication.processEvents()
         script_name = item.data(QtCore.Qt.UserRole)
         audit_progress_page.current_script_lbl.setText(str(script_name))
-        script_path = os.path.join('tests/scripts/audits', script_name)
+
+        script_path = None
+        os_name = check_os()
+        if os_name == "Ubuntu":
+            script_path = os.path.join('scripts/audits/ubuntu', script_name)
+        if os_name == "RHEL":
+            script_path = os.path.join('scripts/audits/rhel', script_name) 
+        if os_name == "Windows":
+            script_path = os.path.join('scripts/audits/windows', script_name)
+
         if not os.path.exists(script_path):
             print(f"Script not found: {script_path}")
             continue
