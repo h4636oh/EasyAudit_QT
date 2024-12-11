@@ -304,21 +304,12 @@
       <enum>QLayout::SizeConstraint::SetFixedSize</enum>
      </property>
      <item>
-      <widget class="QPushButton" name="sysInfo_btn">
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>40</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <family>DM Mono</family>
-         <pointsize>12</pointsize>
-        </font>
+      <widget class="QPushButton" name="cis_benchmark_btn">
+       <property name="toolTip">
+        <string>CIS benchmark pdf in browser</string>
        </property>
        <property name="text">
-        <string>SYSTEM INFORMATION</string>
+        <string>CIS BENCHMARKS</string>
        </property>
       </widget>
      </item>
