@@ -12,13 +12,13 @@ from PySide6.QtCore import QCoreApplication
 def check_os():
     # Check if the system is Linux
     if platform.system() == "Linux":
-        # Try to determine if it's Ubuntu or RHEL
+        # Try to determine if it's Ubuntu or rhel_9
             with open("/etc/os-release", "r") as f:
                 os_info = f.read()
             if "Ubuntu" in os_info:
                 return "Ubuntu"
-            elif "Red Hat" in os_info or "RHEL" in os_info:
-                return "RHEL"
+            elif "Red Hat" in os_info or "rhel_9" in os_info or "fedora" in os_info:
+                return "rhel_9"
             else:
                 return "Windows"
     else:
@@ -97,8 +97,8 @@ def audit_select_page_populate_script_list():
     script_dir = None
     if os_name == "Ubuntu":
         script_dir = 'scripts/audits/ubuntu'
-    if os_name == "RHEL":
-        script_dir = 'scripts/audits/rhel'
+    if os_name == "rhel_9":
+        script_dir = 'scripts/audits/rhel_9'
     if os_name == "Windows":
         script_dir = 'scripts/audits/windows' 
     if os.path.isdir(script_dir):
@@ -115,6 +115,9 @@ def audit_select_page_populate_script_list():
 
 def audit_select_page_select_all_scripts():
     if audit_select_page.select_all_btn.isChecked():
+        loader_select_all_warning = QUiLoader()
+        select_all_warning = loader_select_all_warning.load('select_all_warning.ui', audit_select_page)
+        select_all_warning.show()
         for index in range(audit_select_page.script_select_display.count()):
             item = audit_select_page.script_select_display.item(index)
             item.setCheckState(QtCore.Qt.Checked)
@@ -122,6 +125,7 @@ def audit_select_page_select_all_scripts():
         for index in range(audit_select_page.script_select_display.count()):
             item = audit_select_page.script_select_display.item(index)
             item.setCheckState(QtCore.Qt.Unchecked)
+    
 
 
 def audit_select_page_add_new_script():
@@ -156,7 +160,7 @@ def run_script(script_path):
         if os_name == "Ubuntu":
             os.chmod(script_path, 0o755)
             result = subprocess.run(["bash", script_path], capture_output=True, text=True)
-        if os_name == "RHEL":
+        if os_name == "rhel_9":
             os.chmod(script_path, 0o755)
             result = subprocess.run(["bash", script_path], capture_output=True, text=True)
         if os_name == "Windows":
@@ -197,8 +201,8 @@ def audit_selected_scripts():
         os_name = check_os()
         if os_name == "Ubuntu":
             script_path = os.path.join('scripts/audits/ubuntu', script_name)
-        if os_name == "RHEL":
-            script_path = os.path.join('scripts/audits/rhel', script_name) 
+        if os_name == "rhel_9":
+            script_path = os.path.join('scripts/audits/rhel_9', script_name) 
         if os_name == "Windows":
             script_path = os.path.join('scripts/audits/windows', script_name)
 
