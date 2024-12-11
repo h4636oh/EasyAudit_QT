@@ -73,6 +73,20 @@
    <item>
     <layout class="QHBoxLayout" name="bar_bottom">
      <item>
+      <widget class="QPushButton" name="back_btn">
+       <property name="text">
+        <string>BACK</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="select_all_btn">
+       <property name="text">
+        <string>SELECT ALL</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="add_script_btn">
        <property name="text">
         <string>ADD SCRIPT</string>
