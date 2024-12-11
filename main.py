@@ -8,6 +8,8 @@ import subprocess
 import sqlite3
 import json
 from PySide6.QtCore import QCoreApplication
+from PySide6.QtGui import QDesktopServices
+from PySide6.QtCore import QUrl
 
 def check_os():
     # Check if the system is Linux
@@ -24,7 +26,8 @@ def check_os():
     else:
         return "Windows"
 
-
+def open_cis_website():
+    QDesktopServices.openUrl(QUrl("https://www.cisecurity.org/"))
 
 ###START PAGE INFORMATION###
 
@@ -315,6 +318,10 @@ if __name__ == "__main__":
 
     audit_select_page.audit_btn.clicked.connect(audit_selected_scripts)
     audit_result_page.home_btn.clicked.connect(lambda: main_window.setCurrentIndex(0))
+
+    start_page.cis_benchmark_btn.clicked.connect(open_cis_website)
+    new_audit_page.cis_benchmark_btn.clicked.connect(open_cis_website)
+
 
     main_window.show()
     sys.exit(app.exec())
