@@ -15,9 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLayout, QLineEdit,
-    QListWidget, QListWidgetItem, QPushButton, QSizePolicy,
-    QSpacerItem, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QHBoxLayout, QHeaderView, QLayout,
+    QLineEdit, QPushButton, QSizePolicy, QSpacerItem,
+    QTreeWidget, QTreeWidgetItem, QVBoxLayout, QWidget)
 
 class Ui_audit_result_page(object):
     def setupUi(self, audit_result_page):
@@ -52,8 +52,13 @@ class Ui_audit_result_page(object):
 
         self.verticalLayout.addLayout(self.bar_top)
 
-        self.script_result_display = QListWidget(audit_result_page)
+        self.script_result_display = QTreeWidget(audit_result_page)
+        __qtreewidgetitem = QTreeWidgetItem()
+        __qtreewidgetitem.setText(0, u"1");
+        self.script_result_display.setHeaderItem(__qtreewidgetitem)
         self.script_result_display.setObjectName(u"script_result_display")
+        self.script_result_display.setHeaderHidden(True)
+        self.script_result_display.header().setHighlightSections(False)
 
         self.verticalLayout.addWidget(self.script_result_display)
 
