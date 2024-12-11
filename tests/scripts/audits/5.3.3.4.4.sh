@@ -1,30 +1,34 @@
 #!/usr/bin/env bash
 
-# Define the file to check for use_authtok in the pam_unix.so lines
-PAM_FILES=(
-    "/etc/pam.d/common-password"
-    "/etc/pam.d/common-auth"
-    "/etc/pam.d/common-account"
-    "/etc/pam.d/common-session"
-    "/etc/pam.d/common-session-noninteractive"
-)
+echo "Starting PAM Audit for strong password hashing algorithm on pam_unix.so..."
 
-echo "Starting audit for use_authtok argument in pam_unix.so..."
+# Define the PAM file to check for password hashing algorithm
+PAM_FILE="/etc/pam.d/common-password"
 
-# Iterate over each file in PAM_FILES and check if use_authtok is set
-for file in "${PAM_FILES[@]}"; do
-    if [ -f "$file" ]; then
-        echo "Checking file: $file"
+# Flag to track if any failure occurs
+PASS=0
 
-        # Check for pam_unix.so lines with use_authtok
-        if grep -qP "^\s*password\s+[^#\n\r]*pam_unix\.so\s+[^#\n\r]*\buse_authtok\b" "$file"; then
-            echo "Verified: 'use_authtok' is set in pam_unix.so line in $file"
-        else
-            echo "Warning: 'use_authtok' is NOT set in pam_unix.so line in $file"
-        fi
-    else
-        echo "Error: File $file not found!"
-    fi
-done
+# Check if the file exists
+if [[ ! -f "$PAM_FILE" ]]; then
+  echo "Fail: $PAM_FILE not found."
+  exit 1
+fi
 
-echo "Audit completed."
+# Search for pam_unix.so with sha512 or yescrypt password hashing algorithm
+echo "Checking $PAM_FILE for strong password hashing algorithm (sha512 or yescrypt)..."
+
+if grep -PH -- '^\h*password\h+([^#\n\r]+)\h+pam_unix\.so\h+([^#\n\r]+\h+)?(sha512|yescrypt)\b' "$PAM_FILE" >/dev/null; then
+  echo "Pass: Strong password hashing algorithm (sha512 or yescrypt) found in $PAM_FILE"
+else
+  echo "Fail: No strong password hashing algorithm (sha512 or yescrypt) found in $PAM_FILE"
+  PASS=1
+fi
+
+# Audit result
+if [ "$PASS" -eq 0 ]; then
+  echo "Audit complete. Strong password hashing algorithm is set (Pass)."
+  exit 0
+else
+  echo "Audit complete. Some configurations failed the check (Fail)."
+  exit 1
+fi
