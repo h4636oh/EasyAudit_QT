@@ -206,6 +206,7 @@ def audit_select_page_populate_script_list():
 
 def audit_select_page_select_all_scripts():
     is_checked = audit_select_page.select_all_btn.isChecked()
+
     for index in range(audit_select_page.script_select_display.count()):
         item = audit_select_page.script_select_display.item(index)
         widget = audit_select_page.script_select_display.itemWidget(item)
@@ -272,34 +273,52 @@ def add_audit_result(result):
     audit_select_page.database.commit()
 
 ###
-
 def audit_selected_scripts():
-    selected_items = [audit_select_page.script_select_display.item(i) for i in range(audit_select_page.script_select_display.count()) if audit_select_page.script_select_display.item(i).checkState() == QtCore.Qt.Checked]
+    selected_scripts = []  # List to hold the selected script names
+
+    for index in range(audit_select_page.script_select_display.count()):
+        item = audit_select_page.script_select_display.item(index)
+        widget = audit_select_page.script_select_display.itemWidget(item)
+
+        if widget:
+            checkbox = widget.findChild(QtWidgets.QCheckBox)
+            if checkbox and checkbox.isChecked():
+                script_name = checkbox.objectName()  # Use the object name set for the checkbox
+                selected_scripts.append(script_name)
+
     global session_id
     session_id += 1
-    item_count = len(selected_items)
+    item_count = len(selected_scripts)
 
     main_window.setCurrentIndex(3)
 
-    for idx, item in enumerate(selected_items, start=1):
+    for idx, script_name in enumerate(selected_scripts, start=1):
         QCoreApplication.processEvents()
-        script_name = item.data(QtCore.Qt.UserRole)
         audit_progress_page.current_script_lbl.setText(str(script_name))
 
         script_path = None
         os_name = check_os()
         if os_name == "Ubuntu":
+            script_name += ".sh" 
             script_path = os.path.join('scripts/audits/ubuntu', script_name)
         if os_name == "rhel_9":
-            script_path = os.path.join('scripts/audits/rhel_9', script_name) 
+            script_name += ".sh" 
+            script_path = os.path.join('scripts/audits/rhel_9', script_name)
         if os_name == "Windows":
-            script_path = os.path.join('scripts/audits/windows', script_name)
+            script_name += ".ps1"
+            script_path = os.path.join('scripts\\audits\\windows', script_name)
 
         if not os.path.exists(script_path):
             print(f"Script not found: {script_path}")
             continue
         stdout, stderr, return_code = run_script(script_path)
-        result = { 'script_name': script_name, 'output': stdout, 'error': stderr, 'return_code': return_code, 'session_id': session_id}
+        result = {
+            'script_name': script_name,
+            'output': stdout,
+            'error': stderr,
+            'return_code': return_code,
+            'session_id': session_id
+        }
         add_audit_result(result)
         QCoreApplication.processEvents()
         progress = int(idx / item_count * 100)
@@ -308,6 +327,42 @@ def audit_selected_scripts():
 
     main_window.setCurrentIndex(4)
     audit_result_page_display_result()
+
+# def audit_selected_scripts():
+#     selected_items = [audit_select_page.script_select_display.item(i) for i in range(audit_select_page.script_select_display.count()) if audit_select_page.script_select_display.item(i).checkState() == QtCore.Qt.Checked]
+#     global session_id
+#     session_id += 1
+#     item_count = len(selected_items)
+
+#     main_window.setCurrentIndex(3)
+
+#     for idx, item in enumerate(selected_items, start=1):
+#         QCoreApplication.processEvents()
+#         script_name = item.data(QtCore.Qt.UserRole)
+#         audit_progress_page.current_script_lbl.setText(str(script_name))
+
+#         script_path = None
+#         os_name = check_os()
+#         if os_name == "Ubuntu":
+#             script_path = os.path.join('scripts/audits/ubuntu', script_name)
+#         if os_name == "rhel_9":
+#             script_path = os.path.join('scripts/audits/rhel_9', script_name) 
+#         if os_name == "Windows":
+#             script_path = os.path.join('scripts/audits/windows', script_name)
+
+#         if not os.path.exists(script_path):
+#             print(f"Script not found: {script_path}")
+#             continue
+#         stdout, stderr, return_code = run_script(script_path)
+#         result = { 'script_name': script_name, 'output': stdout, 'error': stderr, 'return_code': return_code, 'session_id': session_id}
+#         add_audit_result(result)
+#         QCoreApplication.processEvents()
+#         progress = int(idx / item_count * 100)
+#         audit_progress_page.script_progess_bar.setValue(progress)
+#     print("Audit completed")
+
+#     main_window.setCurrentIndex(4)
+#     audit_result_page_display_result()
     
 ###
 

@@ -88,9 +88,9 @@ def search(ops, search_phrase=None, moduleid=None, l1_value=None, l2_value=None,
     # Load the appropriate CSV based on the operating system
     if ops == "windows":
         df = pd.read_csv("windows.csv")
-    elif ops == "ubantu":
+    elif ops == "ubuntu":
         df = pd.read_csv("path")
-    elif ops == "redhat":
+    elif ops == "rhel":
         df = pd.read_csv("redhat.csv")
     else:
         raise ValueError("Unsupported OS")
