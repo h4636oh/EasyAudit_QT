@@ -1,0 +1,1 @@
+IgnoreRhosts yes

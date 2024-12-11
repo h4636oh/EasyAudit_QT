@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>page1</class>
+ <widget class="QWidget" name="page1">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>811</width>
+    <height>551</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <family>DM Mono</family>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>Widget</string>
+  </property>
+  <widget class="QLabel" name="app_logo">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>10</y>
+     <width>331</width>
+     <height>161</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>NAME-with-TAGLINE.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="new_audit_btn">
+   <property name="geometry">
+    <rect>
+     <x>630</x>
+     <y>420</y>
+     <width>98</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>NEW AUDIT</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="prev_audt_btn">
+   <property name="geometry">
+    <rect>
+     <x>360</x>
+     <y>420</y>
+     <width>151</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>PREVIOUS RESULTS</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="cis_benchmark_pdf_btn">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>420</y>
+     <width>171</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>CIS BENCHMARK PDF</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

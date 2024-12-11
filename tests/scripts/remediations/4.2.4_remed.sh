@@ -1,0 +1,1 @@
+nft create table inet <table name>

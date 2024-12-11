@@ -1,0 +1,1 @@
+systemctl is-enabled nftables

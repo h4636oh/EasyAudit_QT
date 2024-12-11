@@ -1,0 +1,1 @@
+apt install libpam-pwquality

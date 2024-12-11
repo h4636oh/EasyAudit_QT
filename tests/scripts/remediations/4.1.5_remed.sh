@@ -1,0 +1,1 @@
+ufw allow out on all
