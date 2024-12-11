@@ -93,6 +93,8 @@ def load_module_to_name():
         return json.load(file)
 
 ### ADDS SCRIPTS TO THE AUDIT SELECT PAGE DISPLAY SECTION ###
+def display_script_info(script_name):
+    print(f"Script Info Clicked: {script_name}")
 
 def audit_select_page_populate_script_list():
     audit_select_page.script_select_display.clear()
@@ -103,31 +105,115 @@ def audit_select_page_populate_script_list():
     if os_name == "rhel_9":
         script_dir = 'scripts/audits/rhel_9'
     if os_name == "Windows":
-        script_dir = 'scripts/audits/windows' 
+        script_dir = 'scripts/audits/windows'
     if os.path.isdir(script_dir):
         for script in sorted(os.listdir(script_dir)):
             script_name = os.path.splitext(script)[0]
             module_name = audit_select_page.module_to_name.get(script_name, script_name)
-            list_item = QtWidgets.QListWidgetItem(module_name)
-            list_item.setFlags(list_item.flags() | QtCore.Qt.ItemIsUserCheckable)
-            list_item.setCheckState(QtCore.Qt.Unchecked)
-            list_item.setData(QtCore.Qt.UserRole, script)
+
+            # Create a layout for each list item
+            widget = QtWidgets.QWidget()
+            layout = QtWidgets.QHBoxLayout(widget)
+            layout.setContentsMargins(0, 0, 0, 0)
+
+            # Add a checkbox
+            checkbox = QtWidgets.QCheckBox(module_name)
+            checkbox.setObjectName(script_name)  # Optional: set an object name
+            layout.addWidget(checkbox)
+
+            # Add an info button
+            info_button = QtWidgets.QPushButton("Info")
+            info_button.clicked.connect(lambda _, name=script_name: display_script_info(name))
+            layout.addWidget(info_button)
+
+            # Wrap the widget into a QListWidgetItem
+            list_item = QtWidgets.QListWidgetItem(audit_select_page.script_select_display)
+            list_item.setSizeHint(widget.sizeHint())
             audit_select_page.script_select_display.addItem(list_item)
+            audit_select_page.script_select_display.setItemWidget(list_item, widget)
+
+
+# def audit_select_page_populate_script_list():
+#     audit_select_page.script_select_display.clear()
+#     os_name = check_os()
+#     script_dir = None
+#     if os_name == "Ubuntu":
+#         script_dir = 'scripts/audits/ubuntu'
+#     if os_name == "rhel_9":
+#         script_dir = 'scripts/audits/rhel_9'
+#     if os_name == "Windows":
+#         script_dir = 'scripts/audits/windows' 
+#     if os.path.isdir(script_dir):
+#         for script in sorted(os.listdir(script_dir)):
+#             script_name = os.path.splitext(script)[0]
+#             module_name = audit_select_page.module_to_name.get(script_name, script_name)
+
+#             # Create a layout for each list item
+#             widget = QtWidgets.QWidget()
+#             layout = QtWidgets.QHBoxLayout(widget)
+#             layout.setContentsMargins(0, 0, 0, 0)
+
+#             # Add a label for the script name
+#             label = QtWidgets.QLabel(module_name)
+#             layout.addWidget(label)
+
+#             # Add an info button
+#             info_button = QtWidgets.QPushButton("Info")
+#             info_button.clicked.connect(lambda _, name=script_name: display_script_info(name))
+#             layout.addWidget(info_button)
+
+#             # Wrap the widget into a QListWidgetItem
+#             list_item = QtWidgets.QListWidgetItem(audit_select_page.script_select_display)
+#             list_item.setSizeHint(widget.sizeHint())
+#             audit_select_page.script_select_display.addItem(list_item)
+#             audit_select_page.script_select_display.setItemWidget(list_item, widget)
+
+
+# def audit_select_page_populate_script_list():
+#     audit_select_page.script_select_display.clear()
+#     os_name = check_os()
+#     script_dir = None
+#     if os_name == "Ubuntu":
+#         script_dir = 'scripts/audits/ubuntu'
+#     if os_name == "rhel_9":
+#         script_dir = 'scripts/audits/rhel_9'
+#     if os_name == "Windows":
+#         script_dir = 'scripts/audits/windows' 
+#     if os.path.isdir(script_dir):
+#         for script in sorted(os.listdir(script_dir)):
+#             script_name = os.path.splitext(script)[0]
+#             module_name = audit_select_page.module_to_name.get(script_name, script_name)
+#             list_item = QtWidgets.QListWidgetItem(module_name)
+#             list_item.setFlags(list_item.flags() | QtCore.Qt.ItemIsUserCheckable)
+#             list_item.setCheckState(QtCore.Qt.Unchecked)
+#             list_item.setData(QtCore.Qt.UserRole, script)
+#             audit_select_page.script_select_display.addItem(list_item)
 
 ### SELECTS ALL SCRIPTS ON AUDIT SELECT PAGE (SELECT ALL BUTTON SLOT) ###
 
+# def audit_select_page_select_all_scripts():
+#     if audit_select_page.select_all_btn.isChecked():
+#         loader_select_all_warning = QUiLoader()
+#         select_all_warning = loader_select_all_warning.load('select_all_warning.ui', audit_select_page)
+#         select_all_warning.show()
+#         for index in range(audit_select_page.script_select_display.count()):
+#             item = audit_select_page.script_select_display.item(index)
+#             item.setCheckState(QtCore.Qt.Checked)
+#     else:
+#         for index in range(audit_select_page.script_select_display.count()):
+#             item = audit_select_page.script_select_display.item(index)
+#             item.setCheckState(QtCore.Qt.Unchecked)
+
 def audit_select_page_select_all_scripts():
-    if audit_select_page.select_all_btn.isChecked():
-        loader_select_all_warning = QUiLoader()
-        select_all_warning = loader_select_all_warning.load('select_all_warning.ui', audit_select_page)
-        select_all_warning.show()
-        for index in range(audit_select_page.script_select_display.count()):
-            item = audit_select_page.script_select_display.item(index)
-            item.setCheckState(QtCore.Qt.Checked)
-    else:
-        for index in range(audit_select_page.script_select_display.count()):
-            item = audit_select_page.script_select_display.item(index)
-            item.setCheckState(QtCore.Qt.Unchecked)
+    is_checked = audit_select_page.select_all_btn.isChecked()
+    for index in range(audit_select_page.script_select_display.count()):
+        item = audit_select_page.script_select_display.item(index)
+        widget = audit_select_page.script_select_display.itemWidget(item)
+        if widget:
+            checkbox = widget.findChild(QtWidgets.QCheckBox)
+            if checkbox:
+                checkbox.setChecked(is_checked)
+
     
 
 
@@ -249,6 +335,7 @@ def audit_result_page_display_result():
         else:
             parent_item.setText(0, f"FAIL: {module_name}")
         
+        
         # Add placeholder details as child items
         
         # Truncate if output is too long
@@ -345,6 +432,7 @@ if __name__ == "__main__":
 
     start_page.cis_benchmark_btn.clicked.connect(open_cis_website)
     new_audit_page.cis_benchmark_btn.clicked.connect(open_cis_website)
+
 
 
     main_window.show()
