@@ -283,6 +283,32 @@
     </layout>
    </item>
    <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Orientation::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Policy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>10</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="bitlocker_btn">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>BITLOCKER(WINDOWS ONLY)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <spacer name="vspacer_1">
      <property name="orientation">
       <enum>Qt::Orientation::Vertical</enum>
