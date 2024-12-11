@@ -8,6 +8,7 @@ import subprocess
 import sqlite3
 import json
 
+###START PAGE INFORMATION###
 
 def get_clean_linux_version():
     try:
@@ -62,15 +63,17 @@ def get_system_info():
         "processor": processor
     }
 
-class MainWindow(QStackedWidget):
-    def __init__(self):
-        super().__init__()
+###-----------------###
+
+### LOADS MODULE TO NAME DICTIONARY ###
 
 def load_module_to_name():
     with open('tests/ubuntu_moduleToName.json', 'r') as file:
         return json.load(file)
 
-def populate_script_list():
+### ADDS SCRIPTS TO THE AUDIT SELECT PAGE DISPLAY SECTION ###
+
+def audit_select_page_populate_script_list():
     audit_select_page.script_select_display.clear()
     script_dir = 'tests/scripts/audits'
     if os.path.isdir(script_dir):
@@ -83,10 +86,19 @@ def populate_script_list():
             list_item.setData(QtCore.Qt.UserRole, script)
             audit_select_page.script_select_display.addItem(list_item)
 
-def select_all_scripts():
-    for index in range(audit_select_page.script_select_display.count()):
-        item = audit_select_page.script_select_display.item(index)
-        item.setCheckState(QtCore.Qt.Checked)
+### SELECTS ALL SCRIPTS ON AUDIT SELECT PAGE (SELECT ALL BUTTON SLOT) ###
+
+def audit_select_page_select_all_scripts():
+    if audit_select_page.select_all_btn.isChecked():
+        for index in range(audit_select_page.script_select_display.count()):
+            item = audit_select_page.script_select_display.item(index)
+            item.setCheckState(QtCore.Qt.Checked)
+    else:
+        for index in range(audit_select_page.script_select_display.count()):
+            item = audit_select_page.script_select_display.item(index)
+            item.setCheckState(QtCore.Qt.Unchecked)
+
+### CREATES THE DATABASE FOR AUDIT RESULTS ### 
 
 def create_tables():
     cursor = audit_select_page.database.cursor()
@@ -98,14 +110,18 @@ def create_tables():
             error TEXT,
             return_code INTEGER,
             execution_time TEXT
+            session_id INTEGER,
         )
     ''')
     audit_select_page.database.commit()
 
+
+### 
+
 def run_script(script_path):
     try:
         os.chmod(script_path, 0o755)
-        result = subprocess.run(["bash", script_path], capture_output=True, text=True)
+        result = subprocess.run(["sudo", script_path], capture_output=True, text=True)
         return result.stdout, result.stderr, result.returncode
     except subprocess.CalledProcessError as e:
         return e.stdout, e.stderr, e.returncode
@@ -113,14 +129,16 @@ def run_script(script_path):
 def add_audit_result(result):
     cursor = audit_select_page.database.cursor()
     cursor.execute('''
-        INSERT INTO audit_results (script_name, output, error, return_code, execution_time)
-        VALUES (?, ?, ?, ?, datetime('now'))
-    ''', (result['script_name'], result['output'], result['error'], result['return_code']))
+        INSERT INTO audit_results (script_name, output, error, return_code, execution_time, session_id)
+        VALUES (?, ?, ?, ?, datetime('now'), ?)
+    ''', (result['script_name'], result['output'], result['error'], result['return_code'], result['session_id']))
     audit_select_page.database.commit()
 
+###
 
 def audit_selected_scripts():
     selected_items = [audit_select_page.script_select_display.item(i) for i in range(audit_select_page.script_select_display.count()) if audit_select_page.script_select_display.item(i).checkState() == QtCore.Qt.Checked]
+
     for item in selected_items:
         script_name = item.data(QtCore.Qt.UserRole)
         script_path = os.path.join('tests/scripts/audits', script_name)
@@ -128,33 +146,48 @@ def audit_selected_scripts():
             print(f"Script not found: {script_path}")
             continue
         stdout, stderr, return_code = run_script(script_path)
-        result = { 'script_name': script_name, 'output': stdout, 'error': stderr, 'return_code': return_code }
+        result = { 'script_name': script_name, 'output': stdout, 'error': stderr, 'return_code': return_code, 'session_id': uuid_session}
         add_audit_result(result)
     print("Audit completed")
     main_window.setCurrentIndex(3)
-    store_result()
+    audit_result_page_display_result()
 
+###
 
-def store_result():
+def audit_result_page_display_result():
     newdatabase = sqlite3.connect("audit_results.db")
     cursor = newdatabase.cursor()
-
     cursor.execute("""
             SELECT script_name, return_code
-            FROM audit_results;
-        """)
+            FROM audit_results
+            WHERE session_id = ?
+        """, (uuid_session))
+    
     rows = cursor.fetchall()
+    audit_result_page.module_to_name = load_module_to_name()
     for row_idx, (script_name, return_code) in enumerate(rows):
+        module_name = audit_result_page.module_to_name.get(script_name, script_name)
         if return_code == 0:  # Pass
-            output = "✅ " + f"{script_name}"
+            output = "PASS: " + f"{module_name}"
         else:
-            output = "❌ " + f"{script_name}"
-        audit_result_page.script_result_display.addItem(output)
+            output = "FAIL: " + f"{module_name}"
+        item = QtWidgets.QListWidgetItem(output)
+        audit_result_page.script_result_display.addItem(item)
+
+def new_audit_filters():
+    isworkstation = new_audit_page.workstation_btn.isChecked()
+    isserver = new_audit_page.server_btn.isChecked()
+    islevel1 = new_audit_page.level1_btn.isChecked()
+    islevel2 = new_audit_page.level2_btn.isChecked()
+    isbitlocker = new_audit_page.bitlocker_btn.isChecked()
+    print(isworkstation, isserver, islevel1, islevel2, isbitlocker)
+    main_window.setCurrentIndex(2)
+
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    main_window = MainWindow()
+    main_window = QStackedWidget()
 
     # Load the start page UI file
     loader_start_page = QUiLoader()
@@ -188,30 +221,20 @@ if __name__ == "__main__":
     islevel2 = None
     isbitlocker = None
 
-    def new_audit_filters():
-        isworkstation = new_audit_page.workstation_btn.isChecked()
-        isserver = new_audit_page.server_btn.isChecked()
-        islevel1 = new_audit_page.level1_btn.isChecked()
-        islevel2 = new_audit_page.level2_btn.isChecked()
-        isbitlocker = new_audit_page.bitlocker_btn.isChecked()
-        print(isworkstation, isserver, islevel1, islevel2, isbitlocker)
-        main_window.setCurrentIndex(2)
-
     new_audit_page.continue_btn.clicked.connect(new_audit_filters)
+
 
     audit_select_page.module_to_name = load_module_to_name()
     audit_select_page.database = sqlite3.connect('audit_results.db')
     create_tables()
-    populate_script_list()
-    audit_select_page.select_all_btn.clicked.connect(select_all_scripts)
+    audit_select_page_populate_script_list()
+    audit_select_page.select_all_btn.clicked.connect(audit_select_page_select_all_scripts)
 
     loader_audit_result_page = QUiLoader()
     audit_result_page = loader_audit_result_page.load("audit_result_page.ui", main_window)
     main_window.addWidget(audit_result_page)
 
     audit_select_page.audit_btn.clicked.connect(audit_selected_scripts)
-
-    
 
     main_window.show()
     sys.exit(app.exec())
