@@ -3,7 +3,7 @@ from PySide6.QtWidgets import QApplication, QStackedWidget, QFileDialog
 from PySide6 import QtWidgets, QtCore
 from PySide6.QtUiTools import QUiLoader
 import platform
-import os
+import os, datetime
 import subprocess
 import sqlite3
 import json
@@ -344,6 +344,9 @@ def add_audit_result(result):
 
 ###
 def audit_selected_scripts():
+    global logfile_name
+    logfile_name = f'/tmp/audit_log_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.txt'
+    logfile = open(f'{logfile_name}', 'w')
     selected_scripts = []  # List to hold the selected script names
 
     for index in range(audit_select_page.script_select_display.count()):
@@ -389,11 +392,19 @@ def audit_selected_scripts():
             'return_code': return_code,
             'session_id': session_id
         }
+
+        logfile.write(f"Script: {script_name}\n")
+        logfile.write(f"Output:{stdout}\n")
+        logfile.write(f"Error:{stderr}\n")
+        logfile.write(f"Return Code: {return_code}\n\n")
+        
         add_audit_result(result)
         QCoreApplication.processEvents()
         progress = int(idx / item_count * 100)
         audit_progress_page.script_progess_bar.setValue(progress)
     print("Audit completed")
+
+    logfile.close()
 
     main_window.setCurrentIndex(4)
     audit_result_page_display_result()
@@ -457,9 +468,10 @@ def audit_result_page_display_result():
         parent_item = QtWidgets.QTreeWidgetItem(audit_result_page.script_result_display)
         if return_code == 0:  # Pass
             parent_item.setText(0, f"PASS: {module_name}")
+            parent_item.setStyleSheet(f'color: QtCore.Qt.green;')
         else:
             parent_item.setText(0, f"FAIL: {module_name}")
-        
+            parent_item.setStyleSheet(f'color: QtCore.Qt.red;')
         
         # Add placeholder details as child items
         
@@ -591,6 +603,25 @@ if __name__ == "__main__":
     start_page.cis_benchmark_btn.clicked.connect(open_cis_website)
     new_audit_page.cis_benchmark_btn.clicked.connect(open_cis_website)
 
+    logfile_name = None
+
+    def view_logs():
+        loader_log_page = QUiLoader()
+        log_page = loader_log_page.load("log_page.ui", None)
+        log_data = open(f'{logfile_name}', 'r').read()
+        log_page.textEdit.setText(log_data)
+
+        log_page.show()
+
+    def save_logs():
+        log_data = open(f'{logfile_name}', 'r').read()
+        filename = QFileDialog.getSaveFileName(audit_result_page, "Save Log", "", "Text Files (*.txt)")
+        if filename[0]:
+            with open(filename[0], 'w') as f:
+                f.write(log_data)
+
+    audit_result_page.view_logs_btn.clicked.connect(view_logs)
+    audit_result_page.export_btn.clicked.connect(save_logs)
 
 
     main_window.show()
