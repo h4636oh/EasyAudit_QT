@@ -55,16 +55,6 @@
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QPushButton" name="filter_btn">
-       <property name="text">
-        <string>FILTER</string>
-       </property>
-       <property name="icon">
-        <iconset theme="QIcon::ThemeIcon::ImageLoading"/>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
    <item>
