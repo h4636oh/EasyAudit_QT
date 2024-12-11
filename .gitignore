@@ -1,5 +1,6 @@
 # This file is used to ignore files which are generated
 # ----------------------------------------------------------------------------
+audit_results.db
 temp/
 .venv/
 venv/
