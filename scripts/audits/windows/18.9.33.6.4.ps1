@@ -1,4 +1,3 @@
-#```powershell
 # PowerShell script to audit the configuration of "Allow standby states (S1-S3) when sleeping (plugged in)"
 # Ensures the setting is configured to 'Disabled'
 
@@ -8,9 +7,15 @@ $valueName = "ACSettingIndex"
 
 # Attempt to retrieve the registry value
 try {
-    $registryValue = Get-ItemProperty -Path $registryPath -Name $valueName -ErrorAction Stop
+    # Check if the registry path exists before trying to get the value
+    if (Test-Path -Path $registryPath) {
+        $registryValue = Get-ItemProperty -Path $registryPath -Name $valueName -ErrorAction Stop
+    } else {
+        Write-Error "The registry path does not exist: $registryPath"
+        exit 1
+    }
 } catch {
-    Write-Error "Failed to retrieve the registry value. Ensure the registry path is correct and accessible."
+    Write-Error "Failed to retrieve the registry value. Ensure the registry path is correct and accessible. Error details: $_"
     exit 1
 }
 
@@ -23,4 +28,3 @@ if ($registryValue.$valueName -eq 0) {
     Write-Output "Please manually navigate to the Group Policy Editor path: Computer Configuration\Policies\Administrative Templates\System\Power Management\Sleep Settings\Allow standby states (S1-S3) when sleeping (plugged in) and set it to 'Disabled'."
     exit 1
 }
-# ```
