@@ -1,4 +1,3 @@
-#```powershell
 # Checking the Structured Exception Handling Overwrite Protection (SEHOP) registry key
 $registryPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel"
 $registryValueName = "DisableExceptionChainValidation"
@@ -6,7 +5,7 @@ $expectedValue = 0
 
 try {
     # Get the current registry value for SEHOP
-    $currentValue = Get-ItemProperty -Path $registryPath -Name $registryValueName -ErrorAction Stop).$registryValueName
+    $currentValue = (Get-ItemProperty -Path $registryPath -Name $registryValueName -ErrorAction Stop).$registryValueName
 
     # Compare the current value with the expected value
     if ($currentValue -eq $expectedValue) {
@@ -23,4 +22,3 @@ try {
 
 # Prompt to manually verify the Group Policy setting if needed
 Write-Output "Note: Verify manually through Group Policy Management Console if additional Group Policy template is required."
-# ```
