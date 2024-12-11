@@ -1,4 +1,3 @@
-#```powershell
 # Define the ASR rules and their expected values
 $asrRules = @{
     '26190899-1602-49e8-8b27-eb1d0a1ce869' = 1
@@ -51,4 +50,3 @@ if ($auditPassed) {
     Write-Host "Audit failed. Please check the ASR rules configuration manually." -ForegroundColor Red
     exit 1
 }
-# ```
