@@ -325,6 +325,8 @@ def audit_result_page_display_result():
     audit_result_page.script_result_display.clear()  # Clear previous results
     for row_idx, (script_name, return_code, output, error) in enumerate(rows):
         module_name = audit_result_page.module_to_name.get(script_name, script_name)
+
+        audit_result_page.script_result_display.setWordWrap(True)
         
         # Create parent item for the script
         parent_item = QtWidgets.QTreeWidgetItem(audit_result_page.script_result_display)
@@ -336,22 +338,22 @@ def audit_result_page_display_result():
         
         # Add placeholder details as child items
         
-          # Truncate if output is too long
+        # Truncate if output is too long
 
         if output != "":
             child_output = QtWidgets.QTreeWidgetItem(parent_item)
             child_output.setText(0, f"{output}")
-          # Truncate if error is too long
-        
-
+            # child_output.setwordWrap(True)
+        # Truncate if error is too long
         
         if error != "" :
             child_error = QtWidgets.QTreeWidgetItem(parent_item)
             child_error.setText(0, f"{error}")
-          # Truncate if error is too long
+            # child_error.setwordWrap(True)
+        # Truncate if error is too long
         
         # Expand all items by default (optional)
-        parent_item.setExpanded(True)
+        parent_item.setExpanded(False)
 
 
 def new_audit_filters():
