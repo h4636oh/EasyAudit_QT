@@ -82,5 +82,35 @@ if __name__ == "__main__":
     start_page.mach_arch_lbl_entry.setText(system_info["machine_arch"])
     start_page.processor_lbl_entry.setText(system_info["processor"])
 
+    # Connect buttons to methods
+    loader_new_audit_page = QUiLoader()
+    new_audit_page = loader_new_audit_page.load("new_audit_page.ui", main_window)
+    main_window.addWidget(new_audit_page)
+    start_page.new_audit_btn.clicked.connect(lambda: main_window.setCurrentIndex(1))
+
+    loader_audit_select_page = QUiLoader()
+    audit_select_page = loader_audit_select_page.load("audit_select_page.ui", main_window)
+    main_window.addWidget(audit_select_page)
+
+    isworkstation = None
+    isserver = None
+    islevel1 = None
+    islevel2 = None
+    isbitlocker = None
+    def new_audit_filters():
+        isworkstation = new_audit_page.workstation_btn.isChecked()
+        isserver = new_audit_page.server_btn.isChecked()
+        islevel1 = new_audit_page.level1_btn.isChecked()
+        islevel2 = new_audit_page.level2_btn.isChecked()
+        isbitlocker = new_audit_page.bitlocker_btn.isChecked()
+        print(isworkstation, isserver, islevel1, islevel2, isbitlocker)
+        main_window.setCurrentIndex(2)
+
+    new_audit_page.continue_btn.clicked.connect(new_audit_filters)
+
+    
+
+    
+
     main_window.show()
     sys.exit(app.exec())
