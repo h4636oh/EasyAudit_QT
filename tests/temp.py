@@ -65,38 +65,42 @@ class MainMenu(QWidget):
 
         # Load the UI from the .ui file
         ui_file = QFile("start_page.ui")
-        if ui_file.open(QFile.ReadOnly):
-            loader = QUiLoader()  # Create the loader object
-            self.ui = loader.load(ui_file, self)  # Load the UI file into this widget
-            ui_file.close()
-        
+        ui_file.open(QFile.ReadOnly)
+        loader = QUiLoader()
+        self.ui = loader.load(ui_file, self)
+        ui_file.close()
+
         # Access the UI elements directly from the loaded UI file
-        self.new_audit_btn = self.ui.findChild(QPushButton, "new_audit_btn")
-        self.cis_benchmark_btn = self.ui.findChild(QPushButton, "cis_benchmark_btn")
+        # self.new_audit_btn = self.ui.findChild(QPushButton, "new_audit_btn")
+        # self.cis_benchmark_btn = self.ui.findChild(QPushButton, "cis_benchmark_btn")
         
-        # Access labels directly from the UI file
-        self.hostname_lbl_entry = self.ui.findChild(QLabel, "hostname_lbl_entry")
-        self.os_name_entry = self.ui.findChild(QLabel, "os_name_entry")
-        self.os_version_lbl_entry = self.ui.findChild(QLabel, "os_version_lbl_entry")
-        self.kernel_lbl_entry = self.ui.findChild(QLabel, "kernel_lbl_entry")
-        self.mach_arch_lbl_entry = self.ui.findChild(QLabel, "mach_arch_lbl_entry")
-        self.processor_lbl_entry = self.ui.findChild(QLabel, "processor_lbl_entry")
+        # # Access labels directly from the UI file
+        # self.hostname_lbl_entry = self.ui.findChild(QLabel, "hostname_lbl_entry")
+        # self.os_name_entry = self.ui.findChild(QLabel, "os_name_entry")
+        # self.os_version_lbl_entry = self.ui.findChild(QLabel, "os_version_lbl_entry")
+        # self.kernel_lbl_entry = self.ui.findChild(QLabel, "kernel_lbl_entry")
+        # self.mach_arch_lbl_entry = self.ui.findChild(QLabel, "mach_arch_lbl_entry")
+        # self.processor_lbl_entry = self.ui.findChild(QLabel, "processor_lbl_entry")
 
         # Connect the buttons to methods
         self.new_audit_btn.clicked.connect(self.on_new_audit_click)
         self.cis_benchmark_btn.clicked.connect(self.on_cis_benchmark_click)
+        
 
-        #Usage to set labels in the UI
+    #Usage to set labels in the UI
         system_info = get_system_info()
 
-        # Assuming the labels are already set up in the UI
+    # Assuming the labels are already set up in the UI
         self.hostname_lbl_entry.setText(system_info["hostname"])
         self.os_name_entry.setText(system_info["os_name"])
         self.os_version_lbl_entry.setText(system_info["os_version"])
         self.kernel_lbl_entry.setText(system_info["kernel_version"])
         self.mach_arch_lbl_entry.setText(system_info["machine_arch"])
         self.processor_lbl_entry.setText(system_info["processor"])
-  
+        Set default or sample information for the labels
+        
+
+        
 
     def on_new_audit_click(self):
         print("New Audit clicked")
