@@ -75,6 +75,9 @@
      <property name="text">
       <string>SELECT ALL</string>
      </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item>
