@@ -95,7 +95,7 @@ def load_module_to_name():
 ### ADDS SCRIPTS TO THE AUDIT SELECT PAGE DISPLAY SECTION ###
 def display_script_info(script_name):
     print(f"Script Info Clicked: {script_name}")
-
+'''
 def audit_select_page_populate_script_list():
     audit_select_page.script_select_display.clear()
     os_name = check_os()
@@ -131,6 +131,44 @@ def audit_select_page_populate_script_list():
             list_item.setSizeHint(widget.sizeHint())
             audit_select_page.script_select_display.addItem(list_item)
             audit_select_page.script_select_display.setItemWidget(list_item, widget)
+'''
+def audit_select_page_populate_script_list():
+    audit_select_page.script_select_display.clear()
+    os_name = check_os()
+    script_dir = None
+    if os_name == "Ubuntu":
+        script_dir = 'scripts/audits/ubuntu'
+    if os_name == "rhel_9":
+        script_dir = 'scripts/audits/rhel_9'
+    if os_name == "Windows":
+        script_dir = 'scripts/audits/windows'
+    if os.path.isdir(script_dir):
+        for script in sorted(os.listdir(script_dir)):
+            script_name = os.path.splitext(script)[0]
+            module_name = audit_select_page.module_to_name.get(script_name, script_name)
+
+            # Create a layout for each list item
+            widget = QtWidgets.QWidget()
+            layout = QtWidgets.QHBoxLayout(widget)
+            layout.setContentsMargins(0, 0, 0, 0)
+
+            # Add a checkbox
+            checkbox = QtWidgets.QCheckBox(module_name)
+            checkbox.setObjectName(script_name)  # Optional: set an object name
+            layout.addWidget(checkbox)
+
+            # Add an info button and make it smaller
+            info_button = QtWidgets.QPushButton("Info")
+            info_button.setFixedSize(50, 20)  # Set the size to be smaller (width, height)
+            info_button.clicked.connect(lambda _, name=script_name: display_script_info(name))
+            layout.addWidget(info_button)
+
+            # Wrap the widget into a QListWidgetItem
+            list_item = QtWidgets.QListWidgetItem(audit_select_page.script_select_display)
+            list_item.setSizeHint(widget.sizeHint())
+            audit_select_page.script_select_display.addItem(list_item)
+            audit_select_page.script_select_display.setItemWidget(list_item, widget)
+
 
 
 # def audit_select_page_populate_script_list():
