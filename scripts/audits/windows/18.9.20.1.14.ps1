@@ -1,4 +1,3 @@
-#```powershell
 # This script audits the Windows Error Reporting settings as per security baseline requirements.
 # It checks registry values to ensure that error reporting is turned off as specified.
 
@@ -17,21 +16,28 @@ $compliant = $true
 
 foreach ($path in $registryPaths.Keys) {
     $property = $registryPaths[$path]
-    try {
-        # Retrieve the registry value
-        $currentValue = Get-ItemPropertyValue -Path $path -Name $property -ErrorAction Stop
-    } catch {
-        Write-Host "Registry path or property not found: $path\$property" -ForegroundColor Red
-        $compliant = $false
-        continue
-    }
+    
+    # Check if the registry path exists before attempting to retrieve the value
+    if (Test-Path $path) {
+        try {
+            # Retrieve the registry value
+            $currentValue = Get-ItemPropertyValue -Path $path -Name $property -ErrorAction Stop
+        } catch {
+            Write-Host "Registry property not found: ${path}\${property}" -ForegroundColor Red
+            $compliant = $false
+            continue
+        }
 
-    # Check if the current value matches the expected value
-    if ($currentValue -ne $expectedValues[$property]) {
-        Write-Host "Non-compliant value detected at $path\$property: $currentValue (Expected: $($expectedValues[$property]))" -ForegroundColor Red
-        $compliant = $false
+        # Check if the current value matches the expected value
+        if ($currentValue -ne $expectedValues[$property]) {
+            Write-Host "Non-compliant value detected at ${path}\${property}: $currentValue (Expected: $($expectedValues[$property]))" -ForegroundColor Red
+            $compliant = $false
+        } else {
+            Write-Host "Compliant value found at ${path}\${property}: $currentValue" -ForegroundColor Green
+        }
     } else {
-        Write-Host "Compliant value found at $path\$property: $currentValue" -ForegroundColor Green
+        Write-Host "Registry path not found: ${path}" -ForegroundColor Red
+        $compliant = $false
     }
 }
 
@@ -45,4 +51,3 @@ if (-not $compliant) {
 
 # Manual check reminder for users if path navigation is required according to remediation instructions
 Write-Host "Please manually verify the Group Policy setting at the UI path: Computer Configuration\Policies\Administrative Templates\System\Internet Communication Management\Internet Communication settings\Turn off Windows Error Reporting is set to 'Enabled'."
-# ```
