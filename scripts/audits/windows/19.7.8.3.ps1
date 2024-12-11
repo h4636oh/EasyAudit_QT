@@ -1,4 +1,3 @@
-#```powershell
 # PowerShell script to audit the setting for 'Do not use diagnostic data for tailored experiences'
 
 # Function to check registry setting
@@ -26,6 +25,23 @@ function Test-TailoredExperiences {
     return $false
 }
 
+# Check if we can access the HKU registry hive
+function Load-HKURegistryHive {
+    if (-not (Test-Path "HKU:\")) {
+        try {
+            # Load the HKU registry hive (requires admin privileges)
+            reg load HKU\TempHive C:\Users\$env:USERNAME\NTUSER.DAT
+            Write-Host "Loaded registry hive for the current user."
+        } catch {
+            Write-Error "Failed to load registry hive. Ensure the script is run with administrative privileges."
+            exit 1
+        }
+    }
+}
+
+# Run the function to load HKU hive if needed
+Load-HKURegistryHive
+
 # Get list of all user SIDs
 $userSIDs = Get-ChildItem 'HKU:' | Where-Object { $_.PSChildName -match 'S-\d-\d+-(\d+-){1,14}\d+$' } | Select-Object -ExpandProperty PSChildName
 
@@ -40,6 +56,12 @@ foreach ($userSID in $userSIDs) {
     }
 }
 
+# Unload the HKU registry hive if it was loaded
+if (Test-Path "HKU\TempHive") {
+    reg unload HKU\TempHive
+    Write-Host "Unloaded registry hive for the current user."
+}
+
 if ($auditPasses) {
     Write-Host "Audit passed. All users have the setting 'Do not use diagnostic data for tailored experiences' as 'Enabled'."
     exit 0
@@ -47,6 +69,3 @@ if ($auditPasses) {
     Write-Host "Please set 'Do not use diagnostic data for tailored experiences' to 'Enabled' via Group Policy for all applicable users."
     exit 1
 }
-# ```
-# 
-# This script audits whether the setting 'Do not use diagnostic data for tailored experiences' is enabled for all user profiles on the system by checking relevant registry entries. It prints a message indicating whether the audit passed or failed and prompts manual intervention via Group Policy if needed. The script exits with `0` if the audit passes and `1` if it fails.
