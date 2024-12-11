@@ -1,4 +1,3 @@
-#```powershell
 # Script to audit the BitLocker recovery password policy setting
 # The script audits the specified registry value to confirm compliance with the policy
 
@@ -9,8 +8,21 @@ $expectedValue = 0
 # Function to check the registry value for BitLocker recovery password policy
 function Check-BitLockerRecoveryPasswordPolicy {
     try {
+        # Check if the registry path exists
+        if (-not (Test-Path -Path $registryPath)) {
+            Write-Warning "Registry path $registryPath not found. Please ensure the policy is configured."
+            exit 1
+        }
+
+        # Check if the registry value exists
+        if (-not (Test-Path -Path "$registryPath\$registryValueName")) {
+            Write-Warning "Registry value $registryValueName not found. Please ensure the policy is configured."
+            exit 1
+        }
+
         # Get the current value of the registry entry
         $currentValue = Get-ItemProperty -Path $registryPath -Name $registryValueName -ErrorAction Stop
+
         if ($currentValue.$registryValueName -eq $expectedValue) {
             Write-Output "Audit Passed: The 'Choose how BitLocker-protected removable drives can be recovered: Recovery Password' policy is set correctly."
             exit 0
@@ -28,5 +40,3 @@ function Check-BitLockerRecoveryPasswordPolicy {
 
 # Execute the audit check
 Check-BitLockerRecoveryPasswordPolicy
-# ```
-# This script checks the registry key `HKLM\SOFTWARE\Policies\Microsoft\FVE` for the `RDVRecoveryPassword` value and verifies if it is set to `0`, which aligns with the policy setting of "Do not allow 48-digit recovery password". It outputs an appropriate message and exits with a specific code based on the audit result. If the registry entry is not found, the script suggests that the user should ensure the policy is set manually according to the given remediation steps.
