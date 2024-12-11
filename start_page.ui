@@ -282,7 +282,7 @@
             </font>
            </property>
            <property name="text">
-            <string>PROCESS -</string>
+            <string>PROCESSOR -</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
@@ -312,13 +312,6 @@
         <widget class="QPushButton" name="new_audit_btn">
          <property name="text">
           <string>NEW AUDIT</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="audit_history_btn">
-         <property name="text">
-          <string>AUDIT HISTORY</string>
          </property>
         </widget>
        </item>
