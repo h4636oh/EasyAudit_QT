@@ -11,6 +11,12 @@ from PySide6.QtCore import QCoreApplication
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtCore import QUrl
 
+def bitlocker_status():
+    if platform.system() == "Windows":
+        new_audit_page.bitlocker_btn.setEnabled(True)
+    else:
+        new_audit_page.bitlocker_btn.setEnabled(False)
+
 def check_os():
     # Check if the system is Linux
     if platform.system() == "Linux":
@@ -483,6 +489,9 @@ if __name__ == "__main__":
     loader_new_audit_page = QUiLoader()
     new_audit_page = loader_new_audit_page.load("new_audit_page.ui", main_window)
     main_window.addWidget(new_audit_page)
+
+    bitlocker_status()
+
     start_page.new_audit_btn.clicked.connect(lambda: main_window.setCurrentIndex(1))
 
     loader_audit_select_page = QUiLoader()
