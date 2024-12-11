@@ -1,4 +1,3 @@
-#```powershell
 # Description: This script audits if the "Do not suggest third-party content in Windows spotlight" policy is enabled.
 # This policy prevents Windows from suggesting apps and content from third-party software publishers.
 # Exit 0: Audit passed (policy is enabled), Exit 1: Audit failed (policy is not enabled).
@@ -7,8 +6,8 @@
 $registryPath = 'HKU:\[USER SID]\Software\Policies\Microsoft\Windows\CloudContent'
 $registryKey = 'DisableThirdPartySuggestions'
 
-# Retrieve the User SID for the current session
-$userSid = (New-Object System.Security.Principal.WindowsIdentity).User.Value
+# Retrieve the User SID for the current session using WindowsIdentity.GetCurrent()
+$userSid = [System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value
 
 # Construct the full registry path for the current user
 $fullRegistryPath = $registryPath -replace '\[USER SID\]', $userSid
@@ -36,9 +35,7 @@ function Audit-ThirdPartyContentPolicy {
 
 # Prompt users if manual action is required
 Write-Host "Please ensure the following Group Policy is set manually if needed:"
-Write-Host "User Configuration -> Policies -> Administrative Templates -> Windows Components -> Cloud Content -> 'Do not suggest third-party content in Windows spotlight' is set to 'Enabled'."
+Write-Host "User Configuration -> Policies -> Administrative Templates -> Windows Components -> Cloud Content -> 'Do not suggest third-party content in Windows spotlight' is set to 'Enabled'"
 
 # Run the audit function
 Audit-ThirdPartyContentPolicy
-# ```
-# 
