@@ -36,6 +36,9 @@
   <property name="windowTitle">
    <string>Widget</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(61, 64, 91);</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <spacer name="vspacer_2">
@@ -149,6 +152,7 @@
        <property name="font">
         <font>
          <family>DM Mono Medium</family>
+         <pointsize>14</pointsize>
         </font>
        </property>
        <property name="title">
@@ -355,8 +359,17 @@
      </property>
      <item>
       <widget class="QPushButton" name="cis_benchmark_btn">
+       <property name="font">
+        <font>
+         <family>DM Mono</family>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
        <property name="toolTip">
         <string>CIS benchmark pdf in browser</string>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(61, 64, 91);</string>
        </property>
        <property name="text">
         <string>CIS BENCHMARKS</string>

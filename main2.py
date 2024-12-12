@@ -95,12 +95,20 @@ def get_system_info():
 
 ### LOADS MODULE TO NAME DICTIONARY ###
 def load_complete_json():
+<<<<<<< HEAD
 
 
     os_name = check_os()
     file_name = os_name + ".json"
     file_path = os.path.join('scripts', file_name)
 
+=======
+    os = check_os()
+    file_path = "scripts/" + f"{os}" + ".json"
+    os_name = check_os()
+    file_name = os_name + ".json"
+    file_path = os.path.join('scripts', file_name)
+>>>>>>> a14544c (ui_files_updated and added control added to log)
     with open(file_path, 'r') as file:
         return json.load(file)
 
@@ -238,7 +246,7 @@ def filter_json_by_criteria(data, criteria):
     Args:
         data (dict): The input JSON data.
         criteria (dict): A dictionary containing the desired values for SL1, SL2, L1, L2, and BL.
-                         Example: {"SL1": "TRUE", "L1": "TRUE"}
+        Example: {"SL1": "TRUE", "L1": "TRUE"}
 
     Returns:
         list: A list of indices that match the criteria.
@@ -288,10 +296,7 @@ def serach_all_json(OPS,criteria):
     elif OPS=="Redhat":
         return serach_json_for_redhat(criteria)
     elif OPS=="Ubuntu":
-        return serach_json_for_ubuntu(criteria)
-    
-    
-    
+        return serach_json_for_ubuntu(criteria)   
 
 def audit_selected_scripts():
 
@@ -335,8 +340,9 @@ def audit_selected_scripts():
         QCoreApplication.processEvents()
         progress = int(idx / item_count * 100)
         audit_progress_page.script_progess_bar.setValue(progress)
+        module_name = audit_select_page.module_to_name.get(script_name, script_name)
 
-        logfile.write(f"Script: {script_name}\n")
+        logfile.write(f"Script: {script_name} - {module_name}\n")
         logfile.write(f"Output:{stdout}\n")
         logfile.write(f"Error:{stderr}\n")
         logfile.write(f"Return Code: {return_code}\n\n")
