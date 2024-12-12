@@ -191,8 +191,6 @@ def audit_select_page_select_all_scripts():
             item = audit_select_page.script_select_display.item(index)
             item.setCheckState(QtCore.Qt.Unchecked)
 
-
-
 def audit_select_page_add_new_script():
     file_path, _ = QFileDialog.getOpenFileName(None, "Select Script", "/home", "Bash Files (*.sh)")
     if file_path:
