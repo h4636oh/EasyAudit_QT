@@ -30,12 +30,15 @@ if [[ -n "$pam_config" ]]; then
             fi
         else
             echo "ERROR: Group '$group_name' not found in /etc/group."
+            exit 1
         fi
     else
         echo "ERROR: No group specified in the PAM configuration."
+        exit 1
     fi
 else
     echo "No valid PAM wheel configuration found in $pam_file."
+    exit 1
 fi
 
 echo "Audit completed."

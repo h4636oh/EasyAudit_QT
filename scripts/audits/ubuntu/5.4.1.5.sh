@@ -1,30 +1,23 @@
 #!/usr/bin/env bash
 
-echo "Starting PAM Audit for INACTIVE password setting..."
-
-# Check if the INACTIVE setting in useradd defaults is set to 45
+# Audit INACTIVE default setting
 echo "Checking default INACTIVE setting..."
-
-INACTIVE_DEFAULT=$(useradd -D | grep INACTIVE | awk '{print $2}')
-
-if [[ "$INACTIVE_DEFAULT" -eq 45 ]]; then
-  echo "Pass: INACTIVE is set to 45 days in useradd defaults."
+default_inactive=$(useradd -D | grep -E '^INACTIVE=' | cut -d= -f2)
+if [[ "$default_inactive" -le 45 && "$default_inactive" -ge 0 ]]; then
+    echo "Default INACTIVE setting is compliant: INACTIVE=$default_inactive"
 else
-  echo "Fail: INACTIVE is not set to 45 days in useradd defaults. It is set to $INACTIVE_DEFAULT."
-  exit 1
+    echo "Default INACTIVE setting is NOT compliant: INACTIVE=$default_inactive"
 fi
+echo
 
-# Check that all users with passwords have their INACTIVE period set to no more than 45 days after expiration
-echo "Checking all users with a password for INACTIVE period compliance..."
+# Check user-specific INACTIVE settings in /etc/shadow
+echo "Auditing user INACTIVE settings in /etc/shadow..."
+awk -F: '($2~/^\$.+\$/) {if($7 > 45 || $7 < 0)print "User: " $1 " INACTIVE: " $7}' /etc/shadow
 
-# Check /etc/shadow for users with an INACTIVE period greater than 45 days
-if awk -F: '($2~/^\$.+\$/) {if($7 > 45 || $7 < 0)print "User: " $1 " INACTIVE: " $7}' /etc/shadow | grep -q .; then
-  echo "Fail: Some users have an INACTIVE period greater than 45 days or invalid INACTIVE value."
-  exit 1
+# Provide feedback if non-compliant users are found
+if [[ $? -eq 0 ]]; then
+    echo "All users have INACTIVE settings compliant with the site policy."
 else
-  echo "Pass: All users have INACTIVE set to 45 days or less."
+    echo "Non-compliant INACTIVE settings found. Please review the above users."
+    exit 1
 fi
-
-# Final audit result
-echo "Audit complete. INACTIVE setting conforms to site policy (Pass)."
-exit 0

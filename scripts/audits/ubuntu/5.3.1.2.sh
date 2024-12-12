@@ -30,7 +30,7 @@ if [[ $? -eq 0 ]]; then
         echo "The installed version of '${package}' (${version}) meets the required version (${required_version})."
     else
         echo "WARNING: The installed version of '${package}' (${version}) is older than the required version (${required_version})."
-        exit 2
+        exit 1
     fi
 else
     echo "ERROR: Failed to retrieve information for '${package}'. Is it installed?"

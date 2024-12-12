@@ -18,6 +18,7 @@ if [[ "$max_value" -le 4 ]]; then
     echo "Audit passed: MaxAuthTries is set to $max_value (4 or less)."
 else
     echo "Audit failed: MaxAuthTries is set to $max_value (greater than 4)."
+    exit 1
 fi
 
 # Check for Match block if required for a specific user

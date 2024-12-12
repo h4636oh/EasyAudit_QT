@@ -21,6 +21,7 @@ if [[ "$current_value" == "no" ]]; then
     echo "Audit passed: PermitEmptyPasswords is correctly set to 'no'."
 else
     echo "Audit failed: PermitEmptyPasswords is set to '$current_value' (should be 'no')."
+    exit 1
 fi
 
 # Check for Match block overrides for user 'sshuser'
@@ -34,6 +35,7 @@ if [[ -n "$match_pw_setting" ]]; then
         echo "Match block audit passed: PermitEmptyPasswords is correctly set to 'no' for sshuser."
     else
         echo "Match block audit failed: PermitEmptyPasswords is set to '$match_value' (should be 'no') for sshuser."
+        exit 1
     fi
 else
     echo "No Match block override for user 'sshuser'."

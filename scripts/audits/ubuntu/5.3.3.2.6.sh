@@ -33,6 +33,7 @@ if [ $? -eq 0 ]; then
     # Remove dictcheck argument from PAM files
     sed -i '/pam_pwquality\.so/ s/\s*dictcheck=[^ ]*//g' /etc/pam.d/common-password
     echo "Removed dictcheck = 0 from /etc/pam.d/common-password."
+    exit 1
 else
     echo "No dictcheck = 0 found in PAM configuration files."
 fi

@@ -18,6 +18,7 @@ display_audit_results() {
                 echo "  - $setting is set to $value (valid)"
             else
                 echo "  - $setting is set to $value (INVALID: Should be greater than zero)"
+                exit 1
             fi
         done
     fi

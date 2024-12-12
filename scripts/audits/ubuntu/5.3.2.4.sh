@@ -17,4 +17,5 @@ if [[ $? -eq 0 ]]; then
     fi
 else
     echo "pam_pwhistory is not enabled in /etc/pam.d/common-password."
+    exit 1
 fi
