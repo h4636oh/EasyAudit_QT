@@ -95,14 +95,12 @@ def get_system_info():
 
 ### LOADS MODULE TO NAME DICTIONARY ###
 def load_complete_json():
-<<<<<<< HEAD
-    os = check_os()
-    file_path = "scripts/" + f"{os}" + ".json"
-=======
+
+
     os_name = check_os()
     file_name = os_name + ".json"
     file_path = os.path.join('scripts', file_name)
->>>>>>> e262e73 (some tinker to main2)
+
     with open(file_path, 'r') as file:
         return json.load(file)
 
