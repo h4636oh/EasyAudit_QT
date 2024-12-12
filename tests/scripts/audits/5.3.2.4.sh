@@ -1,20 +1,36 @@
 #!/usr/bin/env bash
 
-# Search for pam_pwhistory in /etc/pam.d/common-password
-echo "Checking for pam_pwhistory configuration in /etc/pam.d/common-password..."
-grep -P -- '\bpam_pwhistory\.so\b' /etc/pam.d/common-password
+# Define the file to check
+file="/etc/pam.d/common-password"
 
-# Check if the configuration exists and matches the expected output
-if [[ $? -eq 0 ]]; then
-    echo "pam_pwhistory is enabled."
-    echo "Verifying the configuration..."
-    # Check if the configuration matches the expected format (remember=24 enforce_for_root)
-    grep -P -- '\bpam_pwhistory\.so\b' /etc/pam.d/common-password | grep -P 'remember=24 enforce_for_root'
+# Define the expected pattern
+expected_pattern="password requisite pam_pwhistory.so remember=24 enforce_for_root try_first_pass use_authtok"
+
+echo "Auditing pam_pwhistory.so configuration in $file..."
+
+# Check if the file exists
+if [[ -f "$file" ]]; then
+    echo "Checking $file..."
+    
+    # Search for pam_pwhistory.so in the file
+    result=$(grep -P -- '\bpam_pwhistory\.so\b' "$file")
+    
     if [[ $? -eq 0 ]]; then
-        echo "Configuration matches expected settings: remember=24 enforce_for_root."
+        echo "PASS: pam_pwhistory.so found in $file."
+        
+        # Verify if the line matches the expected pattern
+        if [[ "$result" == *"$expected_pattern"* ]]; then
+            echo "PASS: Configuration matches expected: $expected_pattern"
+        else
+            echo "FAIL: Configuration does not match expected in $file."
+            echo "Expected: $expected_pattern"
+            echo "Found: $result"
+        fi
     else
-        echo "pam_pwhistory exists but configuration doesn't match expected settings."
+        echo "FAIL: pam_pwhistory.so not found in $file."
     fi
 else
-    echo "pam_pwhistory is not enabled in /etc/pam.d/common-password."
+    echo "FAIL: $file does not exist!"
 fi
+
+echo "Audit completed."

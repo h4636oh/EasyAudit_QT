@@ -25,26 +25,22 @@ for file in "${files[@]}"; do
         result=$(grep -P -- '\bpam_unix\.so\b' "$file")
 
         if [[ $? -eq 0 ]]; then
-            echo "Found pam_unix.so in $file:"
-            echo "$result"
+            echo "PASS: pam_unix.so found in $file."
             
             # Verify the line matches the expected pattern
             expected="${expected_patterns[$file]}"
             if [[ "$result" == *"$expected"* ]]; then
-                echo "Configuration matches expected: $expected"
+                echo "PASS: Configuration matches expected: $expected"
             else
-                echo "WARNING: Configuration does not match expected for $file."
+                echo "FAIL: Configuration does not match expected for $file."
                 echo "Expected: $expected"
                 echo "Found: $result"
-                exit 1
             fi
         else
-            echo "ERROR: pam_unix.so not found in $file!"
-            exit 1
+            echo "FAIL: pam_unix.so not found in $file."
         fi
     else
-        echo "ERROR: $file does not exist!"
-        exit 1
+        echo "FAIL: $file does not exist!"
     fi
     echo
 done

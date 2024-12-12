@@ -36,11 +36,11 @@ for file in "${files[@]}"; do
                 echo "$result"
             fi
         else
-            echo "ERROR: pam_faillock.so not found in $file!"
+            echo "Fail: pam_faillock.so not found in $file!"
             exit 1
         fi
     else
-        echo "ERROR: $file does not exist!"
+        echo "Fail: $file does not exist!"
         exit 1
     fi
     echo

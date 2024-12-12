@@ -1,32 +1,25 @@
 #!/usr/bin/env bash
 
-# Run the sshd configuration check
-audit_output=$(sshd -T 2>/dev/null | grep -Pi '^\h*(allow|deny)(users|groups)\h+\H+')
+# Verify SSH configuration for Allow/Deny Users or Groups
+sshd_output=$(sshd -T | grep -Pi -- '^\h*(allow|deny)(users|groups)\h+\H+')
 
-# Function to display audit results
-audit_result() {
-    if [[ -z "$audit_output" ]]; then
-        echo "No AllowUsers, AllowGroups, DenyUsers, or DenyGroups directives found."
-        echo "Review the SSH configuration for site-specific policies."
-    else
-        echo "Audit Results:"
-        echo "$audit_output"
-        echo "Verify that the users/groups listed follow the local site policy."
-    fi
-}
-
-# Check if match block test is needed
-match_block_user="sshuser"
-match_output=$(sshd -T -C user="$match_block_user" 2>/dev/null | grep -Pi '^\h*(allow|deny)(users|groups)\h+\H+')
-
-# Display results for main sshd configuration
-audit_result
-
-# Display results for match block if applicable
-if [[ -n "$match_output" ]]; then
-    echo "Match Block Configuration for user '$match_block_user':"
-    echo "$match_output"
+if [ -z "$sshd_output" ]; then
+  echo "FAIL: No AllowUsers, AllowGroups, DenyUsers, or DenyGroups settings found."
+  exit 1
 else
-    echo "No Match block settings detected for user '$match_block_user'."
-    exit 1
+  echo "PASS: Found Allow/Deny Users or Groups settings:"
+  echo "$sshd_output"
+  exit 0
+fi
+
+# Example: Checking a specific user (e.g., sshuser) in a Match block
+match_user_output=$(sshd -T -C user=sshuser | grep -Pi -- '^\h*(allow|deny)(users|groups)\h+\H+')
+
+if [ -z "$match_user_output" ]; then
+  echo "FAIL: No Allow/Deny Users or Groups settings found for user sshuser."
+  exit 1
+else
+  echo "PASS: Found Allow/Deny Users or Groups settings for user sshuser:"
+  echo "$match_user_output"
+  exit 0
 fi

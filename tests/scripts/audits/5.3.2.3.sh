@@ -1,15 +1,36 @@
 #!/usr/bin/env bash
 
-# Check if pam_pwquality is enabled in /etc/pam.d/common-password
-echo "Checking for pam_pwquality in /etc/pam.d/common-password..."
-grep -P -- '\bpam_pwquality\.so\b' /etc/pam.d/common-password
+# Define the file to check
+file="/etc/pam.d/common-password"
 
-# Check for the expected configuration (retry=3)
-echo "Checking if pam_pwquality is configured correctly..."
-grep -P -- 'password requisite pam_pwquality.so retry=3' /etc/pam.d/common-password
+# Define the expected pattern
+expected_pattern="password requisite pam_pwquality.so retry=3"
 
-if [[ $? -eq 0 ]]; then
-    echo "pam_pwquality is correctly configured."
+echo "Auditing pam_pwquality.so configuration in $file..."
+
+# Check if the file exists
+if [[ -f "$file" ]]; then
+    echo "Checking $file..."
+    
+    # Search for pam_pwquality.so in the file
+    result=$(grep -P -- '\bpam_pwquality\.so\b' "$file")
+    
+    if [[ $? -eq 0 ]]; then
+        echo "PASS: pam_pwquality.so found in $file."
+        
+        # Verify if the line matches the expected pattern
+        if [[ "$result" == *"$expected_pattern"* ]]; then
+            echo "PASS: Configuration matches expected: $expected_pattern"
+        else
+            echo "FAIL: Configuration does not match expected in $file."
+            echo "Expected: $expected_pattern"
+            echo "Found: $result"
+        fi
+    else
+        echo "FAIL: pam_pwquality.so not found in $file."
+    fi
 else
-    echo "pam_pwquality is not correctly configured or not found."
+    echo "FAIL: $file does not exist!"
 fi
+
+echo "Audit completed."
