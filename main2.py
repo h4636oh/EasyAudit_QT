@@ -103,6 +103,24 @@ def load_module_to_name():
 
 ### ADDS SCRIPTS TO THE AUDIT SELECT PAGE DISPLAY SECTION ###
 
+def search_bar_filter_select_page():
+    search_text = audit_select_page.search_bar.text()
+    for i in range(audit_select_page.script_select_display.count()):
+        item = audit_select_page.script_select_display.item(i)
+        if search_text.lower() in item.text().lower():
+            item.setHidden(False)
+        else:
+            item.setHidden(True)
+
+def search_bar_filter_result_page():
+    search_text = audit_result_page.search_bar.text()
+    for i in range(audit_result_page.audit_results_list_widget.count()):
+        item = audit_result_page.audit_results_list_widget.item(i)
+        if search_text.lower() in item.text().lower():
+            item.setHidden(False)
+        else:
+            item.setHidden(True)
+
 def audit_select_page_populate_script_list():
     audit_select_page.script_select_display.clear()
     os_name = check_os()
@@ -117,12 +135,14 @@ def audit_select_page_populate_script_list():
         for script in sorted(os.listdir(script_dir)):
             script_name = os.path.splitext(script)[0]
             script_name = script_name.replace(".audit", "")
+            tooltip_text = "somestring"
             ##############################################################################################
             module_name = audit_select_page.module_to_name.get(script_name, script_name)
             list_item = QtWidgets.QListWidgetItem(module_name)
             list_item.setFlags(list_item.flags() | QtCore.Qt.ItemIsUserCheckable)
             list_item.setCheckState(QtCore.Qt.Unchecked)
             list_item.setData(QtCore.Qt.UserRole, script)
+            list_item.setToolTip(tooltip_text)
             audit_select_page.script_select_display.addItem(list_item)
 
 ### SELECTS ALL SCRIPTS ON AUDIT SELECT PAGE (SELECT ALL BUTTON SLOT) ###
@@ -342,6 +362,8 @@ if __name__ == "__main__":
     audit_select_page = loader_audit_select_page.load("audit_select_page.ui", main_window)
     main_window.addWidget(audit_select_page)
 
+    audit_select_page.search_bar.returnPressed.connect(search_bar_filter_select_page)
+
     loader_audit_progess_page = QUiLoader()
     audit_progress_page = loader_audit_progess_page.load("audit_progress_page.ui", None)
     main_window.addWidget(audit_progress_page)
@@ -371,6 +393,9 @@ if __name__ == "__main__":
 
     loader_audit_result_page = QUiLoader()
     audit_result_page = loader_audit_result_page.load("audit_result_page.ui", main_window)
+
+    audit_result_page.search_bar.returnPressed.connect(search_bar_filter_result_page)
+    
     main_window.addWidget(audit_result_page)
 
     audit_select_page.audit_btn.clicked.connect(audit_selected_scripts)
