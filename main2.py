@@ -11,6 +11,7 @@ from PySide6.QtCore import QCoreApplication
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtCore import QUrl
 import datetime
+from fpdf import FPDF
 
 def bitlocker_status():
     if platform.system() == "Windows":
@@ -83,26 +84,28 @@ def get_system_info():
         processor = "Unknown"
 
     return {
-        "hostname": hostname,
-        "os_name": os_name,
-        "os_version": os_version,
-        "kernel_version": kernel_version,
-        "machine_arch": machine_arch,
-        "processor": processor
+        "hostname": f"HOSTNAME - {hostname}",
+        "os_name": f"HOSTNAME - {os_name}",
+        "os_version": f"HOSTNAME - {os_version}",
+        "kernel_version": f"HOSTNAME - {kernel_version}",
+        "machine_arch": f"HOSTNAME - {machine_arch}",
+        "processor": f"HOSTNAME - {processor}"
     }
 
 ###-----------------###
 
 ### LOADS MODULE TO NAME DICTIONARY ###
 def load_complete_json():
-    os = check_os()
-    file_path = "scripts/" + f"{os}" + ".json"
-    with open(file_path, 'r') as file:
+    os_name = check_os()
+    file_name = os_name + ".json"
+    file_path = os.path.join('scripts', file_name)
+    with open(file_path, 'r',encoding='utf-8') as file:
         return json.load(file)
 
 def load_module_to_name():
-    os = check_os()
-    file_path = "scripts/" + f"{os}" + "_moduleToName.json"
+    os_name = check_os()
+    file_name = os_name + "_moduleToName.json"
+    file_path = os.path.join('scripts', file_name)
     with open(file_path, 'r') as file:
         return json.load(file)
 
@@ -142,9 +145,8 @@ def audit_select_page_populate_script_list():
             script_name = os.path.splitext(script)[0]
             script_name = script_name.replace(".audit", "")
             script_info = module_info[script_name] if script_name in module_info else print(f"error : {script_name}", f"script")
-            description = script_info["Description"]
+            description = script_info["Description"] if script_info else "NULL"
             tooltip_text = description
-            ##############################################################################################
             module_name = audit_select_page.module_to_name.get(script_name, script_name)
             list_item = QtWidgets.QListWidgetItem(module_name)
             list_item.setFlags(list_item.flags() | QtCore.Qt.ItemIsUserCheckable)
@@ -225,6 +227,66 @@ def add_audit_result(result):
     audit_select_page.database.commit()
 
 ###
+import json
+
+def filter_json_by_criteria(data, criteria):
+    """
+    Filters the input JSON data based on the criteria specified for SL1, SL2, L1, L2, and BL.
+
+    Args:
+        data (dict): The input JSON data.
+        criteria (dict): A dictionary containing the desired values for SL1, SL2, L1, L2, and BL.
+        Example: {"SL1": "TRUE", "L1": "TRUE"}
+
+    Returns:
+        list: A list of indices that match the criteria.
+    """
+    filtered_indices = []
+
+    for key, value in data.items():
+        match = all(value.get(crit_key, "") == crit_value for crit_key, crit_value in criteria.items())
+        if match:
+            filtered_indices.append(key)
+
+    return filtered_indices
+
+def load_json_from_file(filepath):
+    """
+    Loads JSON data from a file.
+
+    Args:
+        filepath (str): Path to the JSON file.
+
+    Returns:
+        dict: The loaded JSON data.
+    """
+    with open(filepath, 'r') as file:
+        return json.load(file)
+
+def serach_json_for_windows(criteria):
+    jsondata=load_json_from_file('windowsDB.json')
+    filtered = filter_json_by_criteria(jsondata, criteria)
+    return filtered
+
+
+def serach_json_for_redhat(criteria):
+    jsondata=load_json_from_file('redhatDB.json')
+    filtered = filter_json_by_criteria(jsondata, criteria)
+    return filtered
+    
+
+def serach_json_for_ubuntu(criteria):
+    jsondata=load_json_from_file('ubuntuDB.json')
+    filtered = filter_json_by_criteria(jsondata, criteria)
+    return filtered
+
+def serach_all_json(OPS,criteria):
+    if OPS=="Windows":
+        return serach_json_for_windows(criteria)
+    elif OPS=="Redhat":
+        return serach_json_for_redhat(criteria)
+    elif OPS=="Ubuntu":
+        return serach_json_for_ubuntu(criteria)   
 
 def audit_selected_scripts():
 
@@ -236,6 +298,10 @@ def audit_selected_scripts():
     if os_name == "rhel_9":
         logfile_name = f'/tmp/audit_log_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.txt'
     if os_name == "Windows":
+            if os.path.exists('log'):
+                pass
+            else:
+                os.makedirs('log')
             logfile_name = f'log/.audit_log_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.txt'
     logfile = open(f'{logfile_name}', 'w')
     selected_items = [audit_select_page.script_select_display.item(i) for i in range(audit_select_page.script_select_display.count()) if audit_select_page.script_select_display.item(i).checkState() == QtCore.Qt.Checked]
@@ -268,8 +334,12 @@ def audit_selected_scripts():
         QCoreApplication.processEvents()
         progress = int(idx / item_count * 100)
         audit_progress_page.script_progess_bar.setValue(progress)
-
-        logfile.write(f"Script: {script_name}\n")
+        script_name = script_name.replace('.audit', '')
+        script_name = script_name.replace('.sh', '')
+        script_name = script_name.replace('.ps1', '')
+        module_name = audit_select_page.module_to_name.get(script_name, script_name)
+        
+        logfile.write(f"Script: {script_name} - {module_name}\n")
         logfile.write(f"Output:{stdout}\n")
         logfile.write(f"Error:{stderr}\n")
         logfile.write(f"Return Code: {return_code}\n\n")
@@ -353,12 +423,12 @@ if __name__ == "__main__":
     system_info = get_system_info()
 
     # Set label text for each system information entry
-    start_page.hostname_lbl_entry.setText(system_info["hostname"])
-    start_page.os_name_entry.setText(system_info["os_name"])
-    start_page.os_version_lbl_entry.setText(system_info["os_version"])
-    start_page.kernel_lbl_entry.setText(system_info["kernel_version"])
-    start_page.mach_arch_lbl_entry.setText(system_info["machine_arch"])
-    start_page.processor_lbl_entry.setText(system_info["processor"])
+    start_page.hostname_lbl.setText(system_info["hostname"])
+    start_page.os_name_lbl.setText(system_info["os_name"])
+    start_page.os_version_lbl.setText(system_info["os_version"])
+    start_page.kernel_lbl.setText(system_info["kernel_version"])
+    start_page.mach_arch_lbl.setText(system_info["machine_arch"])
+    start_page.processor_lbl.setText(system_info["processor"])
 
     # Connect buttons to methods
     loader_new_audit_page = QUiLoader()
@@ -416,10 +486,13 @@ if __name__ == "__main__":
 
     def save_logs():
         log_data = open(f'{logfile_name}', 'r').read()
-        filename = QFileDialog.getSaveFileName(audit_result_page, "Save Log", "", "Text Files (*.txt)")
+        pdf = FPDF() 
+        pdf.add_page()
+        pdf.set_font("Arial", size = 15)
+        pdf.multi_cell(0, 5, txt = log_data)
+        filename = QFileDialog.getSaveFileName(audit_result_page, "Save Log PDF", "", "PDF File (*.pdf)")
         if filename[0]:
-            with open(filename[0], 'w') as f:
-                f.write(log_data)
+            pdf.output(f"{filename[0]}.pdf")
 
     audit_result_page.export_btn.clicked.connect(save_logs)
 
