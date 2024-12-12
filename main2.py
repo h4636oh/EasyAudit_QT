@@ -225,6 +225,69 @@ def add_audit_result(result):
     audit_select_page.database.commit()
 
 ###
+import json
+
+def filter_json_by_criteria(data, criteria):
+    """
+    Filters the input JSON data based on the criteria specified for SL1, SL2, L1, L2, and BL.
+
+    Args:
+        data (dict): The input JSON data.
+        criteria (dict): A dictionary containing the desired values for SL1, SL2, L1, L2, and BL.
+                         Example: {"SL1": "TRUE", "L1": "TRUE"}
+
+    Returns:
+        list: A list of indices that match the criteria.
+    """
+    filtered_indices = []
+
+    for key, value in data.items():
+        match = all(value.get(crit_key, "") == crit_value for crit_key, crit_value in criteria.items())
+        if match:
+            filtered_indices.append(key)
+
+    return filtered_indices
+
+def load_json_from_file(filepath):
+    """
+    Loads JSON data from a file.
+
+    Args:
+        filepath (str): Path to the JSON file.
+
+    Returns:
+        dict: The loaded JSON data.
+    """
+    with open(filepath, 'r') as file:
+        return json.load(file)
+
+def serach_json_for_windows(criteria):
+    jsondata=load_json_from_file('windowsDB.json')
+    filtered = filter_json_by_criteria(jsondata, criteria)
+    return filtered
+
+
+def serach_json_for_redhat(criteria):
+    jsondata=load_json_from_file('redhatDB.json')
+    filtered = filter_json_by_criteria(jsondata, criteria)
+    return filtered
+    
+
+def serach_json_for_ubuntu(criteria):
+    jsondata=load_json_from_file('ubuntuDB.json')
+    filtered = filter_json_by_criteria(jsondata, criteria)
+    return filtered
+
+def serach_all_json(OPS,criteria):
+    if OPS=="Windows":
+        return serach_json_for_windows(criteria)
+    elif OPS=="Redhat":
+        return serach_json_for_redhat(criteria)
+    elif OPS=="Ubuntu":
+        return serach_json_for_ubuntu(criteria)
+    
+    
+    
 
 def audit_selected_scripts():
 
