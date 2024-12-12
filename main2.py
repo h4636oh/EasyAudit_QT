@@ -217,51 +217,26 @@ def create_tables():
     audit_select_page.database.commit()
 
 
-import os
-import subprocess
-import time
-
-def run_script(script_path, timeout, retries=2, delay=5):
+def run_script(script_path):
     try:
         
         os_name = check_os()
-        
-        if os_name == "posix":  # Check for Unix-like systems (Ubuntu, RHEL, etc.)
+        if os_name == "Ubuntu":
             os.chmod(script_path, 0o755)
-            command = ["bash", script_path]
-        elif os_name == "nt":  # Check for Windows systems
-            command = ["powershell.exe", "-ExecutionPolicy", "Bypass", "-File", script_path]
-        else:
-            raise ValueError("Unsupported operating system")
-        
-        # Track start time for timeout logic
-        start_time = time.time()
-
-        # Try running the script with retries
-        for attempt in range(retries):
-            try:
-                # Check if the script would run for more than the timeout period
-                elapsed_time = time.time() - start_time
-                if elapsed_time > 15:
-                    return "", "Script execution skipped due to timeout exceeding 30 seconds.", -1
-
-                result = subprocess.run(command, capture_output=True, text=True, timeout=timeout)
-                return result.stdout, result.stderr, result.returncode
-            except subprocess.TimeoutExpired:
-                if attempt < retries - 1:
-                    print(f"Timeout occurred, retrying {attempt + 1}/{retries}...")
-                    time.sleep(delay)  # Wait before retrying
-                else:
-                    return "", "Script execution timed out after multiple attempts.", -1
-            except subprocess.CalledProcessError as e:
-                return e.stdout, e.stderr, e.returncode
-
-        # If the loop ends, return an error
-        return "", "Failed to execute script after retries.", -1
-
-    except Exception as e:
-        return "", str(e), -1
-
+            result = subprocess.run(["bash", script_path], capture_output=True, text=True)
+        if os_name == "rhel_9":
+            os.chmod(script_path, 0o755)
+            result = subprocess.run(["bash", script_path], capture_output=True, text=True)
+        if os_name == "Windows":
+            result = subprocess.run(
+                ["powershell.exe",
+                "-ExecutionPolicy", "Bypass",
+                "-File", script_path],
+                capture_output=True, text=True
+            )
+        return result.stdout, result.stderr, result.returncode
+    except subprocess.CalledProcessError as e:
+        return e.stdout, e.stderr, e.returncode
 
 def add_audit_result(result):
     cursor = audit_select_page.database.cursor()
