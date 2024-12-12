@@ -1,42 +1,19 @@
 #!/usr/bin/env bash
 
-echo "Starting PAM Audit for pam_unix.so and the 'remember' argument..."
+echo "Starting PAM audit for strong password hashing algorithm..."
 
-# Define the list of PAM configuration files to check
-PAM_FILES=(
-  "/etc/pam.d/common-password"
-  "/etc/pam.d/common-auth"
-  "/etc/pam.d/common-account"
-  "/etc/pam.d/common-session"
-  "/etc/pam.d/common-session-noninteractive"
-)
+# Check if 'sha512' or 'yescrypt' is set in the pam_unix.so line in /etc/pam.d/common-password
+echo "Verifying if sha512 or yescrypt is set on pam_unix.so in /etc/pam.d/common-password..."
 
-# Flag to track if any failure occurs
-PASS=0
+grep -PH -- '^\h*password\h+([^#\n\r]+)\h+pam_unix\.so\h+([^#\n\r]+\h+)?(sha512|yescrypt)\b' /etc/pam.d/common-password
 
-# Iterate through each PAM file and check for pam_unix.so entries with 'remember' argument
-for FILE in "${PAM_FILES[@]}"; do
-  echo "Checking $FILE for pam_unix.so entries with 'remember' argument..."
-  
-  # Check if the file exists before proceeding
-  if [[ ! -f "$FILE" ]]; then
-    continue
-  fi
-  
-  # Search for pam_unix.so and check if 'remember' is present
-  if grep -PH -- '^\h*^\h*[^#\n\r]+\h+pam_unix\.so\b' "$FILE" | grep -Pv '\bremember=\d+\b' >/dev/null; then
-    echo "Fail: 'remember' argument found in $FILE"
-    PASS=1
-  else
-    echo "Pass: 'remember' argument not found in $FILE"
-  fi
-done
-
-# Audit result
-if [ "$PASS" -eq 0 ]; then
-  echo "Audit complete. All PAM configurations are correctly configured (Pass)."
-  exit 0
+# Capture the result of the grep command
+if [[ $? -eq 0 ]]; then
+  echo "Password hashing algorithm (sha512 or yescrypt) is correctly set."
 else
-  echo "Audit complete. Some PAM configurations failed the check (Fail)."
+  echo "ERROR: No strong password hashing algorithm (sha512 or yescrypt) found in pam_unix.so line."
+  echo "Please ensure that the pam_unix.so line in /etc/pam.d/common-password includes either sha512 or yescrypt."
   exit 1
 fi
+
+echo "Audit completed."

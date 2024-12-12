@@ -53,16 +53,6 @@
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QPushButton" name="filter_btn">
-       <property name="text">
-        <string>FILTER</string>
-       </property>
-       <property name="icon">
-        <iconset theme="QIcon::ThemeIcon::ImageLoading"/>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
    <item>
@@ -103,16 +93,9 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="view_logs_btn">
+      <widget class="QPushButton" name="export_btn">
        <property name="text">
-        <string>VIEW AUDIT LOGS</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="remediate_btn">
-       <property name="text">
-        <string>REMEDIATE</string>
+        <string>EXPORT RESULT</string>
        </property>
       </widget>
      </item>

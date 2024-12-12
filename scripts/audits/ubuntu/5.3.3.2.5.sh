@@ -31,6 +31,7 @@ if [ $? -eq 0 ]; then
         # Remove the maxsequence argument from each file
         sed -i '/pam_pwquality\.so/ s/\s*maxsequence=[^ ]*//g' "$file"
         echo "Removed maxsequence argument from $file."
+    exit 1
     done
 else
     echo "No invalid maxsequence arguments found in PAM config files."

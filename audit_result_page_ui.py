@@ -42,13 +42,6 @@ class Ui_audit_result_page(object):
 
         self.bar_top.addWidget(self.search_bar)
 
-        self.filter_btn = QPushButton(audit_result_page)
-        self.filter_btn.setObjectName(u"filter_btn")
-        icon = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.ImageLoading))
-        self.filter_btn.setIcon(icon)
-
-        self.bar_top.addWidget(self.filter_btn)
-
 
         self.verticalLayout.addLayout(self.bar_top)
 
@@ -73,15 +66,10 @@ class Ui_audit_result_page(object):
 
         self.bar_bottom.addItem(self.horizontalSpacer)
 
-        self.view_logs_btn = QPushButton(audit_result_page)
-        self.view_logs_btn.setObjectName(u"view_logs_btn")
+        self.export_btn = QPushButton(audit_result_page)
+        self.export_btn.setObjectName(u"export_btn")
 
-        self.bar_bottom.addWidget(self.view_logs_btn)
-
-        self.remediate_btn = QPushButton(audit_result_page)
-        self.remediate_btn.setObjectName(u"remediate_btn")
-
-        self.bar_bottom.addWidget(self.remediate_btn)
+        self.bar_bottom.addWidget(self.export_btn)
 
 
         self.verticalLayout.addLayout(self.bar_bottom)
@@ -97,9 +85,7 @@ class Ui_audit_result_page(object):
         self.search_bar.setInputMask("")
         self.search_bar.setText("")
         self.search_bar.setPlaceholderText(QCoreApplication.translate("audit_result_page", u"Type here to search audit's result", None))
-        self.filter_btn.setText(QCoreApplication.translate("audit_result_page", u"FILTER", None))
         self.home_btn.setText(QCoreApplication.translate("audit_result_page", u"HOME", None))
-        self.view_logs_btn.setText(QCoreApplication.translate("audit_result_page", u"VIEW AUDIT LOGS", None))
-        self.remediate_btn.setText(QCoreApplication.translate("audit_result_page", u"REMEDIATE", None))
+        self.export_btn.setText(QCoreApplication.translate("audit_result_page", u"EXPORT RESULT", None))
     # retranslateUi
 

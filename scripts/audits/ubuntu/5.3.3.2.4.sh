@@ -38,6 +38,7 @@ if [ $? -eq 0 ]; then
     # Remove invalid maxrepeat argument from the line in /etc/pam.d/common-password
     sed -i '/pam_pwquality\.so/ s/\s*maxrepeat=[^ ]*//g' /etc/pam.d/common-password
     echo "Removed invalid maxrepeat setting from /etc/pam.d/common-password."
+    exit 1
 else
     echo "No invalid maxrepeat setting found in /etc/pam.d/common-password."
 fi

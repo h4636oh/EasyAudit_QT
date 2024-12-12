@@ -26,6 +26,7 @@ invalid_difok=$(grep -Psi '^\h*password\h+(requisite|required|sufficient)\h+pam_
 if [[ -n "$invalid_difok" ]]; then
     echo "Invalid difok configuration found in /etc/pam.d/common-password:"
     echo "$invalid_difok"
+    exit 1
 else
     echo "No invalid difok settings found in /etc/pam.d/common-password."
 fi

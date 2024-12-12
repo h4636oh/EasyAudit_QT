@@ -26,6 +26,7 @@ if [[ -n "$files_with_unlock_time" ]]; then
     done
 else
     echo "No invalid unlock_time arguments found in PAM configuration files."
+    exit 1
 fi
 
 echo "Remediation complete."

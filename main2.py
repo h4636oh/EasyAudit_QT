@@ -3,14 +3,14 @@ from PySide6.QtWidgets import QApplication, QStackedWidget, QFileDialog
 from PySide6 import QtWidgets, QtCore
 from PySide6.QtUiTools import QUiLoader
 import platform
-import os, datetime
+import os
 import subprocess
 import sqlite3
 import json
 from PySide6.QtCore import QCoreApplication
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtCore import QUrl
-import database
+import datetime
 
 def bitlocker_status():
     if platform.system() == "Windows":
@@ -100,9 +100,7 @@ def load_module_to_name():
         return json.load(file)
 
 ### ADDS SCRIPTS TO THE AUDIT SELECT PAGE DISPLAY SECTION ###
-def display_script_info(script_name):
-    print(f"Script Info Clicked: {script_name}")
-'''
+
 def audit_select_page_populate_script_list():
     audit_select_page.script_select_display.clear()
     os_name = check_os()
@@ -112,179 +110,31 @@ def audit_select_page_populate_script_list():
     if os_name == "rhel_9":
         script_dir = 'scripts/audits/rhel_9'
     if os_name == "Windows":
-        script_dir = 'scripts/audits/windows'
+        script_dir = 'scripts/audits/windows' 
     if os.path.isdir(script_dir):
         for script in sorted(os.listdir(script_dir)):
             script_name = os.path.splitext(script)[0]
             module_name = audit_select_page.module_to_name.get(script_name, script_name)
-
-            # Create a layout for each list item
-            widget = QtWidgets.QWidget()
-            layout = QtWidgets.QHBoxLayout(widget)
-            layout.setContentsMargins(0, 0, 0, 0)
-
-            # Add a checkbox
-            checkbox = QtWidgets.QCheckBox(module_name)
-            checkbox.setObjectName(script_name)  # Optional: set an object name
-            layout.addWidget(checkbox)
-
-            # Add an info button
-            info_button = QtWidgets.QPushButton("Info")
-            info_button.clicked.connect(lambda _, name=script_name: display_script_info(name))
-            layout.addWidget(info_button)
-
-            # Wrap the widget into a QListWidgetItem
-            list_item = QtWidgets.QListWidgetItem(audit_select_page.script_select_display)
-            list_item.setSizeHint(widget.sizeHint())
+            list_item = QtWidgets.QListWidgetItem(module_name)
+            list_item.setFlags(list_item.flags() | QtCore.Qt.ItemIsUserCheckable)
+            list_item.setCheckState(QtCore.Qt.Unchecked)
+            list_item.setData(QtCore.Qt.UserRole, script)
             audit_select_page.script_select_display.addItem(list_item)
-            audit_select_page.script_select_display.setItemWidget(list_item, widget)
-'''
-def audit_select_page_populate_script_list(sl1, sl2, l1 , l2, bl, searcphrase = None):
-
-    if(isworkstation and islevel1):
-        l1 = True
-    if(isworkstation and islevel2):
-        l2 = True
-    if(isserver and islevel1):
-        sl1 = True
-    if(isserver and islevel2):
-        sl2 = True
-    
-
-    print("HEre", sl1 , sl2 , l1, l2, bl)
-    audit_select_page.script_select_display.clear()
-    os_name = check_os()
-    script_dir = None
-    if os_name == "Ubuntu":
-        script_dir = 'scripts/audits/ubuntu'
-        filtered_list = database.search(ops = os_name, sl1_value =  sl1, sl2_value = sl2, l1_value = l1, l2_value = l2, bl_value = bl, search_phrase=searcphrase)
-        filtered_list = [i + ".sh" for i in filtered_list]
-    if os_name == "rhel_9":
-        script_dir = 'scripts/audits/rhel_9'
-        filtered_list = database.search(ops = os_name, sl1_value =  sl1, sl2_value = sl2, l1_value = l1, l2_value = l2, bl_value = bl, search_phrase=searcphrase)
-        filtered_list = [i + ".sh" for i in filtered_list]
-    if os_name == "Windows":
-        script_dir = 'scripts/audits/windows'
-        filtered_list = database.search(ops = os_name, sl1_value =  sl1, sl2_value = sl2, l1_value = l1, l2_value = l2, bl_value = bl, search_phrase=searcphrase)
-        filtered_list = [i + ".ps1" for i in filtered_list]
-        # print("helo")
-        print(filtered_list)
-    if os.path.isdir(script_dir):
-        
-
-        # for script in sorted(os.listdir(script_dir)):
-
-        for script in filtered_list:
-            script_name = os.path.splitext(script)[0]
-
-            module_name = audit_select_page.module_to_name.get(script_name, script_name)
-
-            # Create a layout for each list item
-            widget = QtWidgets.QWidget()
-            layout = QtWidgets.QHBoxLayout(widget)
-            layout.setContentsMargins(0, 0, 0, 0)
-
-            # Add a checkbox
-            checkbox = QtWidgets.QCheckBox(module_name)
-            checkbox.setObjectName(script_name)  # Optional: set an object name
-            layout.addWidget(checkbox)
-
-            # Add an info button and make it smaller
-            info_button = QtWidgets.QPushButton("Info")
-            info_button.setFixedSize(50, 20)  # Set the size to be smaller (width, height)
-            info_button.clicked.connect(lambda _, name=script_name: display_script_info(name))
-            layout.addWidget(info_button)
-
-            # Wrap the widget into a QListWidgetItem
-            list_item = QtWidgets.QListWidgetItem(audit_select_page.script_select_display)
-            list_item.setSizeHint(widget.sizeHint())
-            audit_select_page.script_select_display.addItem(list_item)
-            audit_select_page.script_select_display.setItemWidget(list_item, widget)
-
-
-
-# def audit_select_page_populate_script_list():
-#     audit_select_page.script_select_display.clear()
-#     os_name = check_os()
-#     script_dir = None
-#     if os_name == "Ubuntu":
-#         script_dir = 'scripts/audits/ubuntu'
-#     if os_name == "rhel_9":
-#         script_dir = 'scripts/audits/rhel_9'
-#     if os_name == "Windows":
-#         script_dir = 'scripts/audits/windows' 
-#     if os.path.isdir(script_dir):
-#         for script in sorted(os.listdir(script_dir)):
-#             script_name = os.path.splitext(script)[0]
-#             module_name = audit_select_page.module_to_name.get(script_name, script_name)
-
-#             # Create a layout for each list item
-#             widget = QtWidgets.QWidget()
-#             layout = QtWidgets.QHBoxLayout(widget)
-#             layout.setContentsMargins(0, 0, 0, 0)
-
-#             # Add a label for the script name
-#             label = QtWidgets.QLabel(module_name)
-#             layout.addWidget(label)
-
-#             # Add an info button
-#             info_button = QtWidgets.QPushButton("Info")
-#             info_button.clicked.connect(lambda _, name=script_name: display_script_info(name))
-#             layout.addWidget(info_button)
-
-#             # Wrap the widget into a QListWidgetItem
-#             list_item = QtWidgets.QListWidgetItem(audit_select_page.script_select_display)
-#             list_item.setSizeHint(widget.sizeHint())
-#             audit_select_page.script_select_display.addItem(list_item)
-#             audit_select_page.script_select_display.setItemWidget(list_item, widget)
-
-
-# def audit_select_page_populate_script_list():
-#     audit_select_page.script_select_display.clear()
-#     os_name = check_os()
-#     script_dir = None
-#     if os_name == "Ubuntu":
-#         script_dir = 'scripts/audits/ubuntu'
-#     if os_name == "rhel_9":
-#         script_dir = 'scripts/audits/rhel_9'
-#     if os_name == "Windows":
-#         script_dir = 'scripts/audits/windows' 
-#     if os.path.isdir(script_dir):
-#         for script in sorted(os.listdir(script_dir)):
-#             script_name = os.path.splitext(script)[0]
-#             module_name = audit_select_page.module_to_name.get(script_name, script_name)
-#             list_item = QtWidgets.QListWidgetItem(module_name)
-#             list_item.setFlags(list_item.flags() | QtCore.Qt.ItemIsUserCheckable)
-#             list_item.setCheckState(QtCore.Qt.Unchecked)
-#             list_item.setData(QtCore.Qt.UserRole, script)
-#             audit_select_page.script_select_display.addItem(list_item)
 
 ### SELECTS ALL SCRIPTS ON AUDIT SELECT PAGE (SELECT ALL BUTTON SLOT) ###
 
-# def audit_select_page_select_all_scripts():
-#     if audit_select_page.select_all_btn.isChecked():
-#         loader_select_all_warning = QUiLoader()
-#         select_all_warning = loader_select_all_warning.load('select_all_warning.ui', audit_select_page)
-#         select_all_warning.show()
-#         for index in range(audit_select_page.script_select_display.count()):
-#             item = audit_select_page.script_select_display.item(index)
-#             item.setCheckState(QtCore.Qt.Checked)
-#     else:
-#         for index in range(audit_select_page.script_select_display.count()):
-#             item = audit_select_page.script_select_display.item(index)
-#             item.setCheckState(QtCore.Qt.Unchecked)
-
 def audit_select_page_select_all_scripts():
-    is_checked = audit_select_page.select_all_btn.isChecked()
-
-    for index in range(audit_select_page.script_select_display.count()):
-        item = audit_select_page.script_select_display.item(index)
-        widget = audit_select_page.script_select_display.itemWidget(item)
-        if widget:
-            checkbox = widget.findChild(QtWidgets.QCheckBox)
-            if checkbox:
-                checkbox.setChecked(is_checked)
-
+    if audit_select_page.select_all_btn.isChecked():
+        loader_select_all_warning = QUiLoader()
+        select_all_warning = loader_select_all_warning.load('select_all_warning.ui', audit_select_page)
+        select_all_warning.show()
+        for index in range(audit_select_page.script_select_display.count()):
+            item = audit_select_page.script_select_display.item(index)
+            item.setCheckState(QtCore.Qt.Checked)
+    else:
+        for index in range(audit_select_page.script_select_display.count()):
+            item = audit_select_page.script_select_display.item(index)
+            item.setCheckState(QtCore.Qt.Unchecked)
     
 
 
@@ -343,107 +193,54 @@ def add_audit_result(result):
     audit_select_page.database.commit()
 
 ###
+
 def audit_selected_scripts():
+
     global logfile_name
-    logfile_name = f'/tmp/audit_log_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.txt'
+    logfile_name = f'.audit_log_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.txt'
     logfile = open(f'{logfile_name}', 'w')
-    selected_scripts = []  # List to hold the selected script names
-
-    for index in range(audit_select_page.script_select_display.count()):
-        item = audit_select_page.script_select_display.item(index)
-        widget = audit_select_page.script_select_display.itemWidget(item)
-
-        if widget:
-            checkbox = widget.findChild(QtWidgets.QCheckBox)
-            if checkbox and checkbox.isChecked():
-                script_name = checkbox.objectName()  # Use the object name set for the checkbox
-                selected_scripts.append(script_name)
-
+    selected_items = [audit_select_page.script_select_display.item(i) for i in range(audit_select_page.script_select_display.count()) if audit_select_page.script_select_display.item(i).checkState() == QtCore.Qt.Checked]
     global session_id
     session_id += 1
-    item_count = len(selected_scripts)
+    item_count = len(selected_items)
 
     main_window.setCurrentIndex(3)
 
-    for idx, script_name in enumerate(selected_scripts, start=1):
+    for idx, item in enumerate(selected_items, start=1):
         QCoreApplication.processEvents()
+        script_name = item.data(QtCore.Qt.UserRole)
         audit_progress_page.current_script_lbl.setText(str(script_name))
 
         script_path = None
         os_name = check_os()
         if os_name == "Ubuntu":
-            script_name += ".sh" 
             script_path = os.path.join('scripts/audits/ubuntu', script_name)
         if os_name == "rhel_9":
-            script_name += ".sh" 
-            script_path = os.path.join('scripts/audits/rhel_9', script_name)
+            script_path = os.path.join('scripts/audits/rhel_9', script_name) 
         if os_name == "Windows":
-            script_name += ".ps1"
-            script_path = os.path.join('scripts\\audits\\windows', script_name)
+            script_path = os.path.join('scripts/audits/windows', script_name)
 
         if not os.path.exists(script_path):
             print(f"Script not found: {script_path}")
             continue
         stdout, stderr, return_code = run_script(script_path)
-        result = {
-            'script_name': script_name,
-            'output': stdout,
-            'error': stderr,
-            'return_code': return_code,
-            'session_id': session_id
-        }
+        result = { 'script_name': script_name, 'output': stdout, 'error': stderr, 'return_code': return_code, 'session_id': session_id}
+        add_audit_result(result)
+        QCoreApplication.processEvents()
+        progress = int(idx / item_count * 100)
+        audit_progress_page.script_progess_bar.setValue(progress)
 
         logfile.write(f"Script: {script_name}\n")
         logfile.write(f"Output:{stdout}\n")
         logfile.write(f"Error:{stderr}\n")
         logfile.write(f"Return Code: {return_code}\n\n")
-        
-        add_audit_result(result)
-        QCoreApplication.processEvents()
-        progress = int(idx / item_count * 100)
-        audit_progress_page.script_progess_bar.setValue(progress)
+
     print("Audit completed")
 
     logfile.close()
 
     main_window.setCurrentIndex(4)
     audit_result_page_display_result()
-
-# def audit_selected_scripts():
-#     selected_items = [audit_select_page.script_select_display.item(i) for i in range(audit_select_page.script_select_display.count()) if audit_select_page.script_select_display.item(i).checkState() == QtCore.Qt.Checked]
-#     global session_id
-#     session_id += 1
-#     item_count = len(selected_items)
-
-#     main_window.setCurrentIndex(3)
-
-#     for idx, item in enumerate(selected_items, start=1):
-#         QCoreApplication.processEvents()
-#         script_name = item.data(QtCore.Qt.UserRole)
-#         audit_progress_page.current_script_lbl.setText(str(script_name))
-
-#         script_path = None
-#         os_name = check_os()
-#         if os_name == "Ubuntu":
-#             script_path = os.path.join('scripts/audits/ubuntu', script_name)
-#         if os_name == "rhel_9":
-#             script_path = os.path.join('scripts/audits/rhel_9', script_name) 
-#         if os_name == "Windows":
-#             script_path = os.path.join('scripts/audits/windows', script_name)
-
-#         if not os.path.exists(script_path):
-#             print(f"Script not found: {script_path}")
-#             continue
-#         stdout, stderr, return_code = run_script(script_path)
-#         result = { 'script_name': script_name, 'output': stdout, 'error': stderr, 'return_code': return_code, 'session_id': session_id}
-#         add_audit_result(result)
-#         QCoreApplication.processEvents()
-#         progress = int(idx / item_count * 100)
-#         audit_progress_page.script_progess_bar.setValue(progress)
-#     print("Audit completed")
-
-#     main_window.setCurrentIndex(4)
-#     audit_result_page_display_result()
     
 ###
 
@@ -468,10 +265,8 @@ def audit_result_page_display_result():
         parent_item = QtWidgets.QTreeWidgetItem(audit_result_page.script_result_display)
         if return_code == 0:  # Pass
             parent_item.setText(0, f"PASS: {module_name}")
-            parent_item.setStyleSheet(f'color: QtCore.Qt.green;')
         else:
             parent_item.setText(0, f"FAIL: {module_name}")
-            parent_item.setStyleSheet(f'color: QtCore.Qt.red;')
         
         # Add placeholder details as child items
         
@@ -494,12 +289,6 @@ def audit_result_page_display_result():
 
 
 def new_audit_filters():
-    global isworkstation
-    global islevel2
-    global isserver
-    global islevel1
-    global isbitlocker
-
     isworkstation = new_audit_page.workstation_btn.isChecked()
     isserver = new_audit_page.server_btn.isChecked()
     islevel1 = new_audit_page.level1_btn.isChecked()
@@ -533,9 +322,6 @@ if __name__ == "__main__":
     loader_new_audit_page = QUiLoader()
     new_audit_page = loader_new_audit_page.load("new_audit_page.ui", main_window)
     main_window.addWidget(new_audit_page)
-
-    bitlocker_status()
-
     start_page.new_audit_btn.clicked.connect(lambda: main_window.setCurrentIndex(1))
 
     loader_audit_select_page = QUiLoader()
@@ -553,36 +339,11 @@ if __name__ == "__main__":
     isbitlocker = None
 
     new_audit_page.continue_btn.clicked.connect(new_audit_filters)
-    print(isworkstation , islevel2)
 
     audit_select_page.module_to_name = load_module_to_name()
     audit_select_page.database = sqlite3.connect('audit_results.db')
     create_tables()
-    sl1 = False
-    sl2 = False
-    l1 = False
-    l2 = False
-    bl = isbitlocker
-
-    if(isworkstation and islevel1):
-        l1 = True
-    if(isworkstation and islevel2):
-        l2 = True
-    if(isserver and islevel1):
-        sl1 = True
-    if(isserver and islevel2):
-        sl2 = True
-    audit_select_page_populate_script_list(sl1 =  sl1, sl2= sl2, l1 = l1, l2 = l2, bl = bl)
-    new_audit_page.continue_btn.clicked.connect(lambda: [
-    new_audit_filters(),  # This sets the global filter variables
-    audit_select_page_populate_script_list(
-        sl1=sl1 , 
-        sl2=sl2 , 
-        l1=l1 , 
-        l2=l2 , 
-        bl=isbitlocker
-    )
-    ])
+    audit_select_page_populate_script_list()
     audit_select_page.select_all_btn.clicked.connect(audit_select_page_select_all_scripts)
     if os.path.exists("audit_results.db"):
         cursor = audit_select_page.database.cursor()
@@ -605,14 +366,6 @@ if __name__ == "__main__":
 
     logfile_name = None
 
-    def view_logs():
-        loader_log_page = QUiLoader()
-        log_page = loader_log_page.load("log_page.ui", None)
-        log_data = open(f'{logfile_name}', 'r').read()
-        log_page.textEdit.setText(log_data)
-
-        log_page.show()
-
     def save_logs():
         log_data = open(f'{logfile_name}', 'r').read()
         filename = QFileDialog.getSaveFileName(audit_result_page, "Save Log", "", "Text Files (*.txt)")
@@ -620,9 +373,7 @@ if __name__ == "__main__":
             with open(filename[0], 'w') as f:
                 f.write(log_data)
 
-    audit_result_page.view_logs_btn.clicked.connect(view_logs)
     audit_result_page.export_btn.clicked.connect(save_logs)
-
 
     main_window.show()
     sys.exit(app.exec())

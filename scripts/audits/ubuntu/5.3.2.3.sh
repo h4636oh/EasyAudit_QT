@@ -12,4 +12,5 @@ if [[ $? -eq 0 ]]; then
     echo "pam_pwquality is correctly configured."
 else
     echo "pam_pwquality is not correctly configured or not found."
+    exit 1
 fi

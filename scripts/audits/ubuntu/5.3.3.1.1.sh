@@ -20,6 +20,7 @@ deny_value_pam=$(grep -Pi '^\h*auth\h+(requisite|required|sufficient)\h+pam_fail
 
 if [[ -n "$deny_value_pam" ]]; then
     echo "Fail: deny value is greater than 5 in /etc/pam.d/common-auth: $deny_value_pam"
+    exit 1
 else
     echo "Pass: deny value in /etc/pam.d/common-auth is within expected limits"
 fi

@@ -44,13 +44,6 @@ class Ui_audit_select_page(object):
 
         self.bar_top.addWidget(self.search_bar)
 
-        self.filter_btn = QPushButton(audit_select_page)
-        self.filter_btn.setObjectName(u"filter_btn")
-        icon = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.ImageLoading))
-        self.filter_btn.setIcon(icon)
-
-        self.bar_top.addWidget(self.filter_btn)
-
 
         self.verticalLayout.addLayout(self.bar_top)
 
@@ -95,7 +88,6 @@ class Ui_audit_select_page(object):
         self.search_bar.setInputMask("")
         self.search_bar.setText("")
         self.search_bar.setPlaceholderText(QCoreApplication.translate("audit_select_page", u"Type here to search audit scripts", None))
-        self.filter_btn.setText(QCoreApplication.translate("audit_select_page", u"FILTER", None))
         self.select_all_btn.setText(QCoreApplication.translate("audit_select_page", u"SELECT ALL", None))
         self.back_btn.setText(QCoreApplication.translate("audit_select_page", u"BACK", None))
         self.audit_btn.setText(QCoreApplication.translate("audit_select_page", u"AUDIT", None))

@@ -76,3 +76,4 @@ CMakeLists.txt.user*
 *.exe
 
 sample_results.db
+pysidedeploy.spec

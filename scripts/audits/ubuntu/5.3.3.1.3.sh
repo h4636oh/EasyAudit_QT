@@ -9,6 +9,7 @@ if grep -qPi '^\h*(even_deny_root|root_unlock_time\h*=\h*\d+)\b' /etc/security/f
     echo "Found even_deny_root or root_unlock_time in /etc/security/faillock.conf."
 else
     echo "Neither even_deny_root nor root_unlock_time is set in /etc/security/faillock.conf."
+    exit 1
 fi
 
 # 2. Check if root_unlock_time is set to 60 or more in /etc/security/faillock.conf

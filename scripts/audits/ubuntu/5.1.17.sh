@@ -21,6 +21,7 @@ if [[ "$current_value" -le 10 ]]; then
     echo "Audit passed: MaxSessions is set to $current_value (10 or less)."
 else
     echo "Audit failed: MaxSessions is set to $current_value (greater than 10)."
+    exit 1
 fi
 
 # Search configuration files for invalid MaxSessions values (greater than 10)
@@ -32,6 +33,7 @@ if [[ -z "$invalid_entries" ]]; then
 else
     echo "Invalid MaxSessions settings found:"
     echo "$invalid_entries"
+    exit 1
 fi
 
 # Check for Match block overrides if needed
