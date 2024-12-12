@@ -340,7 +340,6 @@ if __name__ == "__main__":
 
     new_audit_page.continue_btn.clicked.connect(new_audit_filters)
 
-
     audit_select_page.module_to_name = load_module_to_name()
     audit_select_page.database = sqlite3.connect('audit_results.db')
     create_tables()

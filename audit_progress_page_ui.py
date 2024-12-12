@@ -22,7 +22,7 @@ class Ui_audit_progress_page(object):
     def setupUi(self, audit_progress_page):
         if not audit_progress_page.objectName():
             audit_progress_page.setObjectName(u"audit_progress_page")
-        audit_progress_page.resize(753, 300)
+        audit_progress_page.resize(753, 690)
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
