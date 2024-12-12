@@ -34,3 +34,4 @@
  [ -n "$l_output" ] && echo -e "- * Correctly configured * :\n$l_output\n"
  fi
 }
+
