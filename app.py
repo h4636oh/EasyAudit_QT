@@ -85,11 +85,11 @@ def get_system_info():
 
     return {
         "hostname": f"HOSTNAME - {hostname}",
-        "os_name": f"HOSTNAME - {os_name}",
-        "os_version": f"HOSTNAME - {os_version}",
-        "kernel_version": f"HOSTNAME - {kernel_version}",
-        "machine_arch": f"HOSTNAME - {machine_arch}",
-        "processor": f"HOSTNAME - {processor}"
+        "os_name": f"OS NAME - {os_name}",
+        "os_version": f"OS VERSION - {os_version}",
+        "kernel_version": f"KERNEL - {kernel_version}",
+        "machine_arch": f"MACHINE ARCH - {machine_arch}",
+        "processor": f"PROCESSOR - {processor}"
     }
 
 ###-----------------###
