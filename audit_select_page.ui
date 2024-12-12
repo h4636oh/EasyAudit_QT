@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -44,6 +44,11 @@
     <layout class="QHBoxLayout" name="bar_top">
      <item>
       <widget class="QLineEdit" name="search_bar">
+       <property name="styleSheet">
+        <string notr="true">border-color: rgb(255, 255, 255);
+border-width: 5px solid white;
+</string>
+       </property>
        <property name="inputMask">
         <string/>
        </property>
@@ -61,10 +66,29 @@
     </layout>
    </item>
    <item>
-    <widget class="QListWidget" name="script_select_display"/>
+    <widget class="QListWidget" name="script_select_display">
+     <property name="styleSheet">
+      <string notr="true">border-color: rgb(255, 255, 255);
+border-width: 5px solid white;
+</string>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QPushButton" name="select_all_btn">
+     <property name="font">
+      <font>
+       <family>DM Mono Medium</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(61, 64, 91);</string>
+     </property>
      <property name="text">
       <string>SELECT ALL</string>
      </property>
@@ -77,6 +101,19 @@
     <layout class="QHBoxLayout" name="bar_bottom">
      <item>
       <widget class="QPushButton" name="back_btn">
+       <property name="font">
+        <font>
+         <family>DM Mono Medium</family>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(61, 64, 91);</string>
+       </property>
        <property name="text">
         <string>BACK</string>
        </property>
@@ -97,6 +134,19 @@
      </item>
      <item>
       <widget class="QPushButton" name="audit_btn">
+       <property name="font">
+        <font>
+         <family>DM Mono Medium</family>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(61, 64, 91);</string>
+       </property>
        <property name="text">
         <string>AUDIT</string>
        </property>

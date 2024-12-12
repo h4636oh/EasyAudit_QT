@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -77,6 +77,17 @@
     <layout class="QHBoxLayout" name="bar_bottom">
      <item>
       <widget class="QPushButton" name="home_btn">
+       <property name="font">
+        <font>
+         <family>DM Mono Medium</family>
+         <pointsize>12</pointsize>
+         <italic>false</italic>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(61, 64, 91);</string>
+       </property>
        <property name="text">
         <string>HOME</string>
        </property>
@@ -97,6 +108,17 @@
      </item>
      <item>
       <widget class="QPushButton" name="export_btn">
+       <property name="font">
+        <font>
+         <family>DM Mono Medium</family>
+         <pointsize>12</pointsize>
+         <italic>false</italic>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(61, 64, 91);</string>
+       </property>
        <property name="text">
         <string>EXPORT RESULT</string>
        </property>
