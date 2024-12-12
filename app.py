@@ -546,7 +546,7 @@ if __name__ == "__main__":
         pdf.multi_cell(0, 5, txt = log_data)
         filename = QFileDialog.getSaveFileName(audit_result_page, "Save Log PDF", "", "PDF File (*.pdf)")
         if filename[0]:
-            pdf.output(f"{filename[0]}.pdf")
+            pdf.output(filename[0])
 
     audit_result_page.export_btn.clicked.connect(save_logs)
 
