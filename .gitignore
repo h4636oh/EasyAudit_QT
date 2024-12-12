@@ -1,6 +1,7 @@
 # This file is used to ignore files which are generated
 # ----------------------------------------------------------------------------
 audit_results.db
+log/
 temp/
 .venv/
 venv/
@@ -77,3 +78,4 @@ CMakeLists.txt.user*
 
 sample_results.db
 pysidedeploy.spec
+audit_results.db
