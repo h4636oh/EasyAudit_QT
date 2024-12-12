@@ -37,7 +37,7 @@
    <string>Widget</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(61, 64, 91);</string>
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -45,9 +45,7 @@
      <item>
       <widget class="QLineEdit" name="search_bar">
        <property name="styleSheet">
-        <string notr="true">border-color: rgb(255, 255, 255);
-border-width: 5px solid white;
-</string>
+        <string notr="true"/>
        </property>
        <property name="inputMask">
         <string/>
@@ -68,9 +66,7 @@ border-width: 5px solid white;
    <item>
     <widget class="QListWidget" name="script_select_display">
      <property name="styleSheet">
-      <string notr="true">border-color: rgb(255, 255, 255);
-border-width: 5px solid white;
-</string>
+      <string notr="true"/>
      </property>
     </widget>
    </item>
@@ -86,8 +82,7 @@ border-width: 5px solid white;
       <bool>false</bool>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 255, 255);
-color: rgb(61, 64, 91);</string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>SELECT ALL</string>
@@ -111,8 +106,7 @@ color: rgb(61, 64, 91);</string>
         <bool>false</bool>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(255, 255, 255);
-color: rgb(61, 64, 91);</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>BACK</string>
@@ -121,6 +115,9 @@ color: rgb(61, 64, 91);</string>
      </item>
      <item>
       <spacer name="horizontalSpacer_2">
+       <property name="styleSheet">
+        <string/>
+       </property>
        <property name="orientation">
         <enum>Qt::Orientation::Horizontal</enum>
        </property>
@@ -144,8 +141,7 @@ color: rgb(61, 64, 91);</string>
         <bool>false</bool>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(255, 255, 255);
-color: rgb(61, 64, 91);</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>AUDIT</string>

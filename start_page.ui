@@ -38,7 +38,7 @@
    <string>EASY AUDIT - HOME PAGE</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(61, 64, 91);</string>
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
@@ -251,8 +251,7 @@
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(255, 255, 255);
-color: rgb(61, 64, 91);</string>
+          <string notr="true"/>
          </property>
          <property name="text">
           <string>NEW AUDIT</string>
@@ -268,8 +267,7 @@ color: rgb(61, 64, 91);</string>
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(255, 255, 255);
-color: rgb(61, 64, 91);</string>
+          <string notr="true"/>
          </property>
          <property name="text">
           <string>CIS BENCHMARK</string>

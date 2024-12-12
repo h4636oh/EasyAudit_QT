@@ -37,7 +37,7 @@
    <string>Widget</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(61, 64, 91);</string>
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

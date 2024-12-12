@@ -32,7 +32,7 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(61, 64, 91);</string>
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -42,6 +42,9 @@
      </property>
      <item>
       <widget class="QLineEdit" name="search_bar">
+       <property name="styleSheet">
+        <string/>
+       </property>
        <property name="inputMask">
         <string/>
        </property>
@@ -60,6 +63,9 @@
    </item>
    <item>
     <widget class="QTreeWidget" name="script_result_display">
+     <property name="styleSheet">
+      <string/>
+     </property>
      <property name="headerHidden">
       <bool>true</bool>
      </property>
@@ -85,8 +91,7 @@
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(255, 255, 255);
-color: rgb(61, 64, 91);</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>HOME</string>
@@ -95,6 +100,9 @@ color: rgb(61, 64, 91);</string>
      </item>
      <item>
       <spacer name="horizontalSpacer">
+       <property name="styleSheet">
+        <string/>
+       </property>
        <property name="orientation">
         <enum>Qt::Orientation::Horizontal</enum>
        </property>
@@ -116,8 +124,7 @@ color: rgb(61, 64, 91);</string>
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(255, 255, 255);
-color: rgb(61, 64, 91);</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>EXPORT RESULT</string>

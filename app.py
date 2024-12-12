@@ -538,12 +538,17 @@ if __name__ == "__main__":
 
     logfile_name = None
 
+    from fpdf import FPDF
+
     def save_logs():
         log_data = open(f'{logfile_name}', 'r').read()
-        filename = QFileDialog.getSaveFileName(audit_result_page, "Save Log File", "", "Txt File (*.txt)")
+        pdf = FPDF() 
+        pdf.add_page()
+        pdf.set_font("Arial", size = 15)
+        pdf.multi_cell(0, 5, txt = log_data)
+        filename = QFileDialog.getSaveFileName(audit_result_page, "Save Log PDF", "", "PDF File (*.pdf)")
         if filename[0]:
-            with open(filename[0], 'w') as f:
-                f.write(log_data)
+            pdf.output(f"{filename[0]}.pdf", "F")
 
     audit_result_page.export_btn.clicked.connect(save_logs)
 
