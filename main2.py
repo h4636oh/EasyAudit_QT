@@ -268,6 +268,7 @@ def audit_result_page_display_result():
     module_to_name = load_module_to_name()
     for row_idx, (script_name, return_code, output, error) in enumerate(rows):
         temp = script_name.replace('.sh', '')
+        temp = script_name.replace('.ps1', '')
         module_name = module_to_name.get(temp, temp)
 #################################################################################################
         audit_result_page.script_result_display.setWordWrap(True)
