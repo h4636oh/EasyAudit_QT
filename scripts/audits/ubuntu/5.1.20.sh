@@ -7,6 +7,7 @@ check_permit_root_login() {
         echo "PermitRootLogin is correctly set to no"
     else
         echo "PermitRootLogin is not correctly set. Current value: $output"
+        exit 1
     fi
 }
 
@@ -18,6 +19,7 @@ check_match_directive() {
         echo "PermitRootLogin for user $user is correctly set to no"
     else
         echo "PermitRootLogin for user $user is not correctly set. Current value: $output"
+        exit 1
     fi
 }
 

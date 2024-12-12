@@ -7,6 +7,7 @@ check_permit_user_environment() {
         echo "PermitUserEnvironment is correctly set to no"
     else
         echo "PermitUserEnvironment is not correctly set. Current value: $output"
+        exit 1
     fi
 }
 
@@ -18,6 +19,7 @@ check_match_directive() {
         echo "PermitUserEnvironment for user $user is correctly set to no"
     else
         echo "PermitUserEnvironment for user $user is not correctly set. Current value: $output"
+        exit 1
     fi
 }
 
