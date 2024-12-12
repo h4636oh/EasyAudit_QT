@@ -96,7 +96,7 @@ def get_system_info():
 ### LOADS MODULE TO NAME DICTIONARY ###
 def load_complete_json():
     os = check_os()
-    file_path = "scripts/" + "windows" + ".json"
+    file_path = "scripts/" + f"{os}" + ".json"
     with open(file_path, 'r') as file:
         return json.load(file)
 
