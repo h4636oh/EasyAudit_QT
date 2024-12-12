@@ -116,6 +116,7 @@ def audit_select_page_populate_script_list():
     if os.path.isdir(script_dir):
         for script in sorted(os.listdir(script_dir)):
             script_name = os.path.splitext(script)[0]
+            script_name = script_name.replace(".audit", "")
             ##############################################################################################
             module_name = audit_select_page.module_to_name.get(script_name, script_name)
             list_item = QtWidgets.QListWidgetItem(module_name)
@@ -268,7 +269,8 @@ def audit_result_page_display_result():
     module_to_name = load_module_to_name()
     for row_idx, (script_name, return_code, output, error) in enumerate(rows):
         temp = script_name.replace('.sh', '')
-        temp = script_name.replace('.ps1', '')
+        temp = temp.replace('.ps1', '')
+        temp = temp.replace('.audit', '')
         module_name = module_to_name.get(temp, temp)
 #################################################################################################
         audit_result_page.script_result_display.setWordWrap(True)
