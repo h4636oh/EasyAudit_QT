@@ -85,11 +85,11 @@ def get_system_info():
 
     return {
         "hostname": f"HOSTNAME - {hostname}",
-        "os_name": f"HOSTNAME - {os_name}",
-        "os_version": f"HOSTNAME - {os_version}",
-        "kernel_version": f"HOSTNAME - {kernel_version}",
-        "machine_arch": f"HOSTNAME - {machine_arch}",
-        "processor": f"HOSTNAME - {processor}"
+        "os_name": f"OS NAME - {os_name}",
+        "os_version": f"OS VERSION - {os_version}",
+        "kernel_version": f"KERNEL - {kernel_version}",
+        "machine_arch": f"MACHINE ARCH - {machine_arch}",
+        "processor": f"PROCESSOR - {processor}"
     }
 
 ###-----------------###
@@ -540,13 +540,10 @@ if __name__ == "__main__":
 
     def save_logs():
         log_data = open(f'{logfile_name}', 'r').read()
-        pdf = FPDF() 
-        pdf.add_page()
-        pdf.set_font("Arial", size = 15)
-        pdf.multi_cell(0, 5, txt = log_data)
-        filename = QFileDialog.getSaveFileName(audit_result_page, "Save Log PDF", "", "PDF File (*.pdf)")
+        filename = QFileDialog.getSaveFileName(audit_result_page, "Save Log File", "", "Txt File (*.txt)")
         if filename[0]:
-            pdf.output(f"{filename[0]}.pdf")
+            with open(filename[0], 'w') as f:
+                f.write(log_data)
 
     audit_result_page.export_btn.clicked.connect(save_logs)
 
