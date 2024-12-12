@@ -95,18 +95,7 @@
      <item>
       <widget class="QPushButton" name="export_btn">
        <property name="text">
-<<<<<<< HEAD
-        <string>VIEW AUDIT LOGS</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="export_btn">
-       <property name="text">
-        <string>EXPORT</string>
-=======
         <string>EXPORT RESULT</string>
->>>>>>> 0a18a97 (added export and bitlocker locking)
        </property>
       </widget>
      </item>
