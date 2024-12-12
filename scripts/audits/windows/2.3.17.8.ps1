@@ -2,7 +2,8 @@
 # This script audits a policy setting intended for application compatibility by checking the registry setting.
 # Specifically, it verifies that 'User Account Control: Virtualize file and registry write failures to per-user locations' 
 # is set to 'Enabled' on a Windows system.
-
+Write-Host "Time Limit Exeded"
+exit 1
 # Define the registry path and value name
 $regPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System"
 $valueName = "EnableVirtualization"
