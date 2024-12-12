@@ -94,6 +94,11 @@ def get_system_info():
 ###-----------------###
 
 ### LOADS MODULE TO NAME DICTIONARY ###
+def load_complete_json():
+    os = check_os()
+    file_path = "scripts/" + "windows" + ".json"
+    with open(file_path, 'r') as file:
+        return json.load(file)
 
 def load_module_to_name():
     os = check_os()
@@ -132,10 +137,13 @@ def audit_select_page_populate_script_list():
     if os_name == "Windows":
         script_dir = 'scripts/audits/windows'
     if os.path.isdir(script_dir):
+        module_info = load_complete_json()
         for script in sorted(os.listdir(script_dir)):
             script_name = os.path.splitext(script)[0]
             script_name = script_name.replace(".audit", "")
-            tooltip_text = "somestring"
+            script_info = module_info[script_name] if script_name in module_info else print(f"error : {script_name}", f"script")
+            description = script_info["Description"]
+            tooltip_text = description
             ##############################################################################################
             module_name = audit_select_page.module_to_name.get(script_name, script_name)
             list_item = QtWidgets.QListWidgetItem(module_name)
