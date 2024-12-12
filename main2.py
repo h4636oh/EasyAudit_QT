@@ -96,7 +96,9 @@ def get_system_info():
 ### LOADS MODULE TO NAME DICTIONARY ###
 
 def load_module_to_name():
-    with open('tests/ubuntu_moduleToName.json', 'r') as file:
+    os = check_os()
+    file_path = "scripts/" + f"{os}" + "_moduleToName.json"
+    with open(file_path, 'r') as file:
         return json.load(file)
 
 ### ADDS SCRIPTS TO THE AUDIT SELECT PAGE DISPLAY SECTION ###
@@ -110,10 +112,11 @@ def audit_select_page_populate_script_list():
     if os_name == "rhel_9":
         script_dir = 'scripts/audits/rhel_9'
     if os_name == "Windows":
-        script_dir = 'scripts/audits/windows' 
+        script_dir = 'scripts/audits/windows'
     if os.path.isdir(script_dir):
         for script in sorted(os.listdir(script_dir)):
             script_name = os.path.splitext(script)[0]
+            ##############################################################################################
             module_name = audit_select_page.module_to_name.get(script_name, script_name)
             list_item = QtWidgets.QListWidgetItem(module_name)
             list_item.setFlags(list_item.flags() | QtCore.Qt.ItemIsUserCheckable)
@@ -135,7 +138,7 @@ def audit_select_page_select_all_scripts():
         for index in range(audit_select_page.script_select_display.count()):
             item = audit_select_page.script_select_display.item(index)
             item.setCheckState(QtCore.Qt.Unchecked)
-    
+
 
 
 def audit_select_page_add_new_script():
@@ -144,7 +147,7 @@ def audit_select_page_add_new_script():
         script_name = os.path.basename(file_path)
         audit_select_page.script_select_display.addItem(script_name)
 
-### CREATES THE DATABASE FOR AUDIT RESULTS ### 
+### CREATES THE DATABASE FOR AUDIT RESULTS ###
 
 def create_tables():
     cursor = audit_select_page.database.cursor()
@@ -162,7 +165,7 @@ def create_tables():
     audit_select_page.database.commit()
 
 
-### 
+###
 
 def run_script(script_path):
     try:
@@ -175,8 +178,8 @@ def run_script(script_path):
             result = subprocess.run(["bash", script_path], capture_output=True, text=True)
         if os_name == "Windows":
             result = subprocess.run(
-                ["powershell.exe", 
-                "-ExecutionPolicy", "Bypass", 
+                ["powershell.exe",
+                "-ExecutionPolicy", "Bypass",
                 "-File", script_path],
                 capture_output=True, text=True
             )
@@ -216,7 +219,7 @@ def audit_selected_scripts():
         if os_name == "Ubuntu":
             script_path = os.path.join('scripts/audits/ubuntu', script_name)
         if os_name == "rhel_9":
-            script_path = os.path.join('scripts/audits/rhel_9', script_name) 
+            script_path = os.path.join('scripts/audits/rhel_9', script_name)
         if os_name == "Windows":
             script_path = os.path.join('scripts/audits/windows', script_name)
 
@@ -241,7 +244,7 @@ def audit_selected_scripts():
 
     main_window.setCurrentIndex(4)
     audit_result_page_display_result()
-    
+
 ###
 
 def audit_result_page_display_result():
@@ -252,24 +255,25 @@ def audit_result_page_display_result():
             FROM audit_results
             WHERE session_id = ?
         """, (session_id,))
-    
-    rows = cursor.fetchall()
-    audit_result_page.module_to_name = load_module_to_name()
-    audit_result_page.script_result_display.clear()  # Clear previous results
-    for row_idx, (script_name, return_code, output, error) in enumerate(rows):
-        module_name = audit_result_page.module_to_name.get(script_name, script_name)
 
+    rows = cursor.fetchall()
+    audit_result_page.script_result_display.clear()  # Clear previous results
+    module_to_name = load_module_to_name()
+    for row_idx, (script_name, return_code, output, error) in enumerate(rows):
+        temp = script_name.replace('.sh', '')
+        module_name = module_to_name.get(temp, temp)
+#################################################################################################
         audit_result_page.script_result_display.setWordWrap(True)
-        
+
         # Create parent item for the script
         parent_item = QtWidgets.QTreeWidgetItem(audit_result_page.script_result_display)
         if return_code == 0:  # Pass
             parent_item.setText(0, f"PASS: {module_name}")
         else:
             parent_item.setText(0, f"FAIL: {module_name}")
-        
+
         # Add placeholder details as child items
-        
+
         # Truncate if output is too long
 
         if output != "":
@@ -277,13 +281,13 @@ def audit_result_page_display_result():
             child_output.setText(0, f"{output}")
             # child_output.setwordWrap(True)
         # Truncate if error is too long
-        
+
         if error != "" :
             child_error = QtWidgets.QTreeWidgetItem(parent_item)
             child_error.setText(0, f"{error}")
             # child_error.setwordWrap(True)
         # Truncate if error is too long
-        
+
         # Expand all items by default (optional)
         parent_item.setExpanded(False)
 
@@ -340,6 +344,10 @@ if __name__ == "__main__":
 
     new_audit_page.continue_btn.clicked.connect(new_audit_filters)
 
+<<<<<<< HEAD
+###########################################################################
+=======
+>>>>>>> 717db2a03f855088e3262b9673a008f3061f41b5
     audit_select_page.module_to_name = load_module_to_name()
     audit_select_page.database = sqlite3.connect('audit_results.db')
     create_tables()
