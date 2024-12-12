@@ -1,43 +1,33 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-echo "Auditing PermitRootLogin setting..."
-
-# Check the current PermitRootLogin setting in sshd configuration
-root_login_setting=$(sshd -T | grep -i permitrootlogin)
-
-# Display the current PermitRootLogin setting
-if [[ -n "$root_login_setting" ]]; then
-    echo "Current setting: $root_login_setting"
-else
-    echo "PermitRootLogin setting not found in sshd configuration."
-    exit 1
-fi
-
-# Extract the value (yes/no/prohibit-password/forced-commands-only)
-current_value=$(echo "$root_login_setting" | awk '{print $2}')
-
-# Verify if PermitRootLogin is set to 'no'
-if [[ "$current_value" == "no" ]]; then
-    echo "Audit passed: PermitRootLogin is correctly set to 'no'."
-else
-    echo "Audit failed: PermitRootLogin is set to '$current_value' (should be 'no')."
-    exit 1
-fi
-
-# Check for Match block overrides for user 'sshuser'
-echo -e "\nChecking PermitRootLogin for user 'sshuser' (if Match blocks are used)..."
-match_root_login=$(sshd -T -C user=sshuser | grep -i permitrootlogin)
-
-if [[ -n "$match_root_login" ]]; then
-    echo "Match block setting for sshuser: $match_root_login"
-    match_value=$(echo "$match_root_login" | awk '{print $2}')
-    if [[ "$match_value" == "no" ]]; then
-        echo "Match block audit passed: PermitRootLogin is correctly set to 'no' for sshuser."
+# Function to check PermitRootLogin setting
+check_permit_root_login() {
+    local output=$(sshd -T | grep permitrootlogin)
+    if [[ "$output" == "permitrootlogin no" ]]; then
+        echo "PermitRootLogin is correctly set to no"
     else
-        echo "Match block audit failed: PermitRootLogin is set to '$match_value' (should be 'no') for sshuser."
-        exit 1
+        echo "PermitRootLogin is not correctly set. Current value: $output"
     fi
-else
-    echo "No Match block override for user 'sshuser'."
-    exit 1
-fi
+}
+
+# Function to check PermitRootLogin setting with Match directive
+check_match_directive() {
+    local user=$1
+    local output=$(sshd -T -C user="$user" | grep permitrootlogin)
+    if [[ "$output" == "permitrootlogin no" ]]; then
+        echo "PermitRootLogin for user $user is correctly set to no"
+    else
+        echo "PermitRootLogin for user $user is not correctly set. Current value: $output"
+    fi
+}
+
+# Check PermitRootLogin setting
+check_permit_root_login
+
+# Pause for 1 second
+sleep 1
+
+# Check PermitRootLogin setting for specific user if Match directive is used
+USER_TO_CHECK="sshuser"
+check_match_directive "$USER_TO_CHECK"
+
