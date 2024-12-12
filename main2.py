@@ -84,12 +84,12 @@ def get_system_info():
         processor = "Unknown"
 
     return {
-        "hostname": f"HOSTNAME - {hostname}",
-        "os_name": f"HOSTNAME - {os_name}",
-        "os_version": f"HOSTNAME - {os_version}",
-        "kernel_version": f"HOSTNAME - {kernel_version}",
-        "machine_arch": f"HOSTNAME - {machine_arch}",
-        "processor": f"HOSTNAME - {processor}"
+        "hostname": f"HOSTNAME - {hostname.upper()}",
+        "os_name": f"OS - {os_name.upper()}",
+        "os_version": f"OS VERSION - {os_version.upper()}",
+        "kernel_version": f"KERNEL VERSION - {kernel_version.upper()}",
+        "machine_arch": f"MACHINE ARCH - {machine_arch.upper()}",
+        "processor": f"PROCESSOR - {processor.upper()}"
     }
 
 ###-----------------###
@@ -454,7 +454,7 @@ if __name__ == "__main__":
 
     new_audit_page.continue_btn.clicked.connect(new_audit_filters)
 
-###########################################################################
+
     audit_select_page.module_to_name = load_module_to_name()
     audit_select_page.database = sqlite3.connect('audit_results.db')
     create_tables()

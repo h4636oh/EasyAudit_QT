@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -244,6 +244,16 @@
        </property>
        <item>
         <widget class="QPushButton" name="new_audit_btn">
+         <property name="font">
+          <font>
+           <family>DM Mono Medium</family>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(61, 64, 91);</string>
+         </property>
          <property name="text">
           <string>NEW AUDIT</string>
          </property>
@@ -251,6 +261,16 @@
        </item>
        <item>
         <widget class="QPushButton" name="cis_benchmark_btn">
+         <property name="font">
+          <font>
+           <family>DM Mono Medium</family>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(61, 64, 91);</string>
+         </property>
          <property name="text">
           <string>CIS BENCHMARK</string>
          </property>
