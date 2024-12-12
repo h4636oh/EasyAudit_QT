@@ -83,21 +83,33 @@ def get_system_info():
         processor = "Unknown"
 
     return {
-        "hostname": hostname,
-        "os_name": os_name,
-        "os_version": os_version,
-        "kernel_version": kernel_version,
-        "machine_arch": machine_arch,
-        "processor": processor
+        "hostname": f"HOSTNAME - {hostname}",
+        "os_name": f"HOSTNAME - {os_name}",
+        "os_version": f"HOSTNAME - {os_version}",
+        "kernel_version": f"HOSTNAME - {kernel_version}",
+        "machine_arch": f"HOSTNAME - {machine_arch}",
+        "processor": f"HOSTNAME - {processor}"
     }
 
 ###-----------------###
 
 ### LOADS MODULE TO NAME DICTIONARY ###
+def load_complete_json():
+<<<<<<< HEAD
+    os = check_os()
+    file_path = "scripts/" + f"{os}" + ".json"
+=======
+    os_name = check_os()
+    file_name = os_name + ".json"
+    file_path = os.path.join('scripts', file_name)
+>>>>>>> e262e73 (some tinker to main2)
+    with open(file_path, 'r') as file:
+        return json.load(file)
 
 def load_module_to_name():
-    os = check_os()
-    file_path = "scripts/" + f"{os}" + "_moduleToName.json"
+    os_name = check_os()
+    file_name = os_name + "_moduleToName.json"
+    file_path = os.path.join('scripts', file_name)
     with open(file_path, 'r') as file:
         return json.load(file)
 
@@ -132,11 +144,13 @@ def audit_select_page_populate_script_list():
     if os_name == "Windows":
         script_dir = 'scripts/audits/windows'
     if os.path.isdir(script_dir):
+        module_info = load_complete_json()
         for script in sorted(os.listdir(script_dir)):
             script_name = os.path.splitext(script)[0]
             script_name = script_name.replace(".audit", "")
-            tooltip_text = "somestring"
-            ##############################################################################################
+            script_info = module_info[script_name] if script_name in module_info else print(f"error : {script_name}", f"script")
+            description = script_info["Description"]
+            tooltip_text = description
             module_name = audit_select_page.module_to_name.get(script_name, script_name)
             list_item = QtWidgets.QListWidgetItem(module_name)
             list_item.setFlags(list_item.flags() | QtCore.Qt.ItemIsUserCheckable)
@@ -217,6 +231,69 @@ def add_audit_result(result):
     audit_select_page.database.commit()
 
 ###
+import json
+
+def filter_json_by_criteria(data, criteria):
+    """
+    Filters the input JSON data based on the criteria specified for SL1, SL2, L1, L2, and BL.
+
+    Args:
+        data (dict): The input JSON data.
+        criteria (dict): A dictionary containing the desired values for SL1, SL2, L1, L2, and BL.
+                         Example: {"SL1": "TRUE", "L1": "TRUE"}
+
+    Returns:
+        list: A list of indices that match the criteria.
+    """
+    filtered_indices = []
+
+    for key, value in data.items():
+        match = all(value.get(crit_key, "") == crit_value for crit_key, crit_value in criteria.items())
+        if match:
+            filtered_indices.append(key)
+
+    return filtered_indices
+
+def load_json_from_file(filepath):
+    """
+    Loads JSON data from a file.
+
+    Args:
+        filepath (str): Path to the JSON file.
+
+    Returns:
+        dict: The loaded JSON data.
+    """
+    with open(filepath, 'r') as file:
+        return json.load(file)
+
+def serach_json_for_windows(criteria):
+    jsondata=load_json_from_file('windowsDB.json')
+    filtered = filter_json_by_criteria(jsondata, criteria)
+    return filtered
+
+
+def serach_json_for_redhat(criteria):
+    jsondata=load_json_from_file('redhatDB.json')
+    filtered = filter_json_by_criteria(jsondata, criteria)
+    return filtered
+    
+
+def serach_json_for_ubuntu(criteria):
+    jsondata=load_json_from_file('ubuntuDB.json')
+    filtered = filter_json_by_criteria(jsondata, criteria)
+    return filtered
+
+def serach_all_json(OPS,criteria):
+    if OPS=="Windows":
+        return serach_json_for_windows(criteria)
+    elif OPS=="Redhat":
+        return serach_json_for_redhat(criteria)
+    elif OPS=="Ubuntu":
+        return serach_json_for_ubuntu(criteria)
+    
+    
+    
 
 def audit_selected_scripts():
 
@@ -345,12 +422,12 @@ if __name__ == "__main__":
     system_info = get_system_info()
 
     # Set label text for each system information entry
-    start_page.hostname_lbl_entry.setText(system_info["hostname"])
-    start_page.os_name_entry.setText(system_info["os_name"])
-    start_page.os_version_lbl_entry.setText(system_info["os_version"])
-    start_page.kernel_lbl_entry.setText(system_info["kernel_version"])
-    start_page.mach_arch_lbl_entry.setText(system_info["machine_arch"])
-    start_page.processor_lbl_entry.setText(system_info["processor"])
+    start_page.hostname_lbl.setText(system_info["hostname"])
+    start_page.os_name_lbl.setText(system_info["os_name"])
+    start_page.os_version_lbl.setText(system_info["os_version"])
+    start_page.kernel_lbl.setText(system_info["kernel_version"])
+    start_page.mach_arch_lbl.setText(system_info["machine_arch"])
+    start_page.processor_lbl.setText(system_info["processor"])
 
     # Connect buttons to methods
     loader_new_audit_page = QUiLoader()
