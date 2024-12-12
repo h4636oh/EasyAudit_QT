@@ -200,7 +200,14 @@ def add_audit_result(result):
 def audit_selected_scripts():
 
     global logfile_name
-    logfile_name = f'log/.audit_log_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.txt'
+
+    os_name = check_os()
+    if os_name == "Ubuntu":
+        logfile_name = f'/tmp/audit_log_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.txt'
+    if os_name == "rhel_9":
+        logfile_name = f'/tmp/audit_log_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.txt'
+    if os_name == "Windows":
+            logfile_name = f'log/.audit_log_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.txt'
     logfile = open(f'{logfile_name}', 'w')
     selected_items = [audit_select_page.script_select_display.item(i) for i in range(audit_select_page.script_select_display.count()) if audit_select_page.script_select_display.item(i).checkState() == QtCore.Qt.Checked]
     global session_id
