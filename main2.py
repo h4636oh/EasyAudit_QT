@@ -11,6 +11,7 @@ from PySide6.QtCore import QCoreApplication
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtCore import QUrl
 import datetime
+from fpdf import FPDF
 
 def bitlocker_status():
     if platform.system() == "Windows":
@@ -95,8 +96,6 @@ def get_system_info():
 
 ### LOADS MODULE TO NAME DICTIONARY ###
 def load_complete_json():
-    os = check_os()
-    file_path = "scripts/" + f"{os}" + ".json"
     os_name = check_os()
     file_name = os_name + ".json"
     file_path = os.path.join('scripts', file_name)
@@ -146,7 +145,7 @@ def audit_select_page_populate_script_list():
             script_name = os.path.splitext(script)[0]
             script_name = script_name.replace(".audit", "")
             script_info = module_info[script_name] if script_name in module_info else print(f"error : {script_name}", f"script")
-            description = script_info["Description"]
+            description = script_info["Description"] if script_info else "NULL"
             tooltip_text = description
             module_name = audit_select_page.module_to_name.get(script_name, script_name)
             list_item = QtWidgets.QListWidgetItem(module_name)
@@ -299,6 +298,10 @@ def audit_selected_scripts():
     if os_name == "rhel_9":
         logfile_name = f'/tmp/audit_log_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.txt'
     if os_name == "Windows":
+            if os.path.exists('log'):
+                pass
+            else:
+                os.makedirs('log')
             logfile_name = f'log/.audit_log_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.txt'
     logfile = open(f'{logfile_name}', 'w')
     selected_items = [audit_select_page.script_select_display.item(i) for i in range(audit_select_page.script_select_display.count()) if audit_select_page.script_select_display.item(i).checkState() == QtCore.Qt.Checked]
@@ -331,8 +334,11 @@ def audit_selected_scripts():
         QCoreApplication.processEvents()
         progress = int(idx / item_count * 100)
         audit_progress_page.script_progess_bar.setValue(progress)
+        script_name = script_name.replace('.audit', '')
+        script_name = script_name.replace('.sh', '')
+        script_name = script_name.replace('.ps1', '')
         module_name = audit_select_page.module_to_name.get(script_name, script_name)
-
+        
         logfile.write(f"Script: {script_name} - {module_name}\n")
         logfile.write(f"Output:{stdout}\n")
         logfile.write(f"Error:{stderr}\n")
@@ -480,10 +486,13 @@ if __name__ == "__main__":
 
     def save_logs():
         log_data = open(f'{logfile_name}', 'r').read()
-        filename = QFileDialog.getSaveFileName(audit_result_page, "Save Log", "", "Text Files (*.txt)")
+        pdf = FPDF() 
+        pdf.add_page()
+        pdf.set_font("Arial", size = 15)
+        pdf.multi_cell(0, 5, txt = log_data)
+        filename = QFileDialog.getSaveFileName(audit_result_page, "Save Log PDF", "", "PDF File (*.pdf)")
         if filename[0]:
-            with open(filename[0], 'w') as f:
-                f.write(log_data)
+            pdf.output(f"{filename[0]}.pdf")
 
     audit_result_page.export_btn.clicked.connect(save_logs)
 
