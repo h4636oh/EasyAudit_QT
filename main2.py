@@ -95,20 +95,11 @@ def get_system_info():
 
 ### LOADS MODULE TO NAME DICTIONARY ###
 def load_complete_json():
-<<<<<<< HEAD
-
-
-    os_name = check_os()
-    file_name = os_name + ".json"
-    file_path = os.path.join('scripts', file_name)
-
-=======
     os = check_os()
     file_path = "scripts/" + f"{os}" + ".json"
     os_name = check_os()
     file_name = os_name + ".json"
     file_path = os.path.join('scripts', file_name)
->>>>>>> a14544c (ui_files_updated and added control added to log)
     with open(file_path, 'r') as file:
         return json.load(file)
 
