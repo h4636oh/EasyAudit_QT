@@ -100,7 +100,7 @@ def load_complete_json():
     os_name = check_os()
     file_name = os_name + ".json"
     file_path = os.path.join('scripts', file_name)
-    with open(file_path, 'r') as file:
+    with open(file_path, 'r',encoding='utf-8') as file:
         return json.load(file)
 
 def load_module_to_name():
