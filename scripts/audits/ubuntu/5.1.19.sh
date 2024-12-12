@@ -7,6 +7,7 @@ check_permit_empty_passwords() {
         echo "PermitEmptyPasswords is correctly set to no"
     else
         echo "PermitEmptyPasswords is not correctly set. Current value: $output"
+        exit 1
     fi
 }
 
@@ -18,6 +19,7 @@ check_match_directive() {
         echo "PermitEmptyPasswords for user $user is correctly set to no"
     else
         echo "PermitEmptyPasswords for user $user is not correctly set. Current value: $output"
+        exit 1
     fi
 }
 
