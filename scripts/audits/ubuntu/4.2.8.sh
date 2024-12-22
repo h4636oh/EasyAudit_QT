@@ -5,7 +5,7 @@ echo "Auditing nftables base chain policies..."
 # Function to check a specific chain for DROP policy
 check_chain_policy() {
     local chain_name=$1
-    local chain_policy=$(nft list ruleset | grep "hook $chain_name")
+    local chain_policy=$(sudo nft list ruleset | grep "hook $chain_name")
     
     if [[ $chain_policy =~ "policy drop" ]]; then
         echo "PASS: Base chain '$chain_name' has a policy of DROP."

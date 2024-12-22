@@ -1,8 +1,18 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Check if sudo is installed
-dpkg-query -s sudo &>/dev/null && echo "sudo is installed" && exit 1
+if dpkg-query -s sudo &>/dev/null; then
+  echo "sudo is installed"
+else
+  echo "sudo is not installed"
+  exit 1
+fi
 
 # Check if sudo-ldap is installed
-dpkg-query -s sudo-ldap &>/dev/null && echo "sudo-ldap is installed" && exit 1
+if dpkg-query -s sudo-ldap &>/dev/null; then
+  echo "sudo-ldap is installed"
+else
+  echo "sudo-ldap is not installed"
+  exit 1
+fi
 

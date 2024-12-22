@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 {
     # Run the ufw status verbose command and capture output
-    ufw_status_output=$(ufw status verbose)
+    ufw_status_output=$(sudo ufw status verbose)
 
     # Define the expected rules as an array of strings
     expected_rules=(
@@ -19,6 +19,7 @@
             echo "PASS: Rule '$rule' is present."
         else
             echo "FAIL: Rule '$rule' is missing."
+            exit 1
         fi
     done
 }

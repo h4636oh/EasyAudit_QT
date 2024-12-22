@@ -14,6 +14,7 @@ if [[ $? -eq 0 ]]; then
         echo "Configuration matches expected settings: remember=24 enforce_for_root."
     else
         echo "pam_pwhistory exists but configuration doesn't match expected settings."
+        exit 1
     fi
 else
     echo "pam_pwhistory is not enabled in /etc/pam.d/common-password."

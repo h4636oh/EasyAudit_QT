@@ -1,35 +1,23 @@
 #!/usr/bin/env bash
 
-# Script to audit the difok configuration for password quality policy
+# Check if difok is set to 2 or more in /etc/security/pwquality.conf and /etc/security/pwquality.conf.d/*.conf
+difok_pwquality=$(grep -Psi -- '^\h*difok\h*=\h*([2-9]|[1-9][0-9]+)\b' /etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf)
 
-echo "Auditing difok configuration..."
-
-# 1. Check if difok is correctly configured in /etc/security/pwquality.conf and other conf files
-echo "Checking difok configuration in /etc/security/pwquality.conf and /etc/security/pwquality.conf.d/..."
-
-# Search for the difok setting in the configuration files
-difok_files=$(grep -Psi '^\h*difok\h*=\h*([2-9]|[1-9][0-9]+)\b' /etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf)
-
-if [[ -n "$difok_files" ]]; then
-    echo "Found difok setting in configuration files: "
-    echo "$difok_files"
+if [[ -z "$difok_pwquality" ]]; then
+  echo "No difok setting of 2 or more found in /etc/security/pwquality.conf and /etc/security/pwquality.conf.d/*.conf."
 else
-    echo "No difok settings found with valid values (2 or more) in /etc/security/pwquality.conf or /etc/security/pwquality.conf.d/"
+  echo "Difok setting found in /etc/security/pwquality.conf and /etc/security/pwquality.conf.d/*.conf:"
+  echo "$difok_pwquality"
+  exit 1
 fi
 
-# 2. Check for difok settings in the PAM configuration files
-echo "Checking difok setting in PAM files..."
+# Check if difok is set to less than 2 in /etc/pam.d/common-password
+difok_common_password=$(grep -Psi -- '^\h*password\h+(requisite|required|sufficient)\h+pam_pwquality\.so\h+([^#\n\r]+\h+)?difok\h*=\h*([0-1])\b' /etc/pam.d/common-password)
 
-# Search for pam_pwquality with difok set to a value less than 2
-invalid_difok=$(grep -Psi '^\h*password\h+(requisite|required|sufficient)\h+pam_pwquality\.so\h+([^#\n\r]+\h+)?difok\h*=\h*([0-1])\b' /etc/pam.d/common-password)
-
-if [[ -n "$invalid_difok" ]]; then
-    echo "Invalid difok configuration found in /etc/pam.d/common-password:"
-    echo "$invalid_difok"
-    exit 1
+if [[ -z "$difok_common_password" ]]; then
+  echo "No difok setting less than 2 found in /etc/pam.d/common-password. Configuration is correct."
 else
-    echo "No invalid difok settings found in /etc/pam.d/common-password."
+  echo "Difok setting less than 2 found in /etc/pam.d/common-password:"
+  echo "$difok_common_password"
 fi
 
-# Final message
-echo "Audit completed. Please ensure difok is set to 2 or more as per your site policy."

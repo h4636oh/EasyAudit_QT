@@ -1,21 +1,13 @@
 #!/usr/bin/env bash
 
-# Audit script to verify that the enforce_for_root option is enabled in pwquality configuration files.
+# Check if enforce_for_root is enabled in /etc/security/pwquality.conf and /etc/security/pwquality.conf.d/*.conf
+enforce_for_root_setting=$(grep -Psi -- '^\h*enforce_for_root\b' /etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf)
 
-echo "Starting audit for enforce_for_root option..."
-
-# 1. Check for enforce_for_root in pwquality configuration files
-echo "Checking for enforce_for_root in /etc/security/pwquality.conf and /etc/security/pwquality.conf.d/..."
-
-# Search for enforce_for_root in pwquality configuration files under /etc/security/
-grep -Psi '^\h*enforce_for_root\b' /etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf
-
-# If enforce_for_root is not found, print a message
-if ! grep -Psi '^\h*enforce_for_root\b' /etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf; then
-    echo "enforce_for_root is not enabled in any pwquality configuration file."
+if [[ -z "$enforce_for_root_setting" ]]; then
+  echo "enforce_for_root setting not found in /etc/security/pwquality.conf and /etc/security/pwquality.conf.d/*.conf. Please enable it to ensure the configuration is correct."
 else
-    echo "enforce_for_root is enabled in the following configuration files:"
-    grep -Psi '^\h*enforce_for_root\b' /etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf
+  echo "enforce_for_root setting found in /etc/security/pwquality.conf and /etc/security/pwquality.conf.d/*.conf:"
+  echo "$enforce_for_root_setting"
+  exit 1
 fi
 
-echo "Audit completed. Please review the output for any discrepancies."

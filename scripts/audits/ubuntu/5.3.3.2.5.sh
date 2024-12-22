@@ -1,40 +1,24 @@
 #!/usr/bin/env bash
 
-# Remediation script to set maxsequence to 3 or less and ensure compliance
+# Check maxsequence settings in /etc/security/pwquality.conf and /etc/security/pwquality.conf.d/*.conf
+maxsequence_pwquality=$(grep -Psi -- '^\h*maxsequence\h*=\h*[1-3]\b' /etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf)
 
-echo "Starting remediation for maxsequence setting..."
-
-# 1. Update or create the configuration file for maxsequence
-echo "Creating or modifying /etc/security/pwquality.conf.d/50-pwmaxsequence.conf..."
-
-# Ensure the directory exists
-[ ! -d /etc/security/pwquality.conf.d/ ] && mkdir -p /etc/security/pwquality.conf.d/
-
-# Update the maxsequence setting to 3 or less
-sed -ri 's/^\s*maxsequence\s*=/# &/' /etc/security/pwquality.conf
-
-# Add the correct maxsequence value if it's not already present
-printf '\n%s' "maxsequence = 3" > /etc/security/pwquality.conf.d/50-pwmaxsequence.conf
-echo "maxsequence set to 3 in /etc/security/pwquality.conf.d/50-pwmaxsequence.conf."
-
-# 2. Check for invalid maxsequence arguments in /usr/share/pam-configs/*
-echo "Checking PAM configuration files for invalid maxsequence arguments..."
-
-# Search for maxsequence in PAM configuration files
-grep -Pl -- '\bpam_pwquality\.so\h+([^#\n\r]+\h+)?maxsequence\b' /usr/share/pam-configs/*
-
-if [ $? -eq 0 ]; then
-    echo "Invalid maxsequence arguments found in PAM config files. Removing..."
-
-    # Loop through the files that contain invalid maxsequence arguments
-    grep -Pl -- '\bpam_pwquality\.so\h+([^#\n\r]+\h+)?maxsequence\b' /usr/share/pam-configs/* | while read -r file; do
-        # Remove the maxsequence argument from each file
-        sed -i '/pam_pwquality\.so/ s/\s*maxsequence=[^ ]*//g' "$file"
-        echo "Removed maxsequence argument from $file."
-    exit 1
-    done
+if [[ -z "$maxsequence_pwquality" ]]; then
+  echo "No maxsequence setting of 3 or less found in /etc/security/pwquality.conf and /etc/security/pwquality.conf.d/*.conf."
 else
-    echo "No invalid maxsequence arguments found in PAM config files."
+  echo "Maxsequence setting found in /etc/security/pwquality.conf and /etc/security/pwquality.conf.d/*.conf:"
+  echo "$maxsequence_pwquality"
+  exit 1
 fi
 
-echo "Remediation for maxsequence completed successfully."
+# Check if maxsequence is set to 0, greater than 3, or conforms to local site policy in /etc/pam.d/common-password
+maxsequence_common_password=$(grep -Psi -- '^\h*password\h+(requisite|required|sufficient)\h+pam_pwquality\.so\h+([^#\n\r]+\h+)?maxsequence\h*=\h*(0|[4-9]|[1-9][0-9]+)\b' /etc/pam.d/common-password)
+
+if [[ -z "$maxsequence_common_password" ]]; then
+  echo "No invalid maxsequence setting found in /etc/pam.d/common-password. Configuration is correct."
+else
+  echo "Invalid maxsequence setting found in /etc/pam.d/common-password:"
+  echo "$maxsequence_common_password"
+  exit 1
+fi
+

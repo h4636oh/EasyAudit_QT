@@ -1,14 +1,23 @@
 #!/usr/bin/env bash
 
-# Define the minimum required warning age
-MIN_WARN_AGE=7
+# Check if PASS_WARN_AGE is set to 7 or more in /etc/login.defs
+pass_warn_age=$(grep -Pi -- '^\h*PASS_WARN_AGE\h+\d+\b' /etc/login.defs)
 
-echo "Auditing PASS_WARN_AGE in /etc/login.defs..."
-grep -Pi '^\h*PASS_WARN_AGE\h+\d+\b' /etc/login.defs
+if [[ -z "$pass_warn_age" ]]; then
+  echo "PASS_WARN_AGE setting not found in /etc/login.defs."
+else
+  echo "PASS_WARN_AGE setting found in /etc/login.defs:"
+  echo "$pass_warn_age"
+fi
 
-echo
-echo "Checking users in /etc/shadow with PASS_WARN_AGE less than $MIN_WARN_AGE..."
-awk -F: '($2~/^\$.+\$/) {if($6 < '"$MIN_WARN_AGE"') print "User: " $1 " PASS_WARN_AGE: " $6}' /etc/shadow
+# Verify all passwords have a PASS_WARN_AGE of 7 or more in /etc/shadow
+invalid_users=$(awk -F: '($2~/^\$.+\$/) {if($6 < 7)print "User: " $1 " PASS_WARN_AGE: " $6}' /etc/shadow)
 
-echo
-echo "Audit completed."
+if [[ -z "$invalid_users" ]]; then
+  echo "All users have PASS_WARN_AGE set to 7 or more."
+else
+  echo "The following users have invalid PASS_WARN_AGE settings:"
+  echo "$invalid_users"
+  exit 1
+fi
+

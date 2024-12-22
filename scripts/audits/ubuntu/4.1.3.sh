@@ -6,6 +6,7 @@
         echo "- UFW service is enabled."
     else
         echo "- UFW service is NOT enabled."
+        exit 1
     fi
 
     # Check if ufw service is active

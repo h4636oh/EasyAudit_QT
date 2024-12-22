@@ -1,22 +1,23 @@
 #!/usr/bin/env bash
 
-echo "Starting PAM Audit for pam_unix.so and the 'nullok' argument..."
+# Check if PASS_MAX_DAYS is set to 365 days or less in /etc/login.defs
+pass_max_days=$(grep -Pi -- '^\h*PASS_MAX_DAYS\h+\d+\b' /etc/login.defs)
 
-# Define the list of PAM configuration files to check
-PAM_FILES=(
-  "/etc/pam.d/common-password"
-  "/etc/pam.d/common-auth"
-  "/etc/pam.d/common-account"
-  "/etc/pam.d/common-session"
-  "/etc/pam.d/common-session-noninteractive"
-)
+if [[ -z "$pass_max_days" ]]; then
+  echo "PASS_MAX_DAYS setting not found in /etc/login.defs."
+else
+  echo "PASS_MAX_DAYS setting found in /etc/login.defs:"
+  echo "$pass_max_days"
+fi
 
-# Iterate through each PAM file and check for pam_unix.so entries with 'nullok'
-for FILE in "${PAM_FILES[@]}"; do
-  echo "Checking $FILE for pam_unix.so entries with 'nullok' argument..."
-  
-  # Search for pam_unix.so and check if 'nullok' is not present
-  grep -P '^\s*[^#\n\r]+\s+pam_unix\.so\b' "$FILE" | grep -Pv '\bnullok\b' || echo "No 'nullok' found in $FILE"
-done
+# Verify all user passwords have PASS_MAX_DAYS of 365 days or less and greater than 0 days in /etc/shadow
+invalid_users=$(awk -F: '($2~/^\$.+\$/) {if($5 > 365 || $5 < 1) print "User: " $1 " PASS_MAX_DAYS: " $5}' /etc/shadow)
 
-echo "Audit complete."
+if [[ -z "$invalid_users" ]]; then
+  echo "All users have PASS_MAX_DAYS set to 365 days or less and greater than 0 days."
+else
+  echo "The following users have invalid PASS_MAX_DAYS settings:"
+  echo "$invalid_users"
+  exit 1
+fi
+

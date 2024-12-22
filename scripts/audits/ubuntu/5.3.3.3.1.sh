@@ -21,6 +21,7 @@ else
         echo "pwhistory remember value is $remember_value, which meets the required threshold."
     else
         echo "pwhistory remember value is $remember_value, which is below the required threshold of 24."
+        exit 1
     fi
 fi
 

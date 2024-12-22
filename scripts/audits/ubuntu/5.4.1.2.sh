@@ -13,6 +13,7 @@ non_compliant_users=$(awk -F: '($2~/^\$.+\$/) {if($4 < 1) print "User: " $1 " PA
 if [ -n "$non_compliant_users" ]; then
     echo "Non-compliant users found:"
     echo "$non_compliant_users"
+    exit 1
 else
     echo "All users are compliant with PASS_MIN_DAYS >= $MIN_DAYS."
 fi

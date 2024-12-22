@@ -17,6 +17,7 @@ if [[ $? -eq 0 ]]; then
         echo "The package '${package}' is installed correctly."
     else
         echo "WARNING: The package '${package}' is not installed correctly!"
+        exit 1
     fi
 
     # Display the version of the package

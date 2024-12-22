@@ -1,18 +1,24 @@
 #!/usr/bin/env bash
 
-# Script to audit password complexity settings
+# Check dcredit, ucredit, lcredit, ocredit, and minclass settings
+pwquality_settings=$(grep -Psi -- '^\h*(minclass|[dulo]credit)\b' /etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf)
 
-echo "Auditing password complexity settings..."
+if [[ -z "$pwquality_settings" ]]; then
+  echo "No minclass or credit settings found in /etc/security/pwquality.conf and /etc/security/pwquality.conf.d/*.conf."
+else
+  echo "Settings found in /etc/security/pwquality.conf and /etc/security/pwquality.conf.d/*.conf:"
+  echo "$pwquality_settings"
+  exit 1
+fi
 
-# 1. Check for minclass, dcredit, ucredit, lcredit, ocredit in pwquality.conf and pwquality.conf.d
-echo "Checking for minclass, dcredit, ucredit, lcredit, ocredit settings in pwquality configuration files..."
+# Verify that module arguments are not overridden in /etc/pam.d/common-password
+overrides=$(grep -Psi -- '^\h*password\h+(requisite|required|sufficient)\h+pam_pwquality\.so\h+([^#\n\r]+\h+)?(minclass=\d*|[dulo]credit=-?\d*)\b' /etc/pam.d/common-password)
 
-# Search for minclass, dcredit, ucredit, lcredit, ocredit in /etc/security/pwquality.conf and pwquality.conf.d/
-grep -Psi '^\h*(minclass|[dulo]credit)\b' /etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf
+if [[ -z "$overrides" ]]; then
+  echo "No overriding module arguments found in /etc/pam.d/common-password. Configuration is correct."
+else
+  echo "Overriding module arguments found in /etc/pam.d/common-password:"
+  echo "$overrides"
+  exit 1
+fi
 
-# 2. Check for overriding of pwquality arguments in /etc/pam.d/common-password
-echo "Checking for overridden arguments in /etc/pam.d/common-password..."
-
-grep -Psi '^\h*password\h+(requisite|required|sufficient)\h+pam_pwquality\.so\h+([^#\n\r]+\h+)?(minclass=\d*|[dulo]credit=-?\d*)\b' /etc/pam.d/common-password
-
-echo "Audit completed."

@@ -16,8 +16,7 @@
  if [ -n "$l_gdmfile" ]; then
  output="$output\n - The \"disable-user-list\" option is enabled in \"$l_gdmfile\""
  l_gdmprofile="$(awk -F\/ '{split($(NF-1),a,".");print a[1]}' <<< "$l_gdmfile")"
- if grep -Pq "^\h*system-db:$l_gdmprofile" 
-/etc/dconf/profile/"$l_gdmprofile"; then
+ if grep -Pq "^\h*system-db:$l_gdmprofile" /etc/dconf/profile/"$l_gdmprofile"; then
  output="$output\n - The \"$l_gdmprofile\" exists"
  else
  output2="$output2\n - The \"$l_gdmprofile\" doesn't exist"

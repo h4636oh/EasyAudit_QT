@@ -1,44 +1,34 @@
 #!/usr/bin/env bash
 
-echo "Starting audit for PAM wheel group configuration..."
+# Verify the pam_wheel.so configuration
+pam_config=$(grep -Pi '^\h*auth\h+(?:required|requisite)\h+pam_wheel\.so\h+(?:[^#\n\r]+\h+)?((?!\2)(use_uid\b|group=\H+\b))\h+(?:[^#\n\r]+\h+)?((?!\1)(use_uid\b|group=\H+\b))(\h+.*)?$' /etc/pam.d/su)
 
-# Define the PAM file to check
-pam_file="/etc/pam.d/su"
+if [[ "$pam_config" == *"auth required pam_wheel.so use_uid group="* ]]; then
+  echo "pam_wheel.so configuration is correct:"
+  echo "$pam_config"
+  
+  # Extract the group name from the configuration
+  group_name=$(echo "$pam_config" | grep -oP 'group=\K\S+')
 
-# Check for the pam_wheel.so configuration
-echo "Checking PAM configuration in $pam_file..."
-pam_config=$(grep -Pi '^\h*auth\h+(?:required|requisite)\h+pam_wheel\.so\h+(?:[^#\n\r]+\h+)?((?!\2)(use_uid\b|group=\H+\b))\h+(?:[^#\n\r]+\h+)?((?!\1)(use_uid\b|group=\H+\b))(\h+.*)?$' "$pam_file" 2>/dev/null)
+  # Verify that the specified group contains no users
+  group_info=$(grep "$group_name" /etc/group)
 
-if [[ -n "$pam_config" ]]; then
-    echo "PAM configuration found:"
-    echo "$pam_config"
-    group_name=$(echo "$pam_config" | grep -oP 'group=\K\H+')
-    if [[ -n "$group_name" ]]; then
-        echo "Group specified in configuration: $group_name"
-        echo "Checking if the group contains any users..."
-        
-        # Check the group for users
-        group_entry=$(grep "^${group_name}:" /etc/group)
-        if [[ -n "$group_entry" ]]; then
-            users=$(echo "$group_entry" | cut -d: -f4)
-            if [[ -z "$users" ]]; then
-                echo "The group '$group_name' does not contain any users. This is compliant."
-            else
-                echo "WARNING: The group '$group_name' contains the following users:"
-                echo "$users"
-                echo "Please remove all users from the group to comply with the policy."
-            fi
-        else
-            echo "ERROR: Group '$group_name' not found in /etc/group."
-            exit 1
-        fi
+  if [[ "$group_info" == *"$group_name:x:"* ]]; then
+    echo "Group $group_name found in /etc/group:"
+    echo "$group_info"
+    
+    # Check if the group contains any users
+    if [[ "$group_info" == *"$group_name:x:[^:]*$"* ]]; then
+      echo "No users found in the group $group_name."
     else
-        echo "ERROR: No group specified in the PAM configuration."
-        exit 1
+      echo "Users found in the group $group_name."
+      exit 1
     fi
+  else
+    echo "Group $group_name not found in /etc/group."
+  fi
 else
-    echo "No valid PAM wheel configuration found in $pam_file."
-    exit 1
+  echo "pam_wheel.so configuration is not correct."
+  exit 1
 fi
 
-echo "Audit completed."

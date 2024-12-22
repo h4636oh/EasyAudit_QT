@@ -1,1 +1,1 @@
-iptables -L -v -n
+sudo iptables -L -v -n

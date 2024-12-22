@@ -11,6 +11,7 @@ else
         echo "Groups with GID 0:"
         echo "$output"
         echo "Warning: Only the root group should have GID 0. Please review the groups listed above."
+        exit 1 
     else
         echo "No groups found with GID 0."
     fi
