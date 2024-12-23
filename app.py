@@ -6,6 +6,7 @@ from PySide6.QtUiTools import QUiLoader
 from PySide6.QtCore import QCoreApplication, QUrl
 from PySide6.QtGui import QDesktopServices
 import filterList
+import unicodedata
 
 def bitlocker_status():
     
@@ -652,12 +653,22 @@ if __name__ == "__main__":
 
     logfile_name = None
 
+
+    def remove_unsupported_characters(text):
+        return text.encode('latin-1', errors='replace').decode('latin-1')
+
     # Function to save logs as PDF
     def save_logs():
-        log_data = open(f'{logfile_name}', 'r').read()
+        log_data = (open(f'{logfile_name}', 'r').read())
+        log_data = remove_unsupported_characters(log_data)
         pdf = FPDF()
         pdf.add_page()
+
         pdf.set_font("Arial", size = 15)
+
+        # pdf.add_font("DejaVu", "", "DejaVuSans.ttf", uni=True)
+        # pdf.set_font("DejaVu", size=15)
+
         pdf.multi_cell(0, 5, txt = log_data)
         filename = QFileDialog.getSaveFileName(audit_result_page, "Save Log PDF", "", "PDF File (*.pdf)")
         if filename[0]:
