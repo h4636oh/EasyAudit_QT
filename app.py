@@ -259,7 +259,7 @@ def audit_select_page_populate_script_list():
         for script in sorted(os.listdir(script_dir)):
             script_name = os.path.splitext(script)[0]
             script_name = script_name.replace(".audit", "")
-            script_info = module_info[script_name] if script_name in module_info else print(f"error : {script_name}", f"script")
+            script_info = module_info[script_name] if script_name in module_info else print(".")
             description = script_info["Description"] if script_info else "NULL"
             tooltip_text = description
             module_name = audit_select_page.module_to_name.get(script_name, script_name)
