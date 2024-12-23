@@ -6,7 +6,6 @@ from PySide6.QtUiTools import QUiLoader
 from PySide6.QtCore import QCoreApplication, QUrl
 from PySide6.QtGui import QDesktopServices
 import filterList
-import unicodedata
 
 def bitlocker_status():
     
