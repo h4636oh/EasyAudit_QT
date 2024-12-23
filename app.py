@@ -5,6 +5,7 @@ from PySide6 import QtWidgets, QtCore
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtCore import QCoreApplication, QUrl
 from PySide6.QtGui import QDesktopServices
+import filterList
 
 def bitlocker_status():
     
@@ -15,6 +16,8 @@ def bitlocker_status():
     
     if platform.system() == "Windows":
         new_audit_page.bitlocker_btn.setEnabled(True)
+        new_audit_page.workstation_btn.setEnabled(False)
+        new_audit_page.server_btn.setEnabled(False)
     else:
         new_audit_page.bitlocker_btn.setEnabled(False)
 
@@ -187,6 +190,48 @@ def search_bar_filter_result_page():
         else:
             item.setHidden(True)
 
+def isSelected(script_name):
+    """
+    Checks if a script is selected based on the current OS and level filter.
+
+    The function takes a script name as input and checks if it is selected based on the current
+    OS and level filter. The selection is determined by checking if the script name is in the
+    corresponding filter list for the current OS and level.
+
+    Returns:
+        bool: True if the script is selected, False otherwise.
+    """
+    os_name = check_os()
+    if os_name == "rhel_9":
+        if (isworkstation and islevel1) and script_name in filterList.RehlWL1:
+            return True
+        if (isworkstation and islevel2) and script_name in filterList.RehlWL2:
+            return True
+        if (isserver and islevel1) and script_name in filterList.RehlSL1:
+            return True
+        if (isserver and islevel2) and script_name in filterList.RehlSL2:
+            return True
+    elif os_name == "Ubuntu":
+        if (isworkstation and islevel1) and script_name in filterList.UbantuWL1:
+            return True
+        if (isworkstation and islevel2) and script_name in filterList.UbantuWL2:
+            return True
+        if (isserver and islevel1) and script_name in filterList.UbantuSL1:
+            return True
+        if (isserver and islevel2) and script_name in filterList.UbantuSL2:
+            return True
+    elif os_name == "Windows":
+        if (isbitlocker and islevel1) and (script_name in filterList.WindowsBL and script_name in filterList.WindowsL1):
+            return True
+        if (isbitlocker and islevel2) and (script_name in filterList.WindowsBL and script_name in filterList.WindowsL2):
+            return True
+        if ((not isbitlocker) and islevel1) and (script_name not in filterList.WindowsBL and script_name in filterList.WindowsL1):
+            return True
+        if ((not isbitlocker) and islevel2) and (script_name not in filterList.WindowsBL and script_name in filterList.WindowsL1):
+            return True
+    return False
+
+
 def audit_select_page_populate_script_list():
     """
     Populate the script selection display with available audit scripts.
@@ -219,7 +264,10 @@ def audit_select_page_populate_script_list():
             module_name = audit_select_page.module_to_name.get(script_name, script_name)
             list_item = QtWidgets.QListWidgetItem(module_name)
             list_item.setFlags(list_item.flags() | QtCore.Qt.ItemIsUserCheckable)
-            list_item.setCheckState(QtCore.Qt.Unchecked)
+            if isSelected(script_name):
+                list_item.setCheckState(QtCore.Qt.Unchecked)
+            else:
+                list_item.setCheckState(QtCore.Qt.Checked)
             list_item.setData(QtCore.Qt.UserRole, script)
             list_item.setToolTip(tooltip_text)
             audit_select_page.script_select_display.addItem(list_item)        
@@ -321,106 +369,6 @@ def add_audit_result(result):
         VALUES (?, ?, ?, ?, datetime('now'), ?)
     ''', (result['script_name'], result['output'], result['error'], result['return_code'], result['session_id']))
     audit_select_page.database.commit()
-
-def filter_json_by_criteria(data, criteria):
-    """
-    Filters the input JSON data based on the criteria specified for SL1, SL2, L1, L2, and BL.
-
-    Args:
-        data (dict): The input JSON data.
-        criteria (dict): A dictionary containing the desired values for SL1, SL2, L1, L2, and BL.
-        Example: {"SL1": "TRUE", "L1": "TRUE"}
-
-    Returns:
-        list: A list of indices that match the criteria.
-    """
-    filtered_indices = []
-
-    for key, value in data.items():
-        match = all(value.get(crit_key, "") == crit_value for crit_key, crit_value in criteria.items())
-        if match:
-            filtered_indices.append(key)
-
-    return filtered_indices
-
-def load_json_from_file(filepath):
-    """
-    Loads JSON data from a file.
-
-    Args:
-        filepath (str): Path to the JSON file.
-
-    Returns:
-        dict: The loaded JSON data.
-    """
-    with open(filepath, 'r') as file:
-        return json.load(file)
-
-def serach_json_for_windows(criteria):
-    """
-    Searches the Windows JSON data for entries that match the criteria specified.
-
-    Args:
-        criteria (dict): A dictionary containing the desired values for SL1, SL2, L1, L2, and BL.
-        Example: {"SL1": "TRUE", "L1": "TRUE"}
-
-    Returns:
-        list: A list of indices that match the criteria.
-    """
-    jsondata=load_json_from_file('windowsDB.json')
-    filtered = filter_json_by_criteria(jsondata, criteria)
-    return filtered
-
-def serach_json_for_redhat(criteria):
-    """
-    Searches the Redhat JSON data for entries that match the criteria specified.
-
-    Args:
-        criteria (dict): A dictionary containing the desired values for SL1, SL2, L1, L2, and BL.
-        Example: {"SL1": "TRUE", "L1": "TRUE"}
-
-    Returns:
-        list: A list of indices that match the criteria.
-    """
-    jsondata=load_json_from_file('redhatDB.json')
-    filtered = filter_json_by_criteria(jsondata, criteria)
-    return filtered
-
-def serach_json_for_ubuntu(criteria):
-    """
-    Searches the Ubuntu JSON data for entries that match the criteria specified.
-
-    Args:
-        criteria (dict): A dictionary containing the desired values for SL1, SL2, L1, L2, and BL.
-        Example: {"SL1": "TRUE", "L1": "TRUE"}
-
-    Returns:
-        list: A list of indices that match the criteria.
-    """
-
-    jsondata=load_json_from_file('ubuntuDB.json')
-    filtered = filter_json_by_criteria(jsondata, criteria)
-    return filtered
-
-def serach_all_json(OPS,criteria):
-    """
-    Searches JSON data based on the operating system and criteria specified.
-
-    Args:
-        OPS (str): The operating system name. Valid options are "Windows", "Redhat", and "Ubuntu".
-        criteria (dict): A dictionary containing the desired values for SL1, SL2, L1, L2, and BL.
-        Example: {"SL1": "TRUE", "L1": "TRUE"}
-
-    Returns:
-        list: A list of indices that match the criteria in the specified OS's JSON data.
-    """
-
-    if OPS=="Windows":
-        return serach_json_for_windows(criteria)
-    elif OPS=="Redhat":
-        return serach_json_for_redhat(criteria)
-    elif OPS=="Ubuntu":
-        return serach_json_for_ubuntu(criteria)   
 
 def audit_selected_scripts():
     """
@@ -598,6 +546,7 @@ def new_audit_filters():
     Gets the current state of the filters on the new audit page and prints them.
     Switches the main window to the audit select page.
     """
+    global isworkstation, isserver, islevel1, islevel2, isbitlocker
     isworkstation = new_audit_page.workstation_btn.isChecked()
     isserver = new_audit_page.server_btn.isChecked()
     islevel1 = new_audit_page.level1_btn.isChecked()
