@@ -552,7 +552,6 @@ def new_audit_filters():
     islevel1 = new_audit_page.level1_btn.isChecked()
     islevel2 = new_audit_page.level2_btn.isChecked()
     isbitlocker = new_audit_page.bitlocker_btn.isChecked()
-    create_tables()
     audit_select_page_populate_script_list()
     main_window.setCurrentIndex(2)
 
@@ -612,6 +611,7 @@ if __name__ == "__main__":
     # Set up audit select page
     audit_select_page.module_to_name = load_module_to_name()
     audit_select_page.database = sqlite3.connect('audit_results.db')
+    create_tables()
     audit_select_page.select_all_btn.clicked.connect(audit_select_page_select_all_scripts)
 
     # Retrieve session ID from database
