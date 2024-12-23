@@ -274,7 +274,7 @@
         "SL1": "TRUE",
         "SL2": "FALSE"
     },
-    "Ensure": {
+    "1.1.2.5.4": {
         "Title": "noexec option set on /var/tmp partition",
         "Description": "The noexec  mount option specifies that the filesystem cannot contain executable \nbinaries.",
         "Rationale": "Since the /var/tmp  filesystem is only intended for temporary file storage, set this option \nto ensure that users cannot run executable binaries from /var/tmp .",
@@ -406,7 +406,7 @@
         "SL1": "TRUE",
         "SL2": "FALSE"
     },
-    "Internal": {
+    "1.3.1.1": {
         "Title": "Only - General 1.3.1.1 Ensure AppArmor is installed",
         "Description": "AppArmor provides Mandatory Access Controls.",
         "Rationale": "Without a Mandatory Access Control system installed only the default Discretionary \nAccess Control system will be available.",
@@ -2016,13 +2016,24 @@
         "Title": "- General 5.3.1.2 Ensure libpam -modules is installed",
         "Description": "Pluggable Authentication Modules for PAM",
         "Rationale": "To ensure the system has full functionality and access to the PAM options covered by \nthis Benchmark",
-        "Remediation": "- IF - the version of libpam-modules  on the system is less that version 1.5.2-6: \nRun the following command to update to the latest version of PAM: \n# apt upgrade libpam -modules  \nInternal Only - General  5.3.1.3 Ensure libpam -pwquality is installed (Automated)  \nProfile Applicability:  \n•  Level 1 - Server  \n•  Level 1 - Workstation  \nDescription:  \nlibpwquality  provides common functions for password quality checking and scoring \nthem based on their apparent randomness. The library also provides a function for \ngenerating random passwords with good pronounceability.  \nThis module can be plugged into the password stack of a given service to provide some \nplug-in strength -checking for passwords. The code was originally based on \npam_cracklib  module and the module is backwards compatible with its options.  \nRationale:  \nStrong passwords reduce the risk of systems being hacked through brute force \nmethods.  \nAudit:  \nRun the following command to verify libpam-pwquality  is installed:  \n# dpkg-query -s libpam -pwquality | grep -P -- '^(Status|Version) \\b' \nThe output should be similar to:  \nStatus: install ok installed  \nVersion: 1.4.4 -1 \nRemediation:  \nRun the following command to install libpam-pwquality : \n# apt install libpam -pwquality#!/usr/bin/env bash",
+        "Remediation": "- IF - the version of libpam-modules  on the system is less that version 1.5.2-6: \nRun the following command to update to the latest version of PAM: \n# apt upgrade libpam -modules",
         "L1": "TRUE",
         "L2": "FALSE",
         "BL": "FALSE",
         "SL1": "TRUE",
         "SL2": "FALSE"
     },
+    "5.3.1.3": {
+        "Title": "Ensure libpam-pwquality is installed (Automated)",
+        "Description": "libpwquality provides common functions for password quality checking and scoring them based on their apparent randomness. The library also provides a function for generating random passwords with good pronounceability.This module can be plugged into the password stack of a given service to provide some plug-in strength-checking for passwords. The code was originally based on pam_cracklib module and the module is backwards compatible with its options.",
+        "Rationale": "Run the following command to install libpam-pwquality:# apt install libpam-pwquality",
+        "L1": "TRUE",
+        "L2": "FALSE",
+        "BL": "FALSE",
+        "SL1": "TRUE",
+        "SL2": "FALSE"
+    },
+
     "5.3.2.1": {
         "Title": "Ensure pam_unix module is enabled",
         "Description": "pam_unix  is the standard Unix authentication module. It uses standard calls from the \nsystem's libraries to retrieve and set account information as well as authentication. \nUsually this is obtained from the /etc/passwd  and if shadow is enabled, the /etc/shadow  \nfile as well.  \nThe account component performs the task of establishing the status of the user's \naccount and password based on the following shadow elements: expire , last_change , \nmax_change , min_change , warn_change . In the case of the latter, it may offer advice to the \nuser on changing their password or, through the PAM_AUTHTOKEN_REQD  return, delay \ngiving service to the user until they have established a new password. The entries listed \nabove are documented in the shadow(5) manual page. Should the user's record not \ncontain  one or more of these entries, the corresponding shadow check is not performed.  \nThe authentication component performs the task of checking the users credentials \n(password). The default action of this module is to not permit the user access to a \nservice if their official password is blank.",
@@ -2342,6 +2353,18 @@
         "SL1": "TRUE",
         "SL2": "FALSE"
     },
+    "5.4.2.2": {
+        "Title": "Ensure root is the only GID 0 account",
+        "Description": "The usermod command can be used to specify which group the root account belongs to. This affects permissions of files that are created by the root account.",
+        "Rationale": "Using GID 0 for the root account helps prevent root -owned files from accidentally becoming accessible to non-privileged users.",
+        "Remediation": "Run the following command to set the root user's GID to 0:# usermod -g 0 root Run the following command to set the root group's GID to 0:# groupmod -g 0 rootRemove any users other than the root user with GID 0 or assign them a new GID if appropriate.",
+        "L1": "TRUE",
+        "L2": "FALSE",
+        "BL": "FALSE",
+        "SL1": "TRUE",
+        "SL2": "FALSE"
+    },
+
     "5.4.2.3": {
         "Title": "Ensure group root is the only GID 0 group",
         "Description": "The groupmod  command can be used to specify which group the root group belongs to. \nThis affects permissions of files that are group owned by the root group.",
@@ -2419,6 +2442,18 @@
         "SL1": "TRUE",
         "SL2": "TRUE"
     },
+    "5.4.3.2": {
+        "Title": "Ensure default user shell timeout is configured",
+        "Description": "TMOUT is an environmental setting that determines the timeout of a shell in seconds.• TMOUT=n - Sets the shell timeout to n seconds. A setting of TMOUT=0 disables timeout. readonly TMOUT- Sets the TMOUT environmental variable as readonly, preventing unwanted modification during run-time. export TMOUT - exports the TMOUT variable System Wide Shell Configuration Files: /etc/profile - used to set system wide environmental variables on users shells. The variables are sometimes the same ones that are in the .bash_profile, however this file is used to set an initial PATH or PS1 for all shell users of the system. is only executed for interactive login shells, or shells executed with the --login parameter. /etc/profile.d - /etc/profile will execute the scripts within /etc/profile.d/*.sh. It is recommended to place your configuration in a shell script within /etc/profile.d to set your own system wide environmental variables. /etc/bashrc - System wide version of .bashrc. In Fedora derived distributions, /etc/bashrc also invokes /etc/profile.d/*.sh if non-login shell, but redirects output to /dev/null if non-interactive. Is only executed for interactive shells or if BASH_ENV is set to /etc/bashrc.",
+        "Rationale": "Setting a timeout value reduces the window of opportunity for unauthorized user access to another user's shell session that has been left unattended. It also ends the inactive session and releases the resources associated with that session.",
+        "Remediation": "Review /etc/bashrc, /etc/profile, and all files ending in *.sh in the /etc/profile.d/directory and remove or edit all TMOUT=_n_ entries to follow local site policy. TMOUTshould not exceed 900 or be equal to 0.Configure TMOUT in one of the following files: A file in the /etc/profile.d/ directory ending in .sh /etc/profile /etc/bashrcTMOUT configuration examples: As multiple lines:TMOUT=900 readonly TMOUTexport TMOUT As a single line:readonly TMOUT=900 ; export TMOUT",
+        "L1": "TRUE",
+        "L2": "FALSE",
+        "BL": "FALSE",
+        "SL1": "TRUE",
+        "SL2": "TRUE"
+    },
+
     "5.4.3.3": {
         "Title": "Ensure default user umask is configured",
         "Description": "The user file -creation mode mask ( umask ) is used to determine the file permissi on for \nnewly created directories and files. In Linux, the default permissions for any newly \ncreated directory is 0777 ( rwxrwxrwx ), and for any newly created file it is 0666 ( rw-rw-\nrw-). The umask  modifies the default Linux permissions by restricting (masking) these \npermissions. The umask  is not simply subtracted, but is processed bitwise. Bits set in the \numask  are cleared in the resulting file mode.  \numask  can be set with either Octal  or Symbolic  values:  \n• Octal  (Numeric) Value - Represented by either three or four digits. ie umask 0027  \nor umask 027 . If a four digit umask is used, the first digit is ignored. The remaining \nthree digits effect the resulting permissions for user, group, and world/other \nrespectively.  \n• Symbolic  Value - Represented by a comma separated list for User u, group g, \nand world/other o. The permissions listed are not masked by umask . ie a umask  \nset by umask u=rwx,g=rx,o=  is the Symbolic  equivalent of the Octal  umask 027 . \nThis umask  would set a newly created directory with file mode drwxr-x--- and a \nnewly created file with file mode rw-r----- . \nThe default umask  can be set to use the pam_umask  module or in a System Wide Shell \nConfiguration File . The user creating the directories or files has the discretion of \nchanging the permissions via the chmod command, or choosing a different default \numask  by adding the umask  command into a User Shell Configuration File , ( \n.bash_profile  or .bashrc ), in their home directory.  \n   \nInternal Only - General  Setting the default umask:  \n• pam_umask module:  \no will set the umask according to the system default in /etc/login.defs  and \nuser settings, solving the problem of different umask  settings with different \nshells, display managers, remote sessions etc.  \no umask=<mask>  value in the /etc/login.defs  file is interpreted as Octal  \no Setting USERGROUPS_ENAB  to yes in /etc/login.defs  (default):  \n▪ will enable setting of the umask  group bits to be the same as owner \nbits. (examples: 022 -> 002, 077 -> 007) for non -root users, if the \nuid is the same as gid, and username  is the same as the <primary \ngroup name>   \n▪ userdel will remove the user's group if it contains no more \nmembers, and useradd will create by default a group with the name \nof the user  \n• System Wide Shell Configuration File :  \no /etc/profile  - used to set system wide environmental variables on users \nshells. The variables are sometimes the same ones that are in the \n.bash_profile , however this file is used to set an initial PATH or PS1 for \nall shell users of the system. is only executed for interactive login  \nshells, or shells executed with the --login parameter.   \no /etc/profile.d  - /etc/profile  will execute the scripts within \n/etc/profile.d/*.sh . It is recommended to place your configuration in a \nshell script within /etc/profile.d  to set your own system wide \nenvironmental variables.  \no /etc/bashrc  - System wide version of .bashrc . In Fedora derived \ndistributions, etc/bashrc  also invokes /etc/profile.d/*.sh if non-login  shell, \nbut redirects output to /dev/null  if non-interactive.  Is only executed for \ninteractive  shells or if BASH_ENV  is set to /etc/bashrc .  \nUser Shell Configuration Files:  \n• ~/.bash_profile  - Is executed to configure your shell before the initial command \nprompt. Is only read by login shells.   \n• ~/.bashrc  - Is executed for interactive shells. only read by a shell that's both \ninteractive and non -login   \numask  is set by order of precedence. If umask  is set in multiple locations, this order of \nprecedence will determine the system's default umask . \n   \nInternal Only - General  Order of precedence:  \n1. A file in /etc/profile.d/  ending in .sh - This will override any other system -wide \numask  setting  \n2. In the file /etc/profile   \n3. On the pam_umask.so  module in /etc/pam.d/postlogin   \n4. In the file /etc/login.defs   \n5. In the file /etc/default/login",
@@ -3222,6 +3257,18 @@
         "SL1": "TRUE",
         "SL2": "FALSE"
     },
+    "7.2.6": {
+        "Title": "Ensure no duplicate GIDs exist",
+        "Description": "Although the groupadd program will not let you create a duplicate Group ID (GID), it is possible for an administrator to manually edit the /etc/group file and change the GID field.",
+        "Rationale": "User groups must be assigned unique GIDs for accountability and to ensure appropriate access protections.",
+        "Remediation": "Based on the results of the audit script, establish unique GIDs and review all files owned by the shared GID to determine which group they are supposed to belong to.",
+        "L1": "TRUE",
+        "L2": "FALSE",
+        "BL": "FALSE",
+        "SL1": "TRUE",
+        "SL2": "FALSE"
+    },
+
     "7.2.7": {
         "Title": "Ensure no duplicate user names exist",
         "Description": "Although the useradd  program will not let you create a duplicate user name, it is \npossible for an administrator to manually edit the /etc/passwd  file and change the user \nname.",
