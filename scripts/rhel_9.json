@@ -1044,8 +1044,8 @@
         "SL1": "True",
         "SL2": "False"
     },
-    "CIS": {
-        "Title": "Controls:  \nControls \nVersion  Control  IG 1 IG 2 IG 3 \nv8 4.8 Uninstall or Disable Unnecessary Services on \nEnterprise Assets and Software  \n Uninstall or disable unnecessary services on enterprise assets and software, \nsuch as an unused file sharing service, web application module, or service \nfunction.   ● ● \nv7 9.2 Ensure Only Approved Ports, Protocols and Services \nAre Running  \n Ensure that only network ports, protocols, and services listening on a system \nwith validated business needs, are running on each system.   ● ● \n \nMITRE ATT&CK Mappings:  \nTechniques / Sub -\ntechniques  Tactics  Mitigations  \nT1203, T1203.000, T1210, \nT1210.000, T1543, \nT1543.002  TA0008  M1042   2.1.6 Ensure samba file server services are not in use",
+    "2.1.6": {
+        "Title": "Ensure samba file server services are not in use",
         "Description": "The Samba daemon allows system administrators to configure their Linux systems to \nshare file systems and directories with Windows desktops. Samba will advertise the file \nsystems and directories via the Server Message Block (SMB) protocol. Windows \ndesktop u sers will be able to mount these directories and file systems as letter drives on \ntheir systems.",
         "Rationale": "If there is no need to mount directories and file systems to Windows systems, then this \npackage can be removed to reduce the potential attack surface.  \nImpact:  \nThere may be packages that are dependent on the samba  package. If the samba  \npackage is removed, these dependent packages will be removed as well. Before \nremoving the samba  package, review any dependent packages to determine if they are \nrequired on the system.  \n- IF - a dependent package is required: stop and mask the smb.service  leaving the \nsamba  package installed.",
         "Remediation": "Run the following command to stop smb.service  and remove samba  package:  \n# systemctl stop smb.service  \n# dnf remove samba  \n- OR - \n- IF - the samba  package is required as a dependency:  \nRun the following commands to stop and mask the smb.service : \n# systemctl stop smb.service  \n# systemctl mask smb.service#!/usr/bin/env bash",
@@ -2419,8 +2419,19 @@
         "SL1": "True",
         "SL2": "False"
     },
+    "6.2.2.1.1": {
+        "Title": "Ensure systemd-journal-remote is installed",
+        "Description": "Journald systemd-journal-remote supports the ability to send log events it gathers to a remote log host or to receive messages from remote hosts, thus enabling centralized log management.",
+        "Rationale": "Storing log data on a remote host protects log integrity from local attacks. If an attacker gains root access on the local system, they could tamper with or remove log data that is stored on the local system.",
+        "Remediation": "Run the following command to install systemd-journal-remote: # dnf install systemd-journal-remote",
+        "L1": "True",
+        "L2": "False",
+        "BL": "False",
+        "SL1": "True",
+        "SL2": "False"
+    },
     "6.2.2.1.2": {
-        "Title": "Ensure systemd -journal -upload authentication is \nconfigured (Manual)",
+        "Title": "Ensure systemd -journal -upload authentication is configured",
         "Description": "Journald systemd-journal-upload  supports the ability to send log events it gathers to \na remote log host.",
         "Rationale": "Storing log data on a remote host protects log integrity from local attacks. If an attacker \ngains root access on the local system, they could tamper with or remove log data that is \nstored on the local system.  \nNote:  This recommendation only applies if journald  is the chosen method for \nclient side logging . Do not apply this recommendation if rsyslog  is used.",
         "Remediation": "Edit the /etc/systemd/journal -upload.conf  file or a file in \n/etc/systemd/journal -upload.conf.d  ending in .conf  and ensure the following \nlines are set in the [Upload]  section per your environment:  \n[Upload]  \nURL=192.168.50.42  \nServerKeyFile=/etc/ssl/private/journal -upload.pem  \nServerCertificateFile=/etc/ssl/certs/journal -upload.pem  \nTrustedCertificateFile=/etc/ssl/ca/trusted.pem  \nRestart the service:  \n# systemctl restart systemd -journal-upload#!/usr/bin/env bash",
