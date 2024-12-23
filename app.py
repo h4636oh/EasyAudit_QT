@@ -363,6 +363,7 @@ def add_audit_result(result):
     Args:
         result (dict): A dictionary containing the audit result data.
     """
+    create_tables()
     cursor = audit_select_page.database.cursor()
     cursor.execute('''
         INSERT INTO audit_results (script_name, output, error, return_code, execution_time, session_id)
@@ -496,8 +497,13 @@ def audit_result_page_display_result():
     represented as a parent item in the QTreeWidget, with child items for the output and
     error of the script. The parent item is colored green for a pass and red for a fail.
     """
+
+    
     newdatabase = sqlite3.connect("audit_results.db")
+    
     cursor = newdatabase.cursor()
+    
+    create_tables()
     cursor.execute("""
             SELECT script_name, return_code, output, error
             FROM audit_results
@@ -616,6 +622,7 @@ if __name__ == "__main__":
 
     # Retrieve session ID from database
     if os.path.exists("audit_results.db"):
+        create_tables()
         cursor = audit_select_page.database.cursor()
         cursor.execute('''select max(session_id) from audit_results''')
         result = cursor.fetchone()
