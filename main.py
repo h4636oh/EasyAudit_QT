@@ -655,7 +655,6 @@ if __name__ == "__main__":
 
     logfile_name = None
 
-
     def remove_unsupported_characters(text):
         return text.encode('latin-1', errors='replace').decode('latin-1')
 
@@ -665,12 +664,7 @@ if __name__ == "__main__":
         log_data = remove_unsupported_characters(log_data)
         pdf = FPDF()
         pdf.add_page()
-
         pdf.set_font("Arial", size = 15)
-
-        # pdf.add_font("DejaVu", "", "DejaVuSans.ttf", uni=True)
-        # pdf.set_font("DejaVu", size=15)
-
         pdf.multi_cell(0, 5, txt = log_data)
         filename = QFileDialog.getSaveFileName(audit_result_page, "Save Log PDF", "", "PDF File (*.pdf)")
         if filename[0]:
