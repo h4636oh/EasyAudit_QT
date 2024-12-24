@@ -281,7 +281,7 @@ def audit_select_page_select_all_scripts():
     """
     if audit_select_page.select_all_btn.isChecked():
         loader_select_all_warning = QUiLoader()
-        select_all_warning = loader_select_all_warning.load('select_all_warning.ui', audit_select_page)
+        select_all_warning = loader_select_all_warning.load('ui_files/select_all_warning.ui', audit_select_page)
         select_all_warning.show()
         for index in range(audit_select_page.script_select_display.count()):
             item = audit_select_page.script_select_display.item(index)
@@ -571,7 +571,7 @@ if __name__ == "__main__":
 
     # Load and set up the start page
     loader_start_page = QUiLoader()
-    start_page = loader_start_page.load("start_page.ui", main_window)
+    start_page = loader_start_page.load("ui_files/start_page.ui", main_window)
     main_window.addWidget(start_page)
 
     # Display system information on the start page
@@ -585,7 +585,7 @@ if __name__ == "__main__":
 
     # Load and set up the new audit page
     loader_new_audit_page = QUiLoader()
-    new_audit_page = loader_new_audit_page.load("new_audit_page.ui", main_window)
+    new_audit_page = loader_new_audit_page.load("ui_files/new_audit_page.ui", main_window)
     main_window.addWidget(new_audit_page)
 
     # Initialize BitLocker status
@@ -596,7 +596,7 @@ if __name__ == "__main__":
 
     # Load and set up the audit select page
     loader_audit_select_page = QUiLoader()
-    audit_select_page = loader_audit_select_page.load("audit_select_page.ui", main_window)
+    audit_select_page = loader_audit_select_page.load("ui_files/audit_select_page.ui", main_window)
     main_window.addWidget(audit_select_page)
 
     # Set up search functionality in audit select page
@@ -604,7 +604,7 @@ if __name__ == "__main__":
 
     # Load and set up the audit progress page
     loader_audit_progess_page = QUiLoader()
-    audit_progress_page = loader_audit_progess_page.load("audit_progress_page.ui", None)
+    audit_progress_page = loader_audit_progess_page.load("ui_files/audit_progress_page.ui", None)
     main_window.addWidget(audit_progress_page)
 
     # Initialize filter states
@@ -637,7 +637,7 @@ if __name__ == "__main__":
 
     # Load and set up the audit result page
     loader_audit_result_page = QUiLoader()
-    audit_result_page = loader_audit_result_page.load("audit_result_page.ui", main_window)
+    audit_result_page = loader_audit_result_page.load("ui_files/audit_result_page.ui", main_window)
     main_window.addWidget(audit_result_page)
 
     # Set up search functionality in audit result page
