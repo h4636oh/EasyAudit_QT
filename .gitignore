@@ -82,3 +82,4 @@ sample_results.db
 pysidedeploy.spec
 audit_results.db
 *_ui.py
+__pycache__
