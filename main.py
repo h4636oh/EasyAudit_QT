@@ -10,6 +10,20 @@ from osinfo import *
 from fileop import *
 from scriptsop import *
 
+### Home Page function
+
+def display_system_info_on_home_page(system_info):
+    start_page.hostname_lbl.setText(system_info["hostname"])
+    start_page.os_name_lbl.setText(system_info["os_name"])
+    start_page.os_version_lbl.setText(system_info["os_version"])
+    start_page.kernel_lbl.setText(system_info["kernel_version"])
+    start_page.mach_arch_lbl.setText(system_info["machine_arch"])
+    start_page.processor_lbl.setText(system_info["processor"])
+
+
+### New Audit Page Function
+
+# Function for the BitLocker Button Page
 def bitlocker_status():
     
     """
@@ -24,7 +38,6 @@ def bitlocker_status():
     else:
         new_audit_page.bitlocker_btn.setEnabled(False)
 
-
 def open_cis_website():
     """
     Open the CIS website in a web browser.
@@ -32,89 +45,9 @@ def open_cis_website():
     QDesktopServices.openUrl(QUrl("https://www.cisecurity.org/"))
 
 
+### Function for Select Audit Script Page 
 
-def search_bar_filter_select_page():
-    """
-    Filter and display scripts in the script selection display based on search input.
-
-    The function retrieves the text entered in the search bar and iterates through 
-    the items in the script selection display. It compares the search text with each 
-    item's text, hiding those that do not match the search criteria.
-
-    This function is intended to be used as a dynamic search filter for the script 
-    selection page, allowing users to easily find scripts by typing in the search bar.
-    """
-
-    search_text = audit_select_page.search_bar.text()
-    for i in range(audit_select_page.script_select_display.count()):
-        item = audit_select_page.script_select_display.item(i)
-        if search_text.lower() in item.text().lower():
-            item.setHidden(False)
-        else:
-            item.setHidden(True)
-
-def search_bar_filter_result_page():
-    """
-    Filter and display audit results based on search input.
-
-    This function retrieves the text entered in the search bar and iterates through 
-    the items in the audit results list widget. It compares the search text with each
-    item's text, hiding those that do not match the search criteria.
-
-    This function is intended to be used as a dynamic search filter for the audit 
-    results page, allowing users to easily find audit results by typing in the search bar.
-    """
-
-    search_text = audit_result_page.search_bar.text()
-    for i in range(audit_result_page.script_result_display.topLevelItemCount()):
-        item = audit_result_page.script_result_display.topLevelItem(i)
-        if search_text.lower() in item.text(0).lower():
-            item.setHidden(False)
-        else:
-            item.setHidden(True)
-
-def isSelected(script_name):
-    """
-    Checks if a script is selected based on the current OS and level filter.
-
-    The function takes a script name as input and checks if it is selected based on the current
-    OS and level filter. The selection is determined by checking if the script name is in the
-    corresponding filter list for the current OS and level.
-
-    Returns:
-        bool: True if the script is selected, False otherwise.
-    """
-    os_name = check_os()
-    if os_name == "rhel_9":
-        if (isworkstation and islevel1) and script_name in filterList.RehlWL1:
-            return True
-        if (isworkstation and islevel2) and script_name in filterList.RehlWL2:
-            return True
-        if (isserver and islevel1) and script_name in filterList.RehlSL1:
-            return True
-        if (isserver and islevel2) and script_name in filterList.RehlSL2:
-            return True
-    elif os_name == "Ubuntu":
-        if (isworkstation and islevel1) and script_name in filterList.UbantuWL1:
-            return True
-        if (isworkstation and islevel2) and script_name in filterList.UbantuWL2:
-            return True
-        if (isserver and islevel1) and script_name in filterList.UbantuSL1:
-            return True
-        if (isserver and islevel2) and script_name in filterList.UbantuSL2:
-            return True
-    elif os_name == "Windows":
-        if (isbitlocker and islevel1) and (script_name in filterList.WindowsBL and script_name in filterList.WindowsL1):
-            return True
-        if (isbitlocker and islevel2) and (script_name in filterList.WindowsBL and script_name in filterList.WindowsL2):
-            return True
-        if ((not isbitlocker) and islevel1) and (script_name not in filterList.WindowsBL and script_name in filterList.WindowsL1):
-            return True
-        if ((not isbitlocker) and islevel2) and (script_name not in filterList.WindowsBL and script_name in filterList.WindowsL1):
-            return True
-    return False
-
-
+# Function for Selecting Audit Scripts Page
 def audit_select_page_populate_script_list():
     """
     Populate the script selection display with available audit scripts.
@@ -186,44 +119,111 @@ def audit_select_page_add_new_script():
         script_name = os.path.basename(file_path)
         audit_select_page.script_select_display.addItem(script_name)
 
-def create_tables():
+def search_bar_filter_select_page():
     """
-    Create the audit_results table in the database if it does not exist.
-    This function should be called once when the application is first started.
+    Filter and display scripts in the script selection display based on search input.
+
+    The function retrieves the text entered in the search bar and iterates through 
+    the items in the script selection display. It compares the search text with each 
+    item's text, hiding those that do not match the search criteria.
+
+    This function is intended to be used as a dynamic search filter for the script 
+    selection page, allowing users to easily find scripts by typing in the search bar.
     """
-    cursor = audit_select_page.database.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS audit_results (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            script_name TEXT,
-            output TEXT,
-            error TEXT,
-            return_code INTEGER,
-            execution_time TEXT,
-            session_id INTEGER
-        )
-    ''')
-    audit_select_page.database.commit()
+
+    search_text = audit_select_page.search_bar.text()
+    for i in range(audit_select_page.script_select_display.count()):
+        item = audit_select_page.script_select_display.item(i)
+        if search_text.lower() in item.text().lower():
+            item.setHidden(False)
+        else:
+            item.setHidden(True)
+
+def search_bar_filter_result_page():
+    """
+    Filter and display audit results based on search input.
+
+    This function retrieves the text entered in the search bar and iterates through 
+    the items in the audit results list widget. It compares the search text with each
+    item's text, hiding those that do not match the search criteria.
+
+    This function is intended to be used as a dynamic search filter for the audit 
+    results page, allowing users to easily find audit results by typing in the search bar.
+    """
+
+    search_text = audit_result_page.search_bar.text()
+    for i in range(audit_result_page.script_result_display.topLevelItemCount()):
+        item = audit_result_page.script_result_display.topLevelItem(i)
+        if search_text.lower() in item.text(0).lower():
+            item.setHidden(False)
+        else:
+            item.setHidden(True)
 
 
+### Function for Result Page
 
-def add_audit_result(result):
+def audit_result_page_display_result():
     """
-    Adds a new audit result to the database. The result is a dictionary containing the
-    script name, output, error, return code, and session id. The execution time is set to
-    the current time.
+    This function is used to display the results of the audit on the "Audit Results" page.
 
-    Args:
-        result (dict): A dictionary containing the audit result data.
+    It queries the audit_results database for the results of the current session id, and
+    then populates the script_result_display QTreeWidget with the results. Each script is
+    represented as a parent item in the QTreeWidget, with child items for the output and
+    error of the script. The parent item is colored green for a pass and red for a fail.
     """
+
+    
+    newdatabase = sqlite3.connect("audit_results.db")
+    
+    cursor = newdatabase.cursor()
+    
     create_tables()
-    cursor = audit_select_page.database.cursor()
-    cursor.execute('''
-        INSERT INTO audit_results (script_name, output, error, return_code, execution_time, session_id)
-        VALUES (?, ?, ?, ?, datetime('now'), ?)
-    ''', (result['script_name'], result['output'], result['error'], result['return_code'], result['session_id']))
-    audit_select_page.database.commit()
+    cursor.execute("""
+            SELECT script_name, return_code, output, error
+            FROM audit_results
+            WHERE session_id = ?
+        """, (session_id,))
 
+    rows = cursor.fetchall()
+    audit_result_page.script_result_display.clear()  # Clear previous results
+    module_to_name = load_module_to_name()
+    for row_idx, (script_name, return_code, output, error) in enumerate(rows):
+        temp = script_name.replace('.sh', '')
+        temp = temp.replace('.ps1', '')
+        temp = temp.replace('.audit', '')
+        module_name = module_to_name.get(temp, temp)
+        audit_result_page.script_result_display.setWordWrap(True)
+
+        # Create parent item for the script
+        parent_item = QtWidgets.QTreeWidgetItem(audit_result_page.script_result_display)
+        if return_code == 0:  # Pass
+            parent_item.setText(0, f"PASS: {module_name}")
+        else:
+            parent_item.setText(0, f"FAIL: {module_name}")
+
+        # Add placeholder details as child items
+
+        # Truncate if output is too long
+
+        if output != "":
+            child_output = QtWidgets.QTreeWidgetItem(parent_item)
+            child_output.setText(0, f"{output}")
+            # child_output.setwordWrap(True)
+        # Truncate if error is too long
+
+        if error != "" :
+            child_error = QtWidgets.QTreeWidgetItem(parent_item)
+            child_error.setText(0, f"{error}")
+            # child_error.setwordWrap(True)
+        # Truncate if error is too long
+
+        # Expand all items by default (optional)
+        parent_item.setExpanded(False)
+
+
+# Helper Functions
+
+# Function for Running Audit Scripts
 def audit_selected_scripts():
     """
     Runs all selected audit scripts and saves the results to a log file.
@@ -344,64 +344,48 @@ def audit_selected_scripts():
     main_window.setCurrentIndex(4)
     audit_result_page_display_result()
 
-def audit_result_page_display_result():
+# Filter Function
+
+def isSelected(script_name):
     """
-    This function is used to display the results of the audit on the "Audit Results" page.
+    Checks if a script is selected based on the current OS and level filter.
 
-    It queries the audit_results database for the results of the current session id, and
-    then populates the script_result_display QTreeWidget with the results. Each script is
-    represented as a parent item in the QTreeWidget, with child items for the output and
-    error of the script. The parent item is colored green for a pass and red for a fail.
+    The function takes a script name as input and checks if it is selected based on the current
+    OS and level filter. The selection is determined by checking if the script name is in the
+    corresponding filter list for the current OS and level.
+
+    Returns:
+        bool: True if the script is selected, False otherwise.
     """
-
-    
-    newdatabase = sqlite3.connect("audit_results.db")
-    
-    cursor = newdatabase.cursor()
-    
-    create_tables()
-    cursor.execute("""
-            SELECT script_name, return_code, output, error
-            FROM audit_results
-            WHERE session_id = ?
-        """, (session_id,))
-
-    rows = cursor.fetchall()
-    audit_result_page.script_result_display.clear()  # Clear previous results
-    module_to_name = load_module_to_name()
-    for row_idx, (script_name, return_code, output, error) in enumerate(rows):
-        temp = script_name.replace('.sh', '')
-        temp = temp.replace('.ps1', '')
-        temp = temp.replace('.audit', '')
-        module_name = module_to_name.get(temp, temp)
-        audit_result_page.script_result_display.setWordWrap(True)
-
-        # Create parent item for the script
-        parent_item = QtWidgets.QTreeWidgetItem(audit_result_page.script_result_display)
-        if return_code == 0:  # Pass
-            parent_item.setText(0, f"PASS: {module_name}")
-        else:
-            parent_item.setText(0, f"FAIL: {module_name}")
-
-        # Add placeholder details as child items
-
-        # Truncate if output is too long
-
-        if output != "":
-            child_output = QtWidgets.QTreeWidgetItem(parent_item)
-            child_output.setText(0, f"{output}")
-            # child_output.setwordWrap(True)
-        # Truncate if error is too long
-
-        if error != "" :
-            child_error = QtWidgets.QTreeWidgetItem(parent_item)
-            child_error.setText(0, f"{error}")
-            # child_error.setwordWrap(True)
-        # Truncate if error is too long
-
-        # Expand all items by default (optional)
-        parent_item.setExpanded(False)
-
+    os_name = check_os()
+    if os_name == "rhel_9":
+        if (isworkstation and islevel1) and script_name in filterList.RehlWL1:
+            return True
+        if (isworkstation and islevel2) and script_name in filterList.RehlWL2:
+            return True
+        if (isserver and islevel1) and script_name in filterList.RehlSL1:
+            return True
+        if (isserver and islevel2) and script_name in filterList.RehlSL2:
+            return True
+    elif os_name == "Ubuntu":
+        if (isworkstation and islevel1) and script_name in filterList.UbantuWL1:
+            return True
+        if (isworkstation and islevel2) and script_name in filterList.UbantuWL2:
+            return True
+        if (isserver and islevel1) and script_name in filterList.UbantuSL1:
+            return True
+        if (isserver and islevel2) and script_name in filterList.UbantuSL2:
+            return True
+    elif os_name == "Windows":
+        if (isbitlocker and islevel1) and (script_name in filterList.WindowsBL and script_name in filterList.WindowsL1):
+            return True
+        if (isbitlocker and islevel2) and (script_name in filterList.WindowsBL and script_name in filterList.WindowsL2):
+            return True
+        if ((not isbitlocker) and islevel1) and (script_name not in filterList.WindowsBL and script_name in filterList.WindowsL1):
+            return True
+        if ((not isbitlocker) and islevel2) and (script_name not in filterList.WindowsBL and script_name in filterList.WindowsL1):
+            return True
+    return False
 
 def new_audit_filters():
     """
@@ -417,6 +401,44 @@ def new_audit_filters():
     audit_select_page_populate_script_list()
     main_window.setCurrentIndex(2)
 
+# Function for Storing the Audit Results 
+def create_tables():
+    """
+    Create the audit_results table in the database if it does not exist.
+    This function should be called once when the application is first started.
+    """
+    cursor = audit_select_page.database.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS audit_results (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            script_name TEXT,
+            output TEXT,
+            error TEXT,
+            return_code INTEGER,
+            execution_time TEXT,
+            session_id INTEGER
+        )
+    ''')
+    audit_select_page.database.commit()
+
+def add_audit_result(result):
+    """
+    Adds a new audit result to the database. The result is a dictionary containing the
+    script name, output, error, return code, and session id. The execution time is set to
+    the current time.
+
+    Args:
+        result (dict): A dictionary containing the audit result data.
+    """
+    create_tables()
+    cursor = audit_select_page.database.cursor()
+    cursor.execute('''
+        INSERT INTO audit_results (script_name, output, error, return_code, execution_time, session_id)
+        VALUES (?, ?, ?, ?, datetime('now'), ?)
+    ''', (result['script_name'], result['output'], result['error'], result['return_code'], result['session_id']))
+    audit_select_page.database.commit()
+
+
 if __name__ == "__main__":
     session_id = 0
     app = QApplication(sys.argv)
@@ -429,12 +451,7 @@ if __name__ == "__main__":
 
     # Display system information on the start page
     system_info = get_system_info()
-    start_page.hostname_lbl.setText(system_info["hostname"])
-    start_page.os_name_lbl.setText(system_info["os_name"])
-    start_page.os_version_lbl.setText(system_info["os_version"])
-    start_page.kernel_lbl.setText(system_info["kernel_version"])
-    start_page.mach_arch_lbl.setText(system_info["machine_arch"])
-    start_page.processor_lbl.setText(system_info["processor"])
+    display_system_info_on_home_page(system_info)
 
     # Load and set up the new audit page
     loader_new_audit_page = QUiLoader()
