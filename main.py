@@ -6,6 +6,9 @@ from PySide6.QtUiTools import QUiLoader
 from PySide6.QtCore import QCoreApplication, QUrl
 from PySide6.QtGui import QDesktopServices
 import filterList
+from osinfo import *
+from fileop import *
+from scriptsop import *
 
 def bitlocker_status():
     
@@ -21,26 +24,6 @@ def bitlocker_status():
     else:
         new_audit_page.bitlocker_btn.setEnabled(False)
 
-def check_os():
-    """
-    Check the operating system and return the OS type.
-    
-    Returns:
-    str: The type of the operating system: "Ubuntu", "rhel_9", or "Windows".
-    """
-    # Check if the system is Linux
-    if platform.system() == "Linux":
-        # Try to determine if it's Ubuntu or rhel_9
-            with open("/etc/os-release", "r") as f:
-                os_info = f.read()
-            if "Ubuntu" in os_info:
-                return "Ubuntu"
-            elif "Red Hat" in os_info or "rhel_9" in os_info or "fedora" in os_info:
-                return "rhel_9"
-            else:
-                return "Windows"
-    else:
-        return "Windows"
 
 def open_cis_website():
     """
@@ -48,107 +31,7 @@ def open_cis_website():
     """
     QDesktopServices.openUrl(QUrl("https://www.cisecurity.org/"))
 
-def get_clean_linux_version():
-    """
-    Try to get the clean version name of the Linux distribution.
-    For example, if the PRETTY_NAME is "Red Hat Enterprise Linux 9.0 (Plow)", return "Red Hat Enterprise Linux 9.0".
-    If the file does not exist, return the result of platform.system(), which is "Linux".
-    Returns:
-    str: The clean version name of the Linux distribution.
-    """
-    try:
-        with open("/etc/os-release", "r") as file:
-            for line in file:
-                if line.startswith("PRETTY_NAME="):
-                    return line.split("=")[1].strip().replace('"', '')
-    except FileNotFoundError:
-        return platform.system()
 
-def get_system_info():
-    """
-    Get information about the system such as the hostname, OS name, OS version,
-    kernel version, machine architecture, and processor.
-
-    Returns:
-    dict: A dictionary containing the system information.
-    """
-    os_name = platform.system()
-    hostname = os.uname()[1] if hasattr(os, 'uname') else platform.node()
-    os_version = None
-    kernel_version = None
-    machine_arch = None
-    processor = None
-
-    if os_name == "Linux":
-        os_version = get_clean_linux_version()
-        kernel_version = platform.release()
-        machine_arch = platform.machine()
-        try:
-            processor = subprocess.check_output("lscpu | grep 'Model name:'", shell=True).decode('utf-8').strip().split(":")[1].strip()
-        except (subprocess.CalledProcessError, IndexError):
-            processor = "Unknown"
-
-    elif os_name == "Windows":
-        os_version = '.'.join(platform.win32_ver()[1].split('.')[:2])
-        kernel_version = platform.release()
-        machine_arch = platform.machine()
-        processor = platform.processor()
-
-    elif os_name == "Darwin":
-        os_version = platform.mac_ver()[0]
-        kernel_version = platform.release()
-        machine_arch = platform.machine()
-        processor = platform.processor()
-
-    else:
-        os_version = "Unknown"
-        kernel_version = "Unknown"
-        machine_arch = "Unknown"
-        processor = "Unknown"
-
-    return {
-        "hostname": f"HOSTNAME - {hostname}",
-        "os_name": f"OS NAME - {os_name}",
-        "os_version": f"OS VERSION - {os_version}",
-        "kernel_version": f"KERNEL - {kernel_version}",
-        "machine_arch": f"MACHINE ARCH - {machine_arch}",
-        "processor": f"PROCESSOR - {processor}"
-    }
-
-def load_complete_json():
-    """
-    Load the complete JSON data from a file corresponding to the operating system.
-
-    The function determines the operating system using the check_os function, constructs
-    the file name by appending ".json" to the OS name, and then loads the JSON data from
-    the corresponding file in the 'scripts' directory.
-
-    Returns:
-    dict: The loaded JSON data.
-    """
-
-    os_name = check_os()
-    file_name = os_name + ".json"
-    file_path = os.path.join('scripts', file_name)
-    with open(file_path, 'r',encoding='utf-8') as file:
-        return json.load(file)
-
-def load_module_to_name():
-    """
-    Load the module to name data from a file corresponding to the operating system.
-
-    The function determines the operating system using the check_os function, constructs
-    the file name by appending "_moduleToName.json" to the OS name, and then loads the JSON
-    data from the corresponding file in the 'scripts' directory.
-
-    Returns:
-    dict: The loaded module to name data.
-    """
-    os_name = check_os()
-    file_name = os_name + "_moduleToName.json"
-    file_path = os.path.join('scripts', file_name)
-    with open(file_path, 'r') as file:
-        return json.load(file)
 
 def search_bar_filter_select_page():
     """
@@ -323,36 +206,6 @@ def create_tables():
     audit_select_page.database.commit()
 
 
-def run_script(script_path):
-    """
-    Run the script at the given path with the correct interpreter based on the current
-    operating system. If the script is on Ubuntu or rhel_9, it is run with bash. If the
-    script is on Windows, it is run with PowerShell. The script is run with the correct
-    execution policy based on the operating system.
-
-    Returns:
-    stdout (str): The output of the script
-    stderr (str): The error output of the script
-    returncode (int): The return code of the script
-    """
-    try:
-        os_name = check_os()
-        if os_name == "Ubuntu":
-            os.chmod(script_path, 0o755)
-            result = subprocess.run(["bash", script_path], capture_output=True, text=True)
-        if os_name == "rhel_9":
-            os.chmod(script_path, 0o755)
-            result = subprocess.run(["bash", script_path], capture_output=True, text=True)
-        if os_name == "Windows":
-            result = subprocess.run(
-                ["powershell.exe",
-                "-ExecutionPolicy", "Bypass",
-                "-File", script_path],
-                capture_output=True, text=True
-            )
-        return result.stdout, result.stderr, result.returncode
-    except subprocess.CalledProcessError as e:
-        return e.stdout, e.stderr, e.returncode
 
 def add_audit_result(result):
     """
