@@ -24,9 +24,9 @@ EasyAudit aims to provide a user-friendly interface for IT administrators and se
 To install EasyAudit, follow these steps:
 
 1. Clone the repository: `git clone https://github.com/your-repo/easy-audit.git`
-2. Create a virtual environment: `python -m venv easy-audit-venv`
+2. Create a virtual environment: `python -m venv`
 3. Activate the virtual environment:
-    * On Windows: `easy-audit-venv\Scripts\activate`
+    * On Windows: `venv\Scripts\activate`
     * On Linux/Mac: `source easy-audit-venv/bin/activate`
 4. Install dependencies: `pip install -r requirements.txt`
 5. Run the application: `python main.py`
