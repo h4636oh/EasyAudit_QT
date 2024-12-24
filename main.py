@@ -13,6 +13,18 @@ from scriptsop import *
 ### Home Page function
 
 def display_system_info_on_home_page(system_info):
+    """
+    Display system information on the home page.
+
+    This function sets the text of various labels on the home page to display
+    the system information provided in the `system_info` dictionary.
+    
+    Args:
+        system_info (dict): A dictionary containing system information with keys
+        "hostname", "os_name", "os_version", "kernel_version", "machine_arch",
+        and "processor".
+    """
+
     start_page.hostname_lbl.setText(system_info["hostname"])
     start_page.os_name_lbl.setText(system_info["os_name"])
     start_page.os_version_lbl.setText(system_info["os_version"])
