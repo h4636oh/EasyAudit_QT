@@ -163,8 +163,8 @@ def search_bar_filter_select_page():
     """
 
     search_text = audit_select_page.search_bar.text()
-    for i in range(audit_select_page.script_select_display.count()):
-        item = audit_select_page.script_select_display.item(i)
+    for i in range(audit_select_page.script_select_display.topLevelItemCount()):
+        item = audit_select_page.script_select_display.topLevelItem(i)
         if search_text.lower() in item.text().lower():
             item.setHidden(False)
         else:
