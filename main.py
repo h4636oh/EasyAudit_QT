@@ -163,8 +163,8 @@ def search_bar_filter_select_page():
     """
 
     search_text = audit_select_page.search_bar.text()
-    for i in range(audit_select_page.script_select_display.topLevelItemCount()):
-        item = audit_select_page.script_select_display.topLevelItem(i)
+    for i in range(audit_select_page.script_select_display.count()):
+        item = audit_select_page.script_select_display.item(i)
         if search_text.lower() in item.text().lower():
             item.setHidden(False)
         else:
@@ -183,9 +183,9 @@ def search_bar_filter_result_page():
     """
 
     search_text = audit_result_page.search_bar.text()
-    for i in range(audit_result_page.audit_results_list_widget.count()):
-        item = audit_result_page.audit_results_list_widget.item(i)
-        if search_text.lower() in item.text().lower():
+    for i in range(audit_result_page.script_result_display.topLevelItemCount()):
+        item = audit_result_page.script_result_display.topLevelItem(i)
+        if search_text.lower() in item.text(0).lower():
             item.setHidden(False)
         else:
             item.setHidden(True)
@@ -265,9 +265,9 @@ def audit_select_page_populate_script_list():
             list_item = QtWidgets.QListWidgetItem(module_name)
             list_item.setFlags(list_item.flags() | QtCore.Qt.ItemIsUserCheckable)
             if isSelected(script_name):
-                list_item.setCheckState(QtCore.Qt.Unchecked)
-            else:
                 list_item.setCheckState(QtCore.Qt.Checked)
+            else:
+                list_item.setCheckState(QtCore.Qt.Unchecked)
             list_item.setData(QtCore.Qt.UserRole, script)
             list_item.setToolTip(tooltip_text)
             audit_select_page.script_select_display.addItem(list_item)        
