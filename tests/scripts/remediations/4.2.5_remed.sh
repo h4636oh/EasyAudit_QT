@@ -1,1 +1,0 @@
-nft create chain inet <table name> <base chain name> { type filter hook<(input|forward|output)> priority 0 \; }

@@ -1,1 +1,0 @@
-usermod -s $(command -v nologin) <user>

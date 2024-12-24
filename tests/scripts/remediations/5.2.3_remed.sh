@@ -1,1 +1,0 @@
-Defaults logfile="/var/log/sudo.log"

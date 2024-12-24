@@ -1,1 +1,0 @@
-MaxStartups 10:30:60

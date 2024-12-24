@@ -1,1 +1,0 @@
-iptables -L -v -n

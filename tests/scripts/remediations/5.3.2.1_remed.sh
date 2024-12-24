@@ -1,1 +1,0 @@
-pam-auth-update --enable unix

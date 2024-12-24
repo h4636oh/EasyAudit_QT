@@ -1,3 +1,0 @@
-Defaults env_reset, timestamp_timeout=15
-Defaults timestamp_timeout=15
-Defaults env_reset

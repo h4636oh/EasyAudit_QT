@@ -1,1 +1,0 @@
-HostbasedAuthentication no

@@ -1,1 +1,0 @@
-usermod -u 0 root

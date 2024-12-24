@@ -1,1 +1,0 @@
-ufw status numbered

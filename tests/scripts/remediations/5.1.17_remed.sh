@@ -1,1 +1,0 @@
-MaxSessions 10

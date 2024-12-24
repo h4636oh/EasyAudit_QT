@@ -1,1 +1,0 @@
-PermitEmptyPasswords no
