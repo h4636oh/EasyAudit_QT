@@ -79,3 +79,4 @@ CMakeLists.txt.user*
 sample_results.db
 pysidedeploy.spec
 audit_results.db
+*_ui.py
