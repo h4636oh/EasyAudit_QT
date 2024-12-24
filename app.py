@@ -474,9 +474,12 @@ def audit_selected_scripts():
         
         # Write the result to the log file
         logfile.write(f"Script: {script_name} - {module_name}\n")
-        logfile.write(f"Output:{stdout}\n")
-        logfile.write(f"Error:{stderr}\n")
-        logfile.write(f"Return Code: {return_code}\n\n")
+        logfile.write(f"Date: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        logfile.write(f"Result: {'PASS' if return_code == 0 else 'FAIL'} \nReturn Code: {return_code}\n\n")
+        if stdout:
+            logfile.write(f"Output:{stdout}\n")
+        if stderr:
+            logfile.write(f"Error:{stderr}\n")
 
     # Print a message to indicate that the audit is complete
     print("Audit completed")
