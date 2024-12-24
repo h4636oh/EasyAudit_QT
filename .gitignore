@@ -75,7 +75,9 @@ CMakeLists.txt.user*
 # --------
 *.dll
 *.exe
+*.bin
 
+# Extras
 sample_results.db
 pysidedeploy.spec
 audit_results.db
